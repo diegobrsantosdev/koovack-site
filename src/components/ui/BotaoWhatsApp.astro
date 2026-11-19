@@ -23,7 +23,7 @@ const { mensagem } = Astro.props;
     justify-content: center;
     gap: var(--esp-2);
     min-height: 3.25rem;
-    padding: 0 var(--esp-5);
+    padding: 0 var(--esp-4); /* menor no celular para caber em 360 px */
     border-radius: var(--raio-botao);
     background: var(--cor-principal);
     color: var(--cor-branco);
@@ -39,6 +39,7 @@ const { mensagem } = Astro.props;
   }
   @media (min-width: 48rem) {
     .botao-whatsapp {
+      padding: 0 var(--esp-5);
       font-size: var(--texto-pequeno);
       letter-spacing: 0.12em;
     }

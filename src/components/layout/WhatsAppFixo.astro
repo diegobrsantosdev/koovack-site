@@ -22,6 +22,20 @@ const { mensagem } = Astro.props;
   <span>{site.textoBotaoWhatsApp}</span>
 </a>
 
+<script>
+  // Se a página tiver uma área com o próprio botão de WhatsApp (ex.: o slideshow da home,
+  // marcado com data-esconde-whatsapp-fixo), o botão fixo some enquanto essa área estiver
+  // visível, para não aparecerem dois botões iguais ao mesmo tempo.
+  const botao = document.querySelector<HTMLElement>('.whatsapp-fixo');
+  const area = document.querySelector('[data-esconde-whatsapp-fixo]');
+  if (botao && area) {
+    new IntersectionObserver(
+      ([entrada]) => botao.classList.toggle('whatsapp-fixo--oculto', entrada.isIntersecting),
+      { threshold: 0.35 },
+    ).observe(area);
+  }
+</script>
+
 <style>
   .whatsapp-fixo {
     position: fixed;
@@ -45,7 +59,15 @@ const { mensagem } = Astro.props;
     letter-spacing: 0.06em;
     white-space: nowrap; /* o texto cabe numa linha só, mesmo em 360 px */
     box-shadow: 0 6px 20px rgb(62 78 104 / 0.28);
-    transition: background-color var(--transicao), transform var(--transicao);
+    transition: background-color var(--transicao), transform var(--transicao), opacity var(--transicao),
+      visibility 0s;
+  }
+
+  .whatsapp-fixo--oculto {
+    opacity: 0;
+    visibility: hidden; /* também sai da navegação por teclado */
+    transform: translateY(1rem);
+    transition: opacity var(--transicao), transform var(--transicao), visibility 0s linear 200ms;
   }
 
   .whatsapp-fixo:hover {
