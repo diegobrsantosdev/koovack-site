@@ -6,7 +6,7 @@ import Secao from '../components/ui/Secao.astro';
 import HeroSlideshow from '../components/home/HeroSlideshow.astro';
 import FaixaAreas from '../components/home/FaixaAreas.astro';
 import ComoFunciona from '../components/home/ComoFunciona.astro';
-import ResumoServicos from '../components/home/ResumoServicos.astro';
+import SeletorServicos from '../components/servicos/SeletorServicos.astro';
 import Depoimentos from '../components/home/Depoimentos.astro';
 import SobreResumo from '../components/home/SobreResumo.astro';
 import ChamadaFinal from '../components/home/ChamadaFinal.astro';
@@ -35,8 +35,8 @@ const destaques = (await projetosOrdenados()).filter((p) => p.data.destaque);
     <ComoFunciona />
   </Secao>
 
-  <Secao titulo="Formas de trabalhar comigo" subtitulo="Escolha como começar. Valores e prazos pelo WhatsApp.">
-    <ResumoServicos />
+  <Secao titulo="Formas de trabalhar comigo" subtitulo="Valores e prazos pelo WhatsApp.">
+    <SeletorServicos compacto colunas={4} linkDetalhes />
   </Secao>
 
   <Secao titulo="O que dizem os clientes" fundo="alt" centralizado>

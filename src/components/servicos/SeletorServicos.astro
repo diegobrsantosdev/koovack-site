@@ -1,0 +1,182 @@
+---
+// Seletor das formas de trabalhar: os cards selecionáveis + o bloco "Opção escolhida / Pedir orçamento".
+// Usado na home (versão compacta, 4 colunas) e na página Formas de trabalhar (completa, 2 colunas).
+//
+// Ao escolher uma opção:
+// - o bloco abaixo dos cards mostra o nome escolhido e o botão pede orçamento daquele serviço;
+// - (opcional) o botão fixo da base também passa a mostrar/pedir aquele serviço;
+// - (opcional) o link "Ver detalhes" leva à página Formas de trabalhar já com a opção marcada.
+import { getCollection } from 'astro:content';
+import CardServico from './CardServico.astro';
+import BotaoWhatsApp from '../ui/BotaoWhatsApp.astro';
+import { mensagemServico } from '../../lib/whatsapp';
+
+interface Props {
+  compacto?: boolean; // cards sem a lista "O que inclui" (home)
+  colunas?: 2 | 4; // colunas no desktop
+  blocoNoCelular?: boolean; // mostrar o bloco "Opção escolhida" também no celular
+  atualizarBotaoFixo?: boolean; // o botão fixo da base acompanha a escolha
+  linkDetalhes?: boolean; // mostrar "Ver detalhes de X" no bloco (home)
+}
+const {
+  compacto = false,
+  colunas = 2,
+  blocoNoCelular = true,
+  atualizarBotaoFixo = false,
+  linkDetalhes = false,
+} = Astro.props;
+
+const servicos = (await getCollection('servicos')).sort((a, b) => a.data.ordem - b.data.ordem);
+// Opção marcada ao abrir: a recomendada (ou a primeira, se nenhuma for)
+const padrao = servicos.find((s) => s.data.recomendado) ?? servicos[0];
+const nomePadrao = padrao.data.nome;
+---
+
+<div
+  class="seletor"
+  data-seletor-servicos
+  data-atualizar-fixo={atualizarBotaoFixo ? '' : undefined}
+>
+  <fieldset class:list={['seletor__opcoes', `seletor__opcoes--${colunas}`]}>
+    <legend class="sr-only">Escolha uma forma de trabalhar</legend>
+    <p class="seletor__dica">Escolha uma opção para pedir o orçamento.</p>
+    {servicos.map((s) => <CardServico servico={s} selecionado={s.id === padrao.id} compacto={compacto} />)}
+  </fieldset>
+
+  <!-- Enquanto este bloco está visível, o botão fixo da base some (data-esconde-whatsapp-fixo) -->
+  <div class:list={['seletor__escolha', { 'seletor__escolha--so-desktop': !blocoNoCelular }]} data-esconde-whatsapp-fixo>
+    <p class="seletor__texto">
+      Opção escolhida: <strong data-servico-escolhido>{nomePadrao}</strong>
+    </p>
+    <BotaoWhatsApp mensagem={mensagemServico(nomePadrao)} rastreio={{ servico: nomePadrao }} dinamico />
+    {
+      linkDetalhes && (
+        <a class="seletor__detalhes" href={`/formas-de-trabalhar#${padrao.id}`} data-servico-detalhes>
+          Ver detalhes de <span data-servico-escolhido>{nomePadrao}</span>
+          <span aria-hidden="true"> →</span>
+        </a>
+      )
+    }
+  </div>
+</div>
+
+<script>
+  import { linkWhatsApp, mensagemServico } from '../../lib/whatsapp';
+
+  document.querySelectorAll<HTMLElement>('[data-seletor-servicos]').forEach((seletor) => {
+    const opcoes = [...seletor.querySelectorAll<HTMLInputElement>('[data-servico-opcao]')];
+    const atualizarFixo = seletor.hasAttribute('data-atualizar-fixo');
+
+    function aplicar(opcao: HTMLInputElement) {
+      const nome = opcao.value;
+      const id = opcao.closest<HTMLElement>('[data-servico-id]')?.dataset.servicoId ?? '';
+
+      // Botões de WhatsApp que seguem a escolha: os do seletor ou, se ele controla a página
+      // inteira (atualizarFixo), todos os botões de serviço da página + o botão fixo
+      const escopo = atualizarFixo ? document : seletor;
+      const links = [...escopo.querySelectorAll<HTMLAnchorElement>('a[data-whatsapp-servico]')];
+      if (atualizarFixo) {
+        const fixo = document.querySelector<HTMLAnchorElement>('a.whatsapp-fixo');
+        if (fixo) links.push(fixo);
+        const detalhe = document.querySelector<HTMLElement>('[data-whatsapp-detalhe]');
+        if (detalhe) {
+          detalhe.textContent = nome;
+          detalhe.hidden = false;
+        }
+      }
+      links.forEach((link) => {
+        link.href = linkWhatsApp(mensagemServico(nome));
+        link.dataset.servico = nome; // vai junto no evento whatsapp_click
+      });
+
+      // Textos com o nome escolhido (no seletor e em outros pontos da página)
+      document.querySelectorAll<HTMLElement>('[data-servico-escolhido]').forEach((el) => (el.textContent = nome));
+
+      // "Ver detalhes de X" aponta para o card certo na página Formas de trabalhar
+      const detalhes = seletor.querySelector<HTMLAnchorElement>('[data-servico-detalhes]');
+      if (detalhes) detalhes.href = `/formas-de-trabalhar#${id}`;
+    }
+
+    opcoes.forEach((opcao) => opcao.addEventListener('change', () => aplicar(opcao)));
+
+    // Link direto (ex.: /formas-de-trabalhar#consultoria): já chega com aquela opção escolhida.
+    // Só quando o endereço tem "#algo" (sem isso, card sem id seria comparado com "" e casaria por engano).
+    const alvo = decodeURIComponent(location.hash.slice(1));
+    const doLink = alvo
+      ? opcoes.find((o) => o.closest<HTMLElement>('[data-servico-id]')?.id === alvo)
+      : undefined;
+    if (doLink) {
+      doLink.checked = true;
+      aplicar(doLink);
+    }
+  });
+</script>
+
+<style>
+  .seletor__opcoes {
+    display: grid;
+    gap: var(--esp-5);
+    margin: 0;
+    padding: var(--esp-2) 0 0;
+    border: 0;
+    min-width: 0;
+  }
+  .seletor__dica {
+    font-size: var(--texto-pequeno);
+    opacity: 0.75;
+  }
+
+  .seletor__escolha {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--esp-3);
+    padding-top: var(--esp-6);
+    text-align: center;
+  }
+  .seletor__escolha--so-desktop {
+    display: none;
+  }
+  .seletor__texto {
+    font-size: var(--texto-grande);
+    font-weight: 300;
+  }
+  .seletor__texto strong {
+    font-weight: 600;
+  }
+  .seletor__detalhes {
+    font-size: var(--texto-pequeno);
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    text-decoration: none;
+  }
+  .seletor__detalhes:hover {
+    text-decoration: underline;
+  }
+
+  /* 2 colunas (Formas de trabalhar) */
+  @media (min-width: 56rem) {
+    .seletor__opcoes--2 {
+      grid-template-columns: 1fr 1fr;
+      gap: var(--esp-6) var(--esp-5);
+    }
+    .seletor__escolha--so-desktop {
+      display: flex;
+    }
+  }
+  /* 4 colunas (home): 2 no tablet, 4 no desktop */
+  @media (min-width: 40rem) {
+    .seletor__opcoes--4 {
+      grid-template-columns: 1fr 1fr;
+      gap: var(--esp-4);
+    }
+  }
+  @media (min-width: 64rem) {
+    .seletor__opcoes--4 {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+  .seletor__dica {
+    grid-column: 1 / -1;
+  }
+</style>

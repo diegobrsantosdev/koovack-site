@@ -9,12 +9,17 @@ import Etiqueta from '../ui/Etiqueta.astro';
 interface Props {
   servico: CollectionEntry<'servicos'>;
   selecionado?: boolean;
+  compacto?: boolean; // versão da home: sem a lista "O que inclui"
 }
-const { servico, selecionado = false } = Astro.props;
+const { servico, selecionado = false, compacto = false } = Astro.props;
 const s = servico.data;
 ---
 
-<label class:list={['card', { 'card--recomendado': s.recomendado }]} id={servico.id}>
+<label
+  class:list={['card', { 'card--recomendado': s.recomendado, 'card--compacto': compacto }]}
+  id={compacto ? undefined : servico.id}
+  data-servico-id={servico.id}
+>
   <input
     class="card__radio"
     type="radio"
@@ -37,18 +42,30 @@ const s = servico.data;
   <span class="card__nome">{s.nome}</span>
 
   <span class="card__bloco">
-    <span class="card__subtitulo">Para quem é</span>
-    <span>{s.para_quem}</span>
+    {!compacto && <span class="card__subtitulo">Para quem é</span>}
+    <span class="card__para-quem">{s.para_quem}</span>
   </span>
 
-  <span class="card__bloco">
-    <span class="card__subtitulo">O que inclui</span>
-    <span class="card__inclui">
-      {s.inclui.map((item) => <span class="card__item">{item}</span>)}
-    </span>
-  </span>
+  {
+    !compacto && (
+      <span class="card__bloco">
+        <span class="card__subtitulo">O que inclui</span>
+        <span class="card__inclui">
+          {s.inclui.map((item) => (
+            <span class="card__item">{item}</span>
+          ))}
+        </span>
+      </span>
+    )
+  }
 
-  {s.online && <span class="card__online">Disponível online, para todo o Brasil</span>}
+  {
+    s.online && (
+      <span class="card__online">
+        {compacto ? 'Também online, para todo o Brasil' : 'Disponível online, para todo o Brasil'}
+      </span>
+    )
+  }
 </label>
 
 <style>
@@ -167,6 +184,29 @@ const s = servico.data;
     font-size: 0.75rem;
     text-transform: uppercase;
     letter-spacing: 0.14em;
+  }
+
+  /* Versão compacta (home): menor, para caber 4 lado a lado no desktop */
+  .card.card--compacto {
+    gap: var(--esp-3);
+    padding: var(--esp-5) var(--esp-3) var(--esp-4);
+  }
+  .card--compacto .card__nome {
+    font-size: var(--texto-grande);
+    font-weight: 400;
+    letter-spacing: 0.14em;
+  }
+  .card--compacto .card__para-quem {
+    font-size: var(--texto-pequeno);
+  }
+  .card--compacto .card__bloco {
+    flex: 1;
+  }
+  .card.card--compacto .card__marca {
+    top: var(--esp-3);
+    right: var(--esp-3);
+    width: 1.5rem;
+    height: 1.5rem;
   }
 
   @media (min-width: 48rem) {

@@ -32,13 +32,20 @@ const { mensagem, rastreio, detalhe } = Astro.props;
   // Se a página tiver uma área com o próprio botão de WhatsApp (ex.: o slideshow da home,
   // marcado com data-esconde-whatsapp-fixo), o botão fixo some enquanto essa área estiver
   // visível, para não aparecerem dois botões iguais ao mesmo tempo.
+  // Pode haver mais de uma área assim na página (ex.: home tem o slideshow e o seletor de serviços):
+  // o botão fica oculto enquanto QUALQUER uma delas estiver visível.
   const botao = document.querySelector<HTMLElement>('.whatsapp-fixo');
-  const area = document.querySelector('[data-esconde-whatsapp-fixo]');
-  if (botao && area) {
-    new IntersectionObserver(
-      ([entrada]) => botao.classList.toggle('whatsapp-fixo--oculto', entrada.isIntersecting),
+  const areas = [...document.querySelectorAll('[data-esconde-whatsapp-fixo]')];
+  if (botao && areas.length) {
+    const visiveis = new Set<Element>();
+    const observador = new IntersectionObserver(
+      (entradas) => {
+        entradas.forEach((e) => (e.isIntersecting ? visiveis.add(e.target) : visiveis.delete(e.target)));
+        botao.classList.toggle('whatsapp-fixo--oculto', visiveis.size > 0);
+      },
       { threshold: 0.35 },
-    ).observe(area);
+    );
+    areas.forEach((area) => observador.observe(area));
   }
 </script>
 
