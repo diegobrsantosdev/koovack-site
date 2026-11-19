@@ -1,0 +1,136 @@
+---
+// Transição entre páginas, só com movimento (sem cortina, sem sobreposição).
+// O header fica parado; o conteúdo da página (main + rodapé) é que se move.
+//
+// 1. Clique num link interno → o conteúdo sobe levemente e some (fade).
+// 2. O navegador vai para a página nova.
+// 3. O conteúdo da página nova surge de baixo para cima, em fade.
+//
+// Não se aplica a: links externos (WhatsApp, Instagram), links que abrem em nova aba,
+// Ctrl/Cmd+clique, links para a mesma página (#âncoras) e quem pediu "reduzir movimento".
+// Para ajustar o ritmo, mude --transicao-sai e --transicao-entra (no <style>).
+---
+
+<!--
+  Roda antes de a página aparecer: se viemos de um clique com transição, o conteúdo da
+  página nova já nasce invisível (classe no <html>), para depois entrar com movimento.
+-->
+<script is:inline>
+  try {
+    if (sessionStorage.getItem('koovack_transicao')) {
+      sessionStorage.removeItem('koovack_transicao');
+      document.documentElement.classList.add('pagina-entrando');
+    }
+  } catch (e) {}
+</script>
+
+<script>
+  const raiz = document.documentElement;
+  const menosMovimento = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /**
+   * Lê uma duração do CSS (definida no <html>) e devolve em milissegundos.
+   * Atenção: o navegador pode reescrever "600ms" como ".6s", então tratamos as duas unidades.
+   */
+  function duracao(variavel: string): number {
+    const texto = getComputedStyle(raiz).getPropertyValue(variavel).trim();
+    const numero = parseFloat(texto) || 0;
+    return texto.endsWith('ms') ? numero : numero * 1000;
+  }
+
+  // Página nova: depois do primeiro desenho da tela, o conteúdo entra.
+  // Ao terminar, tira as classes (a página volta ao normal).
+  if (raiz.classList.contains('pagina-entrando')) {
+    requestAnimationFrame(() =>
+      requestAnimationFrame(() => {
+        raiz.classList.add('pagina-revelando');
+        setTimeout(
+          () => raiz.classList.remove('pagina-entrando', 'pagina-revelando'),
+          duracao('--transicao-entra') + 50,
+        );
+      }),
+    );
+  }
+
+  // Botão "voltar": o navegador pode restaurar a página como estava (conteúdo invisível).
+  // Nesse caso, mostra tudo na hora.
+  window.addEventListener('pageshow', (e) => {
+    if (e.persisted) raiz.classList.remove('pagina-saindo', 'pagina-entrando', 'pagina-revelando');
+  });
+
+  document.addEventListener('click', (e) => {
+    if (menosMovimento) return;
+    if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+
+    const link = (e.target as HTMLElement).closest<HTMLAnchorElement>('a[href]');
+    if (!link || link.hasAttribute('download')) return;
+    if (link.target && link.target !== '_self') return;
+
+    const destino = new URL(link.href, window.location.href);
+    if (destino.origin !== window.location.origin) return; // link externo
+    if (destino.pathname === window.location.pathname && destino.search === window.location.search) return; // mesma página
+
+    e.preventDefault();
+    raiz.classList.add('pagina-saindo');
+    setTimeout(() => {
+      try {
+        sessionStorage.setItem('koovack_transicao', '1');
+      } catch {}
+      window.location.href = destino.href;
+    }, duracao('--transicao-sai'));
+  });
+</script>
+
+<style is:global>
+  :root {
+    --transicao-sai: 550ms; /* tempo para o conteúdo atual sumir */
+    --transicao-entra: 800ms; /* tempo para o conteúdo novo aparecer */
+    --transicao-curva: cubic-bezier(0.45, 0, 0.55, 1); /* suave e uniforme */
+  }
+
+  /* O que se move: o miolo da página e o rodapé (o header fica parado) */
+
+  /* 1. Saindo: sobe levemente e some */
+  html.pagina-saindo main,
+  html.pagina-saindo body > footer {
+    animation: conteudo-sai var(--transicao-sai) var(--transicao-curva) forwards;
+  }
+
+  /* 2. Página nova: começa invisível, um pouco abaixo */
+  html.pagina-entrando main,
+  html.pagina-entrando body > footer {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  /* 3. Entrando: sobe até o lugar, em fade */
+  html.pagina-revelando main,
+  html.pagina-revelando body > footer {
+    animation: conteudo-entra var(--transicao-entra) var(--transicao-curva) forwards;
+  }
+
+  @keyframes conteudo-sai {
+    to {
+      opacity: 0;
+      transform: translateY(-12px);
+    }
+  }
+  @keyframes conteudo-entra {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html.pagina-entrando main,
+    html.pagina-entrando body > footer {
+      opacity: 1;
+      transform: none;
+    }
+  }
+</style>
