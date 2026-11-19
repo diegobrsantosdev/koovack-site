@@ -1,0 +1,235 @@
+---
+// Header fixo no topo. No celular: logo + botão "Menu" que abre uma gaveta.
+// No desktop (a partir de 56rem ≈ 900px): o menu aparece em linha e o botão some.
+import Logo from './Logo.astro';
+import { site } from '../../config/site';
+
+const caminhoAtual = Astro.url.pathname.replace(/\/$/, '') || '/';
+const ativo = (href: string) =>
+  href === '/' ? caminhoAtual === '/' : caminhoAtual.startsWith(href);
+---
+
+<header class="header">
+  <div class="container header__barra">
+    <Logo />
+
+    <button
+      class="header__botao-menu"
+      type="button"
+      aria-expanded="false"
+      aria-controls="menu-principal"
+      data-menu-botao
+    >
+      <span class="header__icone" aria-hidden="true"><span></span></span>
+      <span class="header__botao-texto">Menu</span>
+    </button>
+
+    <nav id="menu-principal" class="menu" aria-label="Menu principal" data-menu>
+      <ul class="menu__lista">
+        {
+          site.menu.map((item) => (
+            <li>
+              <a
+                href={item.href}
+                class="menu__link"
+                aria-current={ativo(item.href) ? 'page' : undefined}
+              >
+                {item.texto}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+
+      <p class="menu__redes">
+        <a href={site.redes.instagram.url} target="_blank" rel="noopener">Instagram</a>
+        <span aria-hidden="true">·</span>
+        <a href={site.redes.tiktok.url} target="_blank" rel="noopener">TikTok</a>
+      </p>
+    </nav>
+  </div>
+</header>
+
+<script>
+  // Abre/fecha a gaveta do menu no celular. Fecha com Esc, com clique num link
+  // ou quando a tela cresce para o layout de desktop.
+  const botao = document.querySelector<HTMLButtonElement>('[data-menu-botao]');
+  const menu = document.querySelector<HTMLElement>('[data-menu]');
+  const desktop = window.matchMedia('(min-width: 56rem)');
+
+  function definirAberto(aberto: boolean) {
+    if (!botao || !menu) return;
+    botao.setAttribute('aria-expanded', String(aberto));
+    menu.classList.toggle('menu--aberto', aberto);
+    document.body.classList.toggle('menu-aberto', aberto);
+  }
+
+  botao?.addEventListener('click', () => {
+    definirAberto(botao.getAttribute('aria-expanded') !== 'true');
+  });
+
+  menu?.addEventListener('click', (e) => {
+    if ((e.target as HTMLElement).closest('a')) definirAberto(false);
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && botao?.getAttribute('aria-expanded') === 'true') {
+      definirAberto(false);
+      botao.focus();
+    }
+  });
+
+  desktop.addEventListener('change', () => definirAberto(false));
+</script>
+
+<style>
+  .header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: var(--cor-fundo);
+    border-bottom: 1px solid var(--cor-filete);
+  }
+
+  .header__barra {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: var(--altura-header);
+  }
+
+  /* Botão do menu (celular) */
+  .header__botao-menu {
+    position: relative;
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--esp-2);
+    min-height: 44px; /* área de toque confortável */
+    padding: 0 var(--esp-2);
+    margin-right: calc(var(--esp-2) * -1);
+    background: none;
+    border: 0;
+    cursor: pointer;
+    font-size: var(--texto-pequeno);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--cor-principal);
+  }
+
+  /* Ícone de duas linhas que vira um X */
+  .header__icone {
+    position: relative;
+    width: 22px;
+    height: 10px;
+  }
+  .header__icone::before,
+  .header__icone::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: currentColor;
+    transition: transform var(--transicao), top var(--transicao);
+  }
+  .header__icone::before { top: 0; }
+  .header__icone::after { top: 9px; }
+  [aria-expanded='true'] .header__icone::before { top: 4.5px; transform: rotate(45deg); }
+  [aria-expanded='true'] .header__icone::after { top: 4.5px; transform: rotate(-45deg); }
+
+  /* Gaveta (celular): ocupa a tela abaixo do header */
+  .menu {
+    position: fixed;
+    inset: var(--altura-header) 0 0 0;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: var(--esp-6) var(--margem-lateral) var(--esp-6);
+    background: var(--cor-fundo);
+    /* fechada: invisível e fora da navegação por teclado */
+    visibility: hidden;
+    opacity: 0;
+    transform: translateY(-8px);
+    transition: opacity var(--transicao), transform var(--transicao), visibility 0s linear 200ms;
+  }
+  .menu--aberto {
+    visibility: visible;
+    opacity: 1;
+    transform: none;
+    transition: opacity var(--transicao), transform var(--transicao);
+  }
+
+  .menu__lista {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--esp-4);
+  }
+
+  .menu__link {
+    font-family: var(--fonte-titulo);
+    font-size: var(--titulo-3);
+    text-transform: uppercase;
+    letter-spacing: var(--espacamento-titulo);
+    text-decoration: none;
+  }
+  .menu__link[aria-current='page'] {
+    color: var(--cor-detalhe);
+  }
+
+  .menu__redes {
+    display: flex;
+    gap: var(--esp-2);
+    font-size: var(--texto-pequeno);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+  }
+  .menu__redes a {
+    text-decoration: none;
+  }
+
+  /* Desktop: menu em linha */
+  @media (min-width: 56rem) {
+    .header__botao-menu {
+      display: none;
+    }
+    .menu {
+      position: static;
+      flex-direction: row;
+      padding: 0;
+      background: none;
+      visibility: visible;
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+    .menu__lista {
+      flex-direction: row;
+      gap: var(--esp-5);
+    }
+    .menu__link {
+      font-family: var(--fonte-texto);
+      font-size: var(--texto-pequeno);
+      letter-spacing: 0.14em;
+      padding-block: var(--esp-2);
+      border-bottom: 1px solid transparent;
+      transition: border-color var(--transicao);
+    }
+    .menu__link:hover,
+    .menu__link[aria-current='page'] {
+      border-color: var(--cor-detalhe);
+      color: var(--cor-principal);
+    }
+    .menu__redes {
+      display: none;
+    }
+  }
+
+  /* Trava a rolagem da página com a gaveta aberta */
+  :global(body.menu-aberto) {
+    overflow: hidden;
+  }
+</style>

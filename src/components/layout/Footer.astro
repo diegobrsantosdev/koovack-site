@@ -1,0 +1,78 @@
+---
+import Logo from './Logo.astro';
+import { site } from '../../config/site';
+
+const ano = new Date().getFullYear();
+---
+
+<footer class="footer">
+  <div class="container footer__conteudo">
+    <Logo />
+
+    <p class="footer__linha">
+      <a href={site.redes.instagram.url} target="_blank" rel="noopener">{site.redes.instagram.usuario}</a>
+      <span aria-hidden="true">·</span>
+      <span>{site.atendimento}</span>
+    </p>
+
+    <nav aria-label="Links do rodapé">
+      <ul class="footer__links">
+        <li><a href={site.redes.instagram.url} target="_blank" rel="noopener">Instagram</a></li>
+        <li><a href={site.redes.tiktok.url} target="_blank" rel="noopener">TikTok</a></li>
+        <li><a href="/contato">Contato</a></li>
+        <li><a href="/privacidade">Privacidade</a></li>
+      </ul>
+    </nav>
+
+    <p class="footer__copy">© {ano} {site.nome}</p>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    margin-top: var(--esp-8);
+    padding-block: var(--esp-6);
+    /* espaço extra para o botão fixo do WhatsApp não cobrir o rodapé */
+    padding-bottom: calc(var(--esp-6) + var(--altura-whatsapp-fixo) + var(--esp-3));
+    border-top: 1px solid var(--cor-filete);
+    background: var(--cor-fundo-alt);
+  }
+
+  .footer__conteudo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--esp-4);
+    text-align: center;
+  }
+
+  .footer__linha {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--esp-2);
+  }
+
+  .footer__links {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--esp-2) var(--esp-4);
+    font-size: var(--texto-pequeno);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+  }
+
+  .footer a {
+    text-decoration: none;
+  }
+  .footer a:hover {
+    text-decoration: underline;
+  }
+
+  .footer__copy {
+    font-size: var(--texto-pequeno);
+  }
+</style>
