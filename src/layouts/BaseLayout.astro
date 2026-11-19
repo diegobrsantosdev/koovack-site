@@ -13,6 +13,7 @@ import Header from '../components/layout/Header.astro';
 import Footer from '../components/layout/Footer.astro';
 import WhatsAppFixo from '../components/layout/WhatsAppFixo.astro';
 import { site } from '../config/site';
+import type { RastreioWhatsApp } from '../lib/whatsapp';
 
 interface Props {
   titulo?: string;
@@ -22,6 +23,7 @@ interface Props {
   mostrarHeader?: boolean; // false na página de Links (bio), que é "limpa"
   mostrarFooter?: boolean;
   naoIndexar?: boolean; // pede ao Google para não listar a página (ex.: /obrigado)
+  rastreioWhatsApp?: RastreioWhatsApp; // contexto do clique no botão fixo (projeto, serviço...)
 }
 
 const {
@@ -32,6 +34,7 @@ const {
   mostrarHeader = true,
   mostrarFooter = true,
   naoIndexar = false,
+  rastreioWhatsApp,
 } = Astro.props;
 
 const tituloCompleto = titulo ? `${titulo} | ${site.nome}` : site.nome;
@@ -56,9 +59,14 @@ const tituloCompleto = titulo ? `${titulo} | ${site.nome}` : site.nome;
       <slot />
     </main>
     {mostrarFooter && <Footer />}
-    {mostrarWhatsAppFixo && <WhatsAppFixo mensagem={mensagemWhatsApp} />}
+    {mostrarWhatsAppFixo && <WhatsAppFixo mensagem={mensagemWhatsApp} rastreio={rastreioWhatsApp} />}
   </body>
 </html>
+
+<script>
+  // Origem da visita (UTMs) + evento de clique no WhatsApp, em todas as páginas
+  import '../scripts/conversao';
+</script>
 
 <style>
   /* Link de acessibilidade: só aparece quando recebe foco pelo teclado */
