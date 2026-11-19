@@ -1,0 +1,72 @@
+---
+// Ficha rápida do projeto: tipo, área, escopo e ferramentas, em uma grade com filetes finos.
+import type { Projeto } from '../../lib/projetos';
+import { ROTULO_TIPO, formatarArea } from '../../lib/projetos';
+
+interface Props {
+  projeto: Projeto['data'];
+}
+const { projeto } = Astro.props;
+
+const itens = [
+  { rotulo: 'Tipo', valor: ROTULO_TIPO[projeto.tipo] },
+  { rotulo: 'Área', valor: formatarArea(projeto.area_m2) },
+  { rotulo: 'Escopo', valor: projeto.escopo },
+  { rotulo: 'Ferramentas', valor: projeto.ferramentas.join(', ') },
+];
+---
+
+<dl class="ficha">
+  {
+    itens.map((item) => (
+      <div class="ficha__item">
+        <dt>{item.rotulo}</dt>
+        <dd>{item.valor}</dd>
+      </div>
+    ))
+  }
+</dl>
+
+<style>
+  .ficha {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border-top: 1px solid var(--cor-filete);
+  }
+  .ficha__item {
+    padding: var(--esp-3) 0;
+    border-bottom: 1px solid var(--cor-filete);
+  }
+  .ficha__item:nth-child(odd) {
+    padding-right: var(--esp-3);
+  }
+  .ficha__item:nth-child(even) {
+    padding-left: var(--esp-3);
+    border-left: 1px solid var(--cor-filete);
+  }
+  dt {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    opacity: 0.75;
+  }
+  dd {
+    margin: var(--esp-1) 0 0;
+  }
+
+  @media (min-width: 48rem) {
+    .ficha {
+      grid-template-columns: repeat(4, 1fr);
+    }
+    .ficha__item,
+    .ficha__item:nth-child(odd),
+    .ficha__item:nth-child(even) {
+      padding: var(--esp-3) var(--esp-4);
+      border-left: 1px solid var(--cor-filete);
+    }
+    .ficha__item:first-child {
+      padding-left: 0;
+      border-left: 0;
+    }
+  }
+</style>

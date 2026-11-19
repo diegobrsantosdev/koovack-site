@@ -1,0 +1,59 @@
+---
+// Galeria vertical do case: uma imagem embaixo da outra, com legenda opcional.
+// No celular as imagens vão de borda a borda da tela.
+import { Picture } from 'astro:assets';
+
+interface Item {
+  imagem: ImageMetadata;
+  alt: string;
+  legenda?: string;
+}
+interface Props {
+  itens: Item[];
+}
+const { itens } = Astro.props;
+---
+
+<div class="galeria">
+  {
+    itens.map((item) => (
+      <figure class="galeria__item">
+        <Picture
+          src={item.imagem}
+          alt={item.alt}
+          formats={['avif', 'webp']}
+          widths={[480, 800, 1200, 1920]}
+          sizes="(min-width: 72rem) 72rem, 100vw"
+          loading="lazy"
+        />
+        {item.legenda && <figcaption>{item.legenda}</figcaption>}
+      </figure>
+    ))
+  }
+</div>
+
+<style>
+  .galeria {
+    display: flex;
+    flex-direction: column;
+    gap: var(--esp-4);
+    margin-inline: calc(var(--margem-lateral) * -1); /* borda a borda no celular */
+  }
+  .galeria__item :global(img) {
+    width: 100%;
+  }
+  figcaption {
+    padding: var(--esp-2) var(--margem-lateral) 0;
+    font-size: var(--texto-pequeno);
+    opacity: 0.8;
+  }
+  @media (min-width: 48rem) {
+    .galeria {
+      margin-inline: 0;
+      gap: var(--esp-5);
+    }
+    figcaption {
+      padding-inline: 0;
+    }
+  }
+</style>

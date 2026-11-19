@@ -1,0 +1,195 @@
+---
+// Comparador planta ↔ render: as duas imagens empilhadas; o render aparece até a linha divisória,
+// que a pessoa arrasta (dedo ou mouse) ou move pelo teclado (setas), via um <input type="range">.
+import { Picture } from 'astro:assets';
+
+interface ImagemComAlt {
+  imagem: ImageMetadata;
+  alt: string;
+}
+interface Props {
+  planta: ImagemComAlt;
+  render: ImagemComAlt;
+}
+const { planta, render } = Astro.props;
+
+const larguras = [480, 800, 1200, 1600];
+const tamanhos = '(min-width: 72rem) 72rem, 100vw';
+---
+
+<div class="comparador" style="--pos: 50%" data-comparador>
+  <Picture
+    class="comparador__img"
+    src={planta.imagem}
+    alt={planta.alt}
+    formats={['avif', 'webp']}
+    widths={larguras}
+    sizes={tamanhos}
+  />
+  <div class="comparador__render">
+    <Picture
+      class="comparador__img"
+      src={render.imagem}
+      alt={render.alt}
+      formats={['avif', 'webp']}
+      widths={larguras}
+      sizes={tamanhos}
+    />
+  </div>
+
+  <span class="comparador__rotulo comparador__rotulo--render" aria-hidden="true">Render</span>
+  <span class="comparador__rotulo comparador__rotulo--planta" aria-hidden="true">Planta</span>
+
+  <div class="comparador__linha" aria-hidden="true">
+    <span class="comparador__alca">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path d="M9 7l-5 5 5 5M15 7l5 5-5 5"></path>
+      </svg>
+    </span>
+  </div>
+
+  <input
+    class="comparador__controle"
+    type="range"
+    min="0"
+    max="100"
+    value="50"
+    aria-label="Comparar planta e render: arraste para a esquerda para ver a planta e para a direita para ver o render"
+    data-comparador-controle
+  />
+</div>
+
+<script>
+  // Arrastar em qualquer ponto da imagem (dedo ou mouse) move a linha.
+  // O <input range> continua existindo para teclado e leitores de tela.
+  document.querySelectorAll<HTMLElement>('[data-comparador]').forEach((comparador) => {
+    const controle = comparador.querySelector<HTMLInputElement>('[data-comparador-controle]');
+    if (!controle) return;
+
+    const definir = (pct: number) => {
+      const valor = Math.min(100, Math.max(0, pct));
+      comparador.style.setProperty('--pos', `${valor}%`);
+      controle.value = String(Math.round(valor));
+    };
+
+    const posicaoDoPonteiro = (e: PointerEvent) => {
+      const caixa = comparador.getBoundingClientRect();
+      return ((e.clientX - caixa.left) / caixa.width) * 100;
+    };
+
+    // No desktop, o navegador tenta "pegar" a imagem para arrastar e soltar em outro lugar.
+    // Bloqueamos isso para que o arrastar só mova a linha.
+    comparador.addEventListener('dragstart', (e) => e.preventDefault());
+
+    let arrastando = false;
+    comparador.addEventListener('pointerdown', (e) => {
+      if (e.pointerType === 'mouse') e.preventDefault(); // evita selecionar/arrastar a imagem
+      arrastando = true;
+      comparador.setPointerCapture(e.pointerId);
+      definir(posicaoDoPonteiro(e));
+    });
+    comparador.addEventListener('pointermove', (e) => {
+      if (arrastando) definir(posicaoDoPonteiro(e));
+    });
+    const soltar = () => (arrastando = false);
+    comparador.addEventListener('pointerup', soltar);
+    comparador.addEventListener('pointercancel', soltar);
+
+    controle.addEventListener('input', () => definir(Number(controle.value)));
+  });
+</script>
+
+<style>
+  .comparador {
+    position: relative;
+    aspect-ratio: 3 / 2;
+    overflow: hidden;
+    background: var(--cor-fundo-alt);
+    user-select: none;
+    cursor: ew-resize;
+    touch-action: pan-y; /* arrastar na horizontal move a linha; na vertical, rola a página */
+    width: 100%;
+    max-width: 56rem; /* no desktop, cabe inteiro na tela */
+  }
+
+  .comparador :global(.comparador__img) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    -webkit-user-drag: none; /* Chrome/Safari: a imagem não "descola" ao arrastar */
+    pointer-events: none;
+  }
+
+  /* O render fica por cima e é "recortado" até a posição da linha */
+  .comparador__render {
+    position: absolute;
+    inset: 0;
+    clip-path: inset(0 calc(100% - var(--pos)) 0 0);
+  }
+
+  .comparador__rotulo {
+    position: absolute;
+    top: var(--esp-3);
+    padding: var(--esp-1) var(--esp-2);
+    background: rgb(255 255 255 / 0.85);
+    color: var(--cor-principal);
+    font-size: 0.6875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    pointer-events: none;
+  }
+  .comparador__rotulo--render {
+    left: var(--esp-3);
+  }
+  .comparador__rotulo--planta {
+    right: var(--esp-3);
+  }
+
+  .comparador__linha {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: var(--pos);
+    width: 2px;
+    margin-left: -1px;
+    background: var(--cor-branco);
+    pointer-events: none;
+  }
+  .comparador__alca {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    display: grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    background: var(--cor-branco);
+    color: var(--cor-principal);
+    box-shadow: 0 2px 10px rgb(0 0 0 / 0.2);
+  }
+  .comparador__alca svg {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+
+  /* Range invisível: só para teclado (setas) e leitores de tela; o mouse/dedo usa o script */
+  .comparador__controle {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  /* Foco por teclado: realça a alça */
+  .comparador:has(.comparador__controle:focus-visible) .comparador__alca {
+    outline: 2px solid var(--cor-principal);
+    outline-offset: 3px;
+  }
+</style>

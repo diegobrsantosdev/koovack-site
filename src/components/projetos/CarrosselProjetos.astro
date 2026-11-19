@@ -1,0 +1,240 @@
+---
+// Carrossel de projetos com foto inteira ("opção A"): setas sobre a foto, pontos embaixo,
+// troca automática a cada 5 s, que pausa quando a pessoa toca, arrasta ou passa o mouse.
+// Quem pediu "reduzir movimento" no sistema não recebe a troca automática.
+// Usado no case ("Outros projetos") e, na fase 3, nos destaques da home.
+import { Picture } from 'astro:assets';
+import type { Projeto } from '../../lib/projetos';
+import { ROTULO_TIPO } from '../../lib/projetos';
+
+interface Props {
+  projetos: Projeto[];
+  rotulo: string; // nome do carrossel para leitores de tela, ex.: "Outros projetos"
+}
+const { projetos, rotulo } = Astro.props;
+const varios = projetos.length > 1;
+---
+
+<div class="carrossel" role="region" aria-roledescription="carrossel" aria-label={rotulo} data-carrossel>
+  <div class="carrossel__viewport" data-viewport>
+    <ul class="carrossel__trilho">
+      {
+        projetos.map((p, i) => (
+          <li class="carrossel__slide" aria-roledescription="slide" aria-label={`${i + 1} de ${projetos.length}`}>
+            <a href={`/projetos/${p.id}`} class="carrossel__link">
+              <Picture
+                class="carrossel__img"
+                src={p.data.capa.imagem}
+                alt={p.data.capa.alt}
+                formats={['avif', 'webp']}
+                widths={[480, 800, 1200, 1920]}
+                sizes="(min-width: 72rem) 72rem, 100vw"
+                loading="lazy"
+                draggable="false"
+              />
+              <span class="carrossel__legenda">
+                <span class="carrossel__tipo">{ROTULO_TIPO[p.data.tipo]}</span>
+                <span class="carrossel__titulo">{p.data.titulo}</span>
+              </span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+
+  {
+    varios && (
+      <>
+        <button class="carrossel__seta carrossel__seta--ant" type="button" aria-label="Projeto anterior" data-anterior>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 4l-8 8 8 8" /></svg>
+        </button>
+        <button class="carrossel__seta carrossel__seta--prox" type="button" aria-label="Próximo projeto" data-proximo>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4l8 8-8 8" /></svg>
+        </button>
+        <div class="carrossel__pontos" data-pontos>
+          {projetos.map((p, i) => (
+            <button class="carrossel__ponto" type="button" aria-label={`Ver ${p.data.titulo}`} data-ponto={i} />
+          ))}
+        </div>
+      </>
+    )
+  }
+</div>
+
+<script>
+  import EmblaCarousel from 'embla-carousel';
+  import Autoplay from 'embla-carousel-autoplay';
+
+  const menosMovimento = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  document.querySelectorAll<HTMLElement>('[data-carrossel]').forEach((raiz) => {
+    const viewport = raiz.querySelector<HTMLElement>('[data-viewport]');
+    if (!viewport) return;
+    const totalSlides = viewport.querySelectorAll('.carrossel__slide').length;
+    if (totalSlides < 2) return; // um projeto só: imagem parada, sem controles
+
+    const plugins = menosMovimento
+      ? []
+      : [Autoplay({ delay: 5000, stopOnInteraction: false, stopOnMouseEnter: true, stopOnFocusIn: true })];
+
+    const embla = EmblaCarousel(viewport, { loop: true }, plugins);
+
+    raiz.querySelector('[data-anterior]')?.addEventListener('click', () => embla.scrollPrev());
+    raiz.querySelector('[data-proximo]')?.addEventListener('click', () => embla.scrollNext());
+
+    const pontos = [...raiz.querySelectorAll<HTMLButtonElement>('[data-ponto]')];
+    pontos.forEach((ponto, i) => ponto.addEventListener('click', () => embla.scrollTo(i)));
+
+    const marcarPonto = () => {
+      const atual = embla.selectedScrollSnap();
+      pontos.forEach((p, i) => p.setAttribute('aria-current', String(i === atual)));
+    };
+    embla.on('select', marcarPonto);
+    marcarPonto();
+  });
+</script>
+
+<style>
+  .carrossel {
+    position: relative;
+    margin-inline: calc(var(--margem-lateral) * -1); /* borda a borda no celular */
+  }
+
+  .carrossel__viewport {
+    overflow: hidden;
+  }
+  .carrossel__trilho {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    touch-action: pan-y pinch-zoom;
+  }
+  .carrossel__slide {
+    flex: 0 0 100%;
+    min-width: 0;
+  }
+
+  .carrossel__link {
+    position: relative;
+    display: block;
+    aspect-ratio: 4 / 3;
+    color: var(--cor-branco);
+    text-decoration: none;
+  }
+  /* O <picture> envolve a <img>; precisa ocupar o quadro inteiro para a foto preencher a altura */
+  .carrossel__link :global(picture) {
+    display: block;
+    height: 100%;
+  }
+  .carrossel__link :global(.carrossel__img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* Degradê escuro na base para o título ficar legível */
+  .carrossel__legenda {
+    position: absolute;
+    inset: auto 0 0 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--esp-1);
+    padding: var(--esp-7) var(--margem-lateral) var(--esp-4);
+    background: linear-gradient(to top, rgb(0 0 0 / 0.55), transparent);
+  }
+  .carrossel__tipo {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+  }
+  .carrossel__titulo {
+    font-size: var(--titulo-3);
+    font-weight: 300;
+    text-transform: uppercase;
+    letter-spacing: var(--espacamento-titulo);
+  }
+
+  /* Setas finas e transparentes sobre a foto */
+  .carrossel__seta {
+    position: absolute;
+    top: calc((100% - 2.5rem) / 2); /* centro da foto, descontando a área dos pontos */
+    transform: translateY(-50%);
+    display: grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--cor-branco);
+    cursor: pointer;
+    filter: drop-shadow(0 1px 3px rgb(0 0 0 / 0.5));
+  }
+  .carrossel__seta svg {
+    width: 1.75rem;
+    height: 1.75rem;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.2;
+  }
+  .carrossel__seta--ant {
+    left: var(--esp-1);
+  }
+  .carrossel__seta--prox {
+    right: var(--esp-1);
+  }
+  .carrossel__seta:focus-visible {
+    outline-color: var(--cor-branco);
+  }
+
+  .carrossel__pontos {
+    display: flex;
+    justify-content: center;
+    gap: var(--esp-1);
+    height: 2.5rem;
+    align-items: center;
+  }
+  .carrossel__ponto {
+    width: 1.75rem; /* área de toque maior que o ponto visível */
+    height: 1.75rem;
+    padding: 0;
+    border: 0;
+    background: none;
+    cursor: pointer;
+    position: relative;
+  }
+  .carrossel__ponto::after {
+    content: '';
+    position: absolute;
+    inset: 50% auto auto 50%;
+    width: 0.5rem;
+    height: 0.5rem;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    border: 1px solid var(--cor-principal);
+    transition: background-color var(--transicao);
+  }
+  .carrossel__ponto[aria-current='true']::after {
+    background: var(--cor-principal);
+  }
+
+  @media (min-width: 48rem) {
+    .carrossel {
+      margin-inline: 0;
+    }
+    .carrossel__link {
+      aspect-ratio: 16 / 9;
+    }
+    .carrossel__legenda {
+      padding-inline: var(--esp-5);
+    }
+    .carrossel__seta--ant {
+      left: var(--esp-3);
+    }
+    .carrossel__seta--prox {
+      right: var(--esp-3);
+    }
+  }
+</style>
