@@ -1,0 +1,139 @@
+---
+// Página Sobre: foto + nome → história → ferramentas → bastidores → chamada para o WhatsApp.
+// PROVISÓRIO: a história e os bastidores são textos de exemplo; o conteúdo real vem do Diogo.
+import { Picture } from 'astro:assets';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Secao from '../components/ui/Secao.astro';
+import Etiqueta from '../components/ui/Etiqueta.astro';
+import BotaoWhatsApp from '../components/ui/BotaoWhatsApp.astro';
+import { sobreResumo } from '../config/home';
+
+// Ferramentas que o Diogo usa (fonte: documento de contexto)
+const ferramentas = ['AutoCAD', 'Revit', 'SketchUp', 'Layout', 'Enscape'];
+---
+
+<BaseLayout
+  titulo="Sobre"
+  descricao="Diogo Koovack, arquiteto e urbanista em Recife. Projetos de arquitetura e interiores para todo o Brasil."
+>
+  <section class="container topo">
+    <Picture
+      class="topo__foto"
+      src={sobreResumo.foto}
+      alt={sobreResumo.alt}
+      formats={['avif', 'webp']}
+      widths={[400, 700, 900]}
+      sizes="(min-width: 56rem) 26rem, 100vw"
+      loading="eager"
+    />
+    <div class="topo__texto">
+      <Etiqueta>Conteúdo provisório</Etiqueta>
+      <h1>Diogo Koovack</h1>
+      <p class="topo__cargo">Arquiteto e urbanista</p>
+      <p>
+        Texto provisório: um parágrafo de apresentação, em primeira pessoa, dizendo quem é o Diogo e
+        como ele gosta de trabalhar. O texto real vem dele.
+      </p>
+    </div>
+  </section>
+
+  <Secao titulo="Minha história" fundo="alt">
+    <div class="prosa">
+      <p>
+        Texto provisório: o caminho da História à Arquitetura, contado em dois ou três parágrafos
+        curtos.
+      </p>
+      <p>
+        Texto provisório: o que ele aprendeu nesse caminho e como isso aparece nos projetos de hoje.
+      </p>
+    </div>
+  </Secao>
+
+  <Secao titulo="Ferramentas">
+    <ul class="ferramentas">
+      {ferramentas.map((f) => <li>{f}</li>)}
+    </ul>
+  </Secao>
+
+  <Secao titulo="Bastidores" fundo="alt">
+    <p class="prosa">
+      Texto provisório: aqui entram fotos do processo (croquis, maquetes, visitas à obra) quando o
+      Diogo enviar o material.
+    </p>
+  </Secao>
+
+  <Secao>
+    <div class="chamada">
+      <h2>Vamos conversar?</h2>
+      <p>Me conte sobre o seu projeto. Atendo em Recife e em todo o Brasil.</p>
+      <BotaoWhatsApp />
+    </div>
+  </Secao>
+</BaseLayout>
+
+<style>
+  .topo {
+    display: grid;
+    gap: var(--esp-5);
+    align-items: center;
+    padding-block: var(--esp-6) var(--esp-7);
+  }
+  .topo :global(.topo__foto) {
+    width: 100%;
+    aspect-ratio: 3 / 4;
+    object-fit: cover;
+  }
+  .topo__texto {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--esp-3);
+    max-width: 34rem;
+  }
+  .topo__cargo {
+    margin-top: calc(var(--esp-2) * -1);
+    font-size: var(--texto-pequeno);
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+  }
+  @media (min-width: 56rem) {
+    .topo {
+      grid-template-columns: 26rem 1fr;
+      gap: var(--esp-7);
+    }
+  }
+
+  .prosa {
+    display: flex;
+    flex-direction: column;
+    gap: var(--esp-3);
+    max-width: 40rem;
+  }
+
+  .ferramentas {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--esp-2);
+  }
+  .ferramentas li {
+    padding: var(--esp-2) var(--esp-4);
+    border: 1px solid var(--cor-filete);
+    border-radius: var(--raio-botao);
+    font-size: var(--texto-pequeno);
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+  }
+
+  .chamada {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--esp-4);
+    text-align: center;
+  }
+  .chamada h2 {
+    font-size: clamp(1.375rem, 1.1rem + 1.2vw, 2.125rem);
+  }
+</style>
