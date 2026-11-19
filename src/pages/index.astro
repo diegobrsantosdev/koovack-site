@@ -11,11 +11,12 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     <p class="provisorio__linha">Arquitetura e interiores de alto padrão</p>
     <hr />
     <h2>Título de seção</h2>
-    <h3>Subtítulo em Alice</h3>
+    <h3>Subtítulo</h3>
     <p>
       Texto corrido em Josefin Sans. Este parágrafo existe só para testar a leitura no celular, o
-      tamanho da fonte e o contraste com o fundo off-white. Recife e todo o Brasil.
+      tamanho da fonte e o contraste com o fundo branco. Recife e todo o Brasil.
     </p>
+    <a class="provisorio__botao" href="#">Botão de exemplo</a>
   </section>
 </BaseLayout>
 
@@ -43,5 +44,15 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     width: 4rem;
     border: 0;
     border-top: 1px solid var(--cor-detalhe);
+  }
+  .provisorio__botao {
+    align-self: flex-start;
+    padding: var(--esp-3) var(--esp-5);
+    border: 1px solid var(--cor-principal);
+    border-radius: var(--raio-botao);
+    text-decoration: none;
+    font-size: var(--texto-pequeno);
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
   }
 </style>

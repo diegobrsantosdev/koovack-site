@@ -44,19 +44,21 @@ const { mensagem } = Astro.props;
     gap: var(--esp-2);
     min-height: var(--altura-whatsapp-fixo);
     padding: 0 var(--esp-4);
-    border-radius: var(--raio);
+    border-radius: var(--raio-botao);
     background: var(--cor-principal);
     color: var(--cor-branco);
+    border: 1px solid rgb(255 255 255 / 0.35); /* separa o botão do rodapé, que tem a mesma cor */
     text-decoration: none;
-    font-size: var(--texto-pequeno);
+    font-size: 0.8125rem;
     text-transform: uppercase;
-    letter-spacing: 0.12em;
-    box-shadow: 0 6px 20px rgb(81 89 103 / 0.28);
+    letter-spacing: 0.06em;
+    white-space: nowrap; /* o texto cabe numa linha só, mesmo em 360 px */
+    box-shadow: 0 6px 20px rgb(62 78 104 / 0.28);
     transition: background-color var(--transicao), transform var(--transicao);
   }
 
   .whatsapp-fixo:hover {
-    background: #444b57;
+    background: var(--cor-principal-escura);
   }
 
   .whatsapp-fixo:focus-visible {
@@ -74,6 +76,8 @@ const { mensagem } = Astro.props;
       left: auto;
       right: var(--esp-5);
       bottom: var(--esp-5);
+      font-size: var(--texto-pequeno);
+      letter-spacing: 0.12em;
     }
     .whatsapp-fixo:hover {
       transform: translateY(-2px);
