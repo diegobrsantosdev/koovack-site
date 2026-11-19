@@ -1,5 +1,5 @@
 // Configuração central do site: tudo o que pode mudar fica aqui (como um application.yml).
-// Na fase 1 entram os textos do hero, o prazo de resposta etc.
+// Itens com "PROVISÓRIO" ainda precisam ser confirmados pelo Diogo.
 
 export const site = {
   nome: 'Koovack Arquitetura',
@@ -17,6 +17,21 @@ export const site = {
     instagram: { usuario: '@koovackarquitetura', url: 'https://www.instagram.com/koovackarquitetura' },
     tiktok: { usuario: '@koovackarquitetura', url: 'https://www.tiktok.com/@koovackarquitetura' },
   },
+
+  // Textos do topo da home
+  hero: {
+    frase: 'Interiores que contam a sua história', // PROVISÓRIO
+    linha: 'Arquitetura e interiores de alto padrão',
+  },
+
+  // Faixa de áreas da home
+  areas: ['Residencial', 'Comercial', 'Projeto e render 3D'],
+
+  prazoResposta: 'Resposta em até 1 dia útil', // PROVISÓRIO: o Diogo confirma
+
+  // Preenchidos nas fases 5 (formulário) e 7 (medição)
+  web3formsChave: '',
+  gtmId: '',
 
   menu: [
     { texto: 'Início', href: '/' },
