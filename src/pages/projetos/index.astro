@@ -8,14 +8,15 @@ import { projetosOrdenados } from '../../lib/projetos';
 
 const projetos = await projetosOrdenados();
 
-// Filtros na ordem do desenho da página. Só aparecem os tipos que têm pelo menos um projeto,
-// para ninguém clicar num filtro e encontrar a grade vazia.
+// Filtros na ordem do desenho da página. Apartamentos, Casas e Lojas aparecem sempre;
+// "Comercial" só aparece quando existir algum projeto desse tipo.
+// Filtro sem projetos mostra uma mensagem ("em breve") em vez da grade vazia.
 const filtros = [
-  { tipo: 'apartamento', rotulo: 'Apartamentos' },
-  { tipo: 'casa', rotulo: 'Casas' },
-  { tipo: 'loja', rotulo: 'Lojas' },
-  { tipo: 'comercial', rotulo: 'Comercial' },
-].filter((f) => projetos.some((p) => p.data.tipo === f.tipo));
+  { tipo: 'apartamento', rotulo: 'Apartamentos', sempre: true },
+  { tipo: 'casa', rotulo: 'Casas', sempre: true },
+  { tipo: 'loja', rotulo: 'Lojas', sempre: true },
+  { tipo: 'comercial', rotulo: 'Comercial', sempre: false },
+].filter((f) => f.sempre || projetos.some((p) => p.data.tipo === f.tipo));
 ---
 
 <BaseLayout titulo="Projetos" descricao="Projetos de arquitetura e interiores: apartamentos, casas e lojas.">
@@ -50,6 +51,12 @@ const filtros = [
       }
     </ul>
 
+    <!-- Aparece só quando o filtro escolhido não tem projetos -->
+    <p class="vazio" hidden data-vazio role="status">
+      Os projetos de <span data-vazio-tipo></span> estão sendo preparados e chegam em breve. Enquanto
+      isso, me conte sobre o seu espaço pelo WhatsApp.
+    </p>
+
     <section class="nao-achou">
       <h2>Não achou o que procura?</h2>
       <p>Me conte sobre o seu espaço. Cada projeto é feito sob medida.</p>
@@ -71,6 +78,14 @@ const filtros = [
     itens.forEach((item) => {
       item.hidden = tipo !== 'todos' && item.dataset.tipo !== tipo;
     });
+
+    // Nenhum projeto desse tipo: mostra a mensagem "em breve"
+    const vazio = document.querySelector<HTMLElement>('[data-vazio]');
+    const nomeTipo = document.querySelector<HTMLElement>('[data-vazio-tipo]');
+    if (vazio && nomeTipo) {
+      vazio.hidden = itens.some((item) => !item.hidden);
+      nomeTipo.textContent = (botao.textContent ?? '').trim().toLowerCase();
+    }
   });
 </script>
 
@@ -128,6 +143,16 @@ const filtros = [
     .grade {
       grid-template-columns: repeat(3, 1fr);
     }
+  }
+
+  .vazio {
+    max-width: 36rem;
+    padding: var(--esp-5) 0;
+    border-top: 1px solid var(--cor-filete);
+    border-bottom: 1px solid var(--cor-filete);
+  }
+  .vazio[hidden] {
+    display: none;
   }
 
   .nao-achou {
