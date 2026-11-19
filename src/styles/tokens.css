@@ -4,17 +4,20 @@
 */
 :root {
   /* Cores */
-  --cor-principal: #515967; /* azul-acinzentado: texto e botões */
-  --cor-detalhe: #827a6f;   /* taupe: títulos grandes, filetes e detalhes. Nunca em texto pequeno */
-  --cor-fundo: #f4f1ec;     /* off-white quente */
-  --cor-fundo-alt: #ebe6de; /* faixas e cards, um tom abaixo do fundo */
-  --cor-texto: #515967;
+  --cor-principal: #3e4e68;        /* azul-ardósia: logo, rodapé, botões e títulos */
+  --cor-principal-escura: #33415a; /* hover dos botões */
+  --cor-detalhe: #827a6f;          /* taupe: só detalhes pontuais (filetes). Nunca em texto pequeno */
+  --cor-fundo: #ffffff;            /* branco */
+  --cor-fundo-alt: #f2f4f7;        /* off-white azulado bem leve para faixas e cards */
+  --cor-texto: #3e4e68;            /* texto corrido e menu */
   --cor-branco: #ffffff;
-  --cor-filete: rgb(130 122 111 / 0.35); /* linhas finas de separação */
+  --cor-filete: rgb(62 78 104 / 0.18); /* linhas finas de separação */
 
   /* Fontes */
-  --fonte-titulo: 'Alice', Georgia, 'Times New Roman', serif; /* só um peso: nunca negrito */
+  --fonte-titulo: 'Josefin Sans Variable', 'Josefin Sans', system-ui, sans-serif; /* fina, caixa-alta espaçada */
   --fonte-texto: 'Josefin Sans Variable', 'Josefin Sans', system-ui, sans-serif;
+  --fonte-marca: 'Alice', Georgia, 'Times New Roman', serif; /* só no logo */
+  --peso-titulo: 300;
 
   /* Escala tipográfica fluida: clamp(mínimo no celular, crescimento, máximo no desktop) */
   --texto-pequeno: 0.875rem;
@@ -22,8 +25,8 @@
   --texto-grande: clamp(1.125rem, 1rem + 0.5vw, 1.3125rem);
   --titulo-3: clamp(1.25rem, 1.1rem + 0.6vw, 1.5rem);
   --titulo-2: clamp(1.625rem, 1.3rem + 1.4vw, 2.375rem);
-  --titulo-1: clamp(2rem, 1.5rem + 2.4vw, 3.5rem);
-  --espacamento-titulo: 0.12em; /* letter-spacing da caixa-alta */
+  --titulo-1: clamp(1.75rem, 1.2rem + 2.6vw, 3.5rem);
+  --espacamento-titulo: 0.16em; /* letter-spacing da caixa-alta */
 
   /* Espaçamentos (escala de 4/8 px) */
   --esp-1: 0.25rem; /* 4px */
@@ -40,7 +43,8 @@
   --margem-lateral: 1.25rem; /* 20px no celular */
   --altura-header: 4rem;
   --altura-whatsapp-fixo: 3.5rem;
-  --raio: 2px; /* estética arquitetônica: cantos quase retos */
+  --raio: 2px; /* cards e imagens: cantos quase retos */
+  --raio-botao: 999px; /* botões: cantos totalmente arredondados (pílula) */
 
   /* Movimento */
   --transicao: 200ms ease;
@@ -49,6 +53,6 @@
 @media (min-width: 48rem) {
   :root {
     --margem-lateral: 2rem;
-    --altura-header: 5rem;
+    --altura-header: 6rem; /* cabe o logo de 68 px com respiro */
   }
 }
