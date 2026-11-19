@@ -5,11 +5,12 @@ import { ROTULO_TIPO } from '../../lib/projetos';
 
 interface Props {
   depoimento: CollectionEntry<'depoimentos'>['data'];
+  centralizado?: boolean; // texto centralizado (usado na home)
 }
-const { depoimento } = Astro.props;
+const { depoimento, centralizado = false } = Astro.props;
 ---
 
-<figure class="depoimento">
+<figure class:list={['depoimento', { 'depoimento--centro': centralizado }]}>
   <span class="depoimento__aspas" aria-hidden="true">“</span>
   <blockquote>
     <p>{depoimento.texto}</p>
@@ -28,6 +29,14 @@ const { depoimento } = Astro.props;
     flex-direction: column;
     gap: var(--esp-3);
     max-width: 40rem;
+  }
+  .depoimento--centro {
+    align-items: center;
+    margin-inline: auto;
+    text-align: center;
+  }
+  .depoimento--centro figcaption {
+    align-items: center;
   }
   .depoimento__aspas {
     font-family: var(--fonte-marca);

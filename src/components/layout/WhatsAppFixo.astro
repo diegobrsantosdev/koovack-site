@@ -19,7 +19,7 @@ const { mensagem } = Astro.props;
   rel="noopener"
 >
   <IconeWhatsApp />
-  <span>{site.textoBotaoWhatsApp}</span>
+  <span>{site.textoBotaoWhatsApp}<span class="sr-only"> {site.complementoAcessivelWhatsApp}</span></span>
 </a>
 
 <script>

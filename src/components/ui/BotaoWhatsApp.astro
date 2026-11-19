@@ -13,7 +13,7 @@ const { mensagem } = Astro.props;
 
 <a class="botao-whatsapp" href={linkWhatsApp(mensagem)} target="_blank" rel="noopener">
   <IconeWhatsApp />
-  <span>{site.textoBotaoWhatsApp}</span>
+  <span>{site.textoBotaoWhatsApp}<span class="sr-only"> {site.complementoAcessivelWhatsApp}</span></span>
 </a>
 
 <style>
@@ -23,15 +23,17 @@ const { mensagem } = Astro.props;
     justify-content: center;
     gap: var(--esp-2);
     min-height: 3.25rem;
-    padding: 0 var(--esp-4); /* menor no celular para caber em 360 px */
+    max-width: 100%; /* nunca fica mais largo que o espaço disponível */
+    padding: var(--esp-2) var(--esp-3); /* compacto no celular: cabe até dentro dos cards */
     border-radius: var(--raio-botao);
     background: var(--cor-principal);
     color: var(--cor-branco);
     text-decoration: none;
+    text-align: center;
     font-size: 0.8125rem;
     text-transform: uppercase;
-    letter-spacing: 0.08em;
-    white-space: nowrap;
+    letter-spacing: 0.04em;
+    text-wrap: balance; /* se mesmo assim não couber, quebra em 2 linhas equilibradas */
     transition: background-color var(--transicao);
   }
   .botao-whatsapp:hover {
@@ -39,7 +41,8 @@ const { mensagem } = Astro.props;
   }
   @media (min-width: 48rem) {
     .botao-whatsapp {
-      padding: 0 var(--esp-5);
+      padding: var(--esp-2) var(--esp-5);
+      white-space: nowrap;
       font-size: var(--texto-pequeno);
       letter-spacing: 0.12em;
     }

@@ -10,6 +10,11 @@ export function mensagemCase(tituloProjeto: string): string {
   return `Olá! Vi o projeto ${tituloProjeto} no site e gostaria de um orçamento para algo parecido.`;
 }
 
+/** Mensagem usada nos botões de cada forma de trabalhar. */
+export function mensagemServico(nomeServico: string): string {
+  return `Olá! Tenho interesse em ${nomeServico}. Pode me passar valores e prazos?`;
+}
+
 export function linkWhatsApp(mensagem: string = MENSAGEM_GERAL): string {
   return `https://wa.me/${site.whatsapp}?text=${encodeURIComponent(mensagem)}`;
 }

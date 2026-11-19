@@ -19,6 +19,9 @@ interface Props {
   descricao?: string;
   mostrarWhatsAppFixo?: boolean; // false em Contato e Links, que já têm o WhatsApp no topo
   mensagemWhatsApp?: string;
+  mostrarHeader?: boolean; // false na página de Links (bio), que é "limpa"
+  mostrarFooter?: boolean;
+  naoIndexar?: boolean; // pede ao Google para não listar a página (ex.: /obrigado)
 }
 
 const {
@@ -26,6 +29,9 @@ const {
   descricao = site.descricao,
   mostrarWhatsAppFixo = true,
   mensagemWhatsApp,
+  mostrarHeader = true,
+  mostrarFooter = true,
+  naoIndexar = false,
 } = Astro.props;
 
 const tituloCompleto = titulo ? `${titulo} | ${site.nome}` : site.nome;
@@ -38,17 +44,18 @@ const tituloCompleto = titulo ? `${titulo} | ${site.nome}` : site.nome;
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>{tituloCompleto}</title>
     <meta name="description" content={descricao} />
+    {naoIndexar && <meta name="robots" content="noindex" />}
     <meta name="theme-color" content="#ffffff" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
   </head>
   <body>
     <a class="pular-conteudo" href="#conteudo">Pular para o conteúdo</a>
-    <Header />
+    {mostrarHeader && <Header />}
     <main id="conteudo">
       <slot />
     </main>
-    <Footer />
+    {mostrarFooter && <Footer />}
     {mostrarWhatsAppFixo && <WhatsAppFixo mensagem={mensagemWhatsApp} />}
   </body>
 </html>

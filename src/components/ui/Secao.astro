@@ -6,11 +6,12 @@ interface Props {
   subtitulo?: string;
   fundo?: 'claro' | 'alt';
   id?: string;
+  centralizado?: boolean; // centraliza o título (e o texto do subtítulo)
 }
-const { titulo, subtitulo, fundo = 'claro', id } = Astro.props;
+const { titulo, subtitulo, fundo = 'claro', id, centralizado = false } = Astro.props;
 ---
 
-<section class:list={['secao', `secao--${fundo}`]} id={id}>
+<section class:list={['secao', `secao--${fundo}`, { 'secao--centro': centralizado }]} id={id}>
   <div class="container secao__dentro">
     {
       titulo && (
@@ -46,6 +47,10 @@ const { titulo, subtitulo, fundo = 'claro', id } = Astro.props;
   }
   .secao__subtitulo {
     max-width: 40rem;
+  }
+  .secao--centro .secao__cabecalho {
+    align-items: center;
+    text-align: center;
   }
   @media (min-width: 48rem) {
     .secao {

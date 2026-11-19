@@ -11,7 +11,9 @@ export const site = {
 
   // Só números, com DDI e DDD (formato exigido pelo wa.me)
   whatsapp: '5581979127146',
-  textoBotaoWhatsApp: 'Pedir orçamento no WhatsApp',
+  textoBotaoWhatsApp: 'Pedir orçamento', // o mesmo em todos os botões de WhatsApp do site
+  // Lido só por leitores de tela, depois do texto do botão, para avisar para onde ele leva
+  complementoAcessivelWhatsApp: 'no WhatsApp (abre em outra aba)',
 
   redes: {
     instagram: { usuario: '@koovackarquitetura', url: 'https://www.instagram.com/koovackarquitetura' },

@@ -1,0 +1,28 @@
+---
+// Topo padrão das páginas internas: título grande e um texto de introdução opcional.
+interface Props {
+  titulo: string;
+  intro?: string;
+}
+const { titulo, intro } = Astro.props;
+---
+
+<header class="cabecalho-pagina container">
+  <h1>{titulo}</h1>
+  {intro && <p>{intro}</p>}
+  <slot />
+</header>
+
+<style>
+  .cabecalho-pagina {
+    display: flex;
+    flex-direction: column;
+    gap: var(--esp-3);
+    padding-block: var(--esp-6) var(--esp-4);
+  }
+  .cabecalho-pagina p {
+    max-width: 40rem;
+    font-size: var(--texto-grande);
+    font-weight: 300;
+  }
+</style>
