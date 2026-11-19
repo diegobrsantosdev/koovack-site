@@ -5,9 +5,28 @@
 // Anti-spam: "honeypot" (um campo invisível; se vier marcado, é robô e o Web3Forms descarta).
 // hCaptcha opcional: só aparece se site.hcaptchaAtivo for true (desligado por padrão).
 // Se a chave do Web3Forms estiver vazia (.env), o formulário mostra um aviso e não envia.
+//
+// Duas variantes:
+// - "contato" (padrão): nome, WhatsApp, cidade, tipo de projeto e mensagem (página Contato).
+// - "campanha": formulário mínimo das landing pages: nome, WhatsApp, cidade e metragem.
+//   O e-mail sai com o nome da campanha e o tipo de projeto já preenchidos.
 import { site } from '../../config/site';
 import { linkWhatsApp } from '../../lib/whatsapp';
 
+interface Props {
+  variante?: 'contato' | 'campanha';
+  campanha?: string; // ex.: "apartamento" (só na variante campanha)
+  tipoProjeto?: string; // ex.: "Apartamento" (só na variante campanha)
+  textoBotao?: string;
+}
+const {
+  variante = 'contato',
+  campanha,
+  tipoProjeto,
+  textoBotao = 'Enviar mensagem',
+} = Astro.props;
+
+const ehCampanha = variante === 'campanha';
 const tipos = ['Apartamento', 'Casa', 'Loja', 'Comercial', 'Outro'];
 const configurado = site.web3formsChave !== '';
 ---
@@ -18,6 +37,9 @@ const configurado = site.web3formsChave !== '';
   data-form-contato
   data-chave={site.web3formsChave}
   data-captcha={site.hcaptchaAtivo ? 'sim' : undefined}
+  data-campanha={campanha}
+  data-tipo-fixo={tipoProjeto}
+  data-texto-botao={textoBotao}
 >
   {
     !configurado && (
@@ -58,19 +80,48 @@ const configurado = site.web3formsChave !== '';
     <p class="campo__erro">Informe sua cidade.</p>
   </div>
 
-  <div class="campo">
-    <label for="tipo">Tipo de projeto</label>
-    <select id="tipo" name="tipo" required>
-      <option value="" selected disabled>Escolha uma opção</option>
-      {tipos.map((t) => <option value={t}>{t}</option>)}
-    </select>
-    <p class="campo__erro">Escolha o tipo de projeto.</p>
-  </div>
+  {
+    ehCampanha ? (
+      <div class="campo">
+        <label for="metragem">
+          Metragem aproximada <span class="campo__opcional">(m²)</span>
+        </label>
+        <input
+          id="metragem"
+          name="metragem"
+          type="number"
+          inputmode="numeric"
+          min="1"
+          max="100000"
+          placeholder="Ex.: 90"
+          required
+        />
+        <p class="campo__erro">Informe a metragem aproximada, em m².</p>
+      </div>
+    ) : (
+      <>
+        <div class="campo">
+          <label for="tipo">Tipo de projeto</label>
+          <select id="tipo" name="tipo" required>
+            <option value="" selected disabled>
+              Escolha uma opção
+            </option>
+            {tipos.map((t) => (
+              <option value={t}>{t}</option>
+            ))}
+          </select>
+          <p class="campo__erro">Escolha o tipo de projeto.</p>
+        </div>
 
-  <div class="campo">
-    <label for="mensagem">Mensagem <span class="campo__opcional">(opcional)</span></label>
-    <textarea id="mensagem" name="mensagem" rows="5" maxlength="2000"></textarea>
-  </div>
+        <div class="campo">
+          <label for="mensagem">
+            Mensagem <span class="campo__opcional">(opcional)</span>
+          </label>
+          <textarea id="mensagem" name="mensagem" rows="5" maxlength="2000" />
+        </div>
+      </>
+    )
+  }
 
   <div class="campo campo--aceite">
     <input id="aceite" name="aceite" type="checkbox" required />
@@ -98,7 +149,7 @@ const configurado = site.web3formsChave !== '';
     <a href={linkWhatsApp()} target="_blank" rel="noopener" data-whatsapp>fale pelo WhatsApp</a>.
   </p>
 
-  <button class="form__enviar" type="submit" data-enviar>Enviar mensagem</button>
+  <button class="form__enviar" type="submit" data-enviar>{textoBotao}</button>
 </form>
 
 <script>
@@ -161,19 +212,27 @@ const configurado = site.web3formsChave !== '';
     const dados = new FormData(form);
     const origem = lerOrigem();
     const nome = String(dados.get('nome'));
-    const tipo = String(dados.get('tipo'));
+    const campanha = form.dataset.campanha; // só nas landing pages
+    const tipo = form.dataset.tipoFixo ?? String(dados.get('tipo'));
+
+    // Campos que mudam conforme a variante do formulário
+    const especificos = campanha
+      ? { Metragem: `${dados.get('metragem')} m²`, 'Landing page': campanha }
+      : { Mensagem: dados.get('mensagem') || '(sem mensagem)' };
 
     // O que chega no e-mail (cada campo vira uma linha)
     const corpo = {
       access_key: chave,
-      subject: `Novo contato pelo site: ${nome} (${tipo})`,
+      subject: campanha
+        ? `Novo contato da campanha ${campanha}: ${nome}`
+        : `Novo contato pelo site: ${nome} (${tipo})`,
       from_name: 'Site Koovack Arquitetura',
       botcheck: (form.querySelector('[name="botcheck"]') as HTMLInputElement).checked,
       Nome: nome,
       WhatsApp: dados.get('whatsapp'),
       Cidade: dados.get('cidade'),
       'Tipo de projeto': tipo,
-      Mensagem: dados.get('mensagem') || '(sem mensagem)',
+      ...especificos,
       'Página do formulário': window.location.pathname,
       'Página de entrada': origem.pagina_entrada ?? '(desconhecida)',
       'Origem (utm_source)': origem.utm_source ?? '(direto)',
@@ -197,7 +256,7 @@ const configurado = site.web3formsChave !== '';
     } catch {
       falha.hidden = false;
       botao.disabled = false;
-      botao.textContent = 'Enviar mensagem';
+      botao.textContent = form.dataset.textoBotao ?? 'Enviar mensagem';
     }
   });
 </script>
