@@ -1,0 +1,54 @@
+/*
+  Design tokens: todos os valores visuais do site em um só lugar.
+  Pense nisso como um application.properties do visual: mudou aqui, muda no site inteiro.
+*/
+:root {
+  /* Cores */
+  --cor-principal: #515967; /* azul-acinzentado: texto e botões */
+  --cor-detalhe: #827a6f;   /* taupe: títulos grandes, filetes e detalhes. Nunca em texto pequeno */
+  --cor-fundo: #f4f1ec;     /* off-white quente */
+  --cor-fundo-alt: #ebe6de; /* faixas e cards, um tom abaixo do fundo */
+  --cor-texto: #515967;
+  --cor-branco: #ffffff;
+  --cor-filete: rgb(130 122 111 / 0.35); /* linhas finas de separação */
+
+  /* Fontes */
+  --fonte-titulo: 'Alice', Georgia, 'Times New Roman', serif; /* só um peso: nunca negrito */
+  --fonte-texto: 'Josefin Sans Variable', 'Josefin Sans', system-ui, sans-serif;
+
+  /* Escala tipográfica fluida: clamp(mínimo no celular, crescimento, máximo no desktop) */
+  --texto-pequeno: 0.875rem;
+  --texto-base: 1.0625rem;
+  --texto-grande: clamp(1.125rem, 1rem + 0.5vw, 1.3125rem);
+  --titulo-3: clamp(1.25rem, 1.1rem + 0.6vw, 1.5rem);
+  --titulo-2: clamp(1.625rem, 1.3rem + 1.4vw, 2.375rem);
+  --titulo-1: clamp(2rem, 1.5rem + 2.4vw, 3.5rem);
+  --espacamento-titulo: 0.12em; /* letter-spacing da caixa-alta */
+
+  /* Espaçamentos (escala de 4/8 px) */
+  --esp-1: 0.25rem; /* 4px */
+  --esp-2: 0.5rem;  /* 8px */
+  --esp-3: 1rem;    /* 16px */
+  --esp-4: 1.5rem;  /* 24px */
+  --esp-5: 2rem;    /* 32px */
+  --esp-6: 3rem;    /* 48px */
+  --esp-7: 4rem;    /* 64px */
+  --esp-8: 6rem;    /* 96px */
+
+  /* Layout */
+  --largura-max: 72rem;   /* 1152px */
+  --margem-lateral: 1.25rem; /* 20px no celular */
+  --altura-header: 4rem;
+  --altura-whatsapp-fixo: 3.5rem;
+  --raio: 2px; /* estética arquitetônica: cantos quase retos */
+
+  /* Movimento */
+  --transicao: 200ms ease;
+}
+
+@media (min-width: 48rem) {
+  :root {
+    --margem-lateral: 2rem;
+    --altura-header: 5rem;
+  }
+}
