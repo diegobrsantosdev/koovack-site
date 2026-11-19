@@ -1,0 +1,57 @@
+---
+// Um depoimento de cliente. Usado no case e, na fase 3, na home.
+import type { CollectionEntry } from 'astro:content';
+import { ROTULO_TIPO } from '../../lib/projetos';
+
+interface Props {
+  depoimento: CollectionEntry<'depoimentos'>['data'];
+}
+const { depoimento } = Astro.props;
+---
+
+<figure class="depoimento">
+  <span class="depoimento__aspas" aria-hidden="true">“</span>
+  <blockquote>
+    <p>{depoimento.texto}</p>
+  </blockquote>
+  <figcaption>
+    <span class="depoimento__nome">{depoimento.nome}</span>
+    <span class="depoimento__detalhe">
+      {ROTULO_TIPO[depoimento.tipo_projeto]} · {depoimento.cidade}
+    </span>
+  </figcaption>
+</figure>
+
+<style>
+  .depoimento {
+    display: flex;
+    flex-direction: column;
+    gap: var(--esp-3);
+    max-width: 40rem;
+  }
+  .depoimento__aspas {
+    font-family: var(--fonte-marca);
+    font-size: 4rem;
+    line-height: 0.6;
+    color: var(--cor-detalhe);
+  }
+  blockquote {
+    font-size: var(--texto-grande);
+    font-weight: 300;
+    line-height: 1.6;
+  }
+  figcaption {
+    display: flex;
+    flex-direction: column;
+    gap: var(--esp-1);
+  }
+  .depoimento__nome {
+    font-size: var(--texto-pequeno);
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+  }
+  .depoimento__detalhe {
+    font-size: var(--texto-pequeno);
+    opacity: 0.75;
+  }
+</style>

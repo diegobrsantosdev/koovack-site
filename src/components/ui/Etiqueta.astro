@@ -1,0 +1,28 @@
+---
+// Etiqueta pequena em caixa-alta. Ex.: "Conteúdo provisório", "Recomendado".
+// variante "contorno" (padrão): borda tracejada; "solida": fundo na cor principal.
+interface Props {
+  variante?: 'contorno' | 'solida';
+}
+const { variante = 'contorno' } = Astro.props;
+---
+
+<span class:list={['etiqueta', `etiqueta--${variante}`]}><slot /></span>
+
+<style>
+  .etiqueta {
+    display: inline-block;
+    padding: var(--esp-1) var(--esp-2);
+    font-size: 0.75rem;
+    line-height: 1.4;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+  }
+  .etiqueta--contorno {
+    border: 1px dashed currentColor;
+  }
+  .etiqueta--solida {
+    background: var(--cor-principal);
+    color: var(--cor-branco);
+  }
+</style>

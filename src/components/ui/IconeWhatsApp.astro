@@ -1,0 +1,28 @@
+---
+// Ícone do WhatsApp (traço fino), usado nos botões. Decorativo: o texto do botão já explica a ação.
+interface Props {
+  class?: string;
+}
+const { class: classe } = Astro.props;
+---
+
+<svg class:list={['icone-whatsapp', classe]} viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+  <path
+    d="M12 3.5a8.5 8.5 0 0 0-7.3 12.8L3.5 20.5l4.3-1.1A8.5 8.5 0 1 0 12 3.5Z"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="1.4"
+    stroke-linejoin="round"></path>
+  <path
+    d="M9.2 8.3c.2-.4.4-.4.6-.4h.5c.2 0 .4 0 .5.4l.7 1.6c.1.2 0 .4-.1.5l-.5.6c-.1.1-.1.3 0 .5.6 1 1.4 1.8 2.4 2.3.2.1.4.1.5 0l.6-.6c.2-.2.3-.2.5-.1l1.6.8c.2.1.3.2.3.4 0 .5-.2 1.2-.7 1.5-.5.3-1.2.5-2.4.1a8.7 8.7 0 0 1-4.6-4.4c-.5-1.1-.3-2.4.1-3.2Z"
+    fill="currentColor"></path>
+</svg>
+
+<style>
+  /* O tamanho fica aqui no próprio ícone, para funcionar em qualquer botão */
+  .icone-whatsapp {
+    width: 1.375rem;
+    height: 1.375rem;
+    flex-shrink: 0;
+  }
+</style>
