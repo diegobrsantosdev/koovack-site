@@ -39,7 +39,7 @@ materiais:
 
 depoimento: exemplo-apartamento
 destaque: true
-ordem: 1
+ordem: 2
 provisorio: true
 ---
 
