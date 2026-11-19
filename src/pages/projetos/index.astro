@@ -8,38 +8,44 @@ import { projetosOrdenados } from '../../lib/projetos';
 
 const projetos = await projetosOrdenados();
 
-// Filtros na ordem do desenho da página. Apartamentos, Casas e Lojas aparecem sempre;
-// "Comercial" só aparece quando existir algum projeto desse tipo.
-// Filtro sem projetos mostra uma mensagem ("em breve") em vez da grade vazia.
+// Filtros na ordem do desenho da página (aparecem sempre, mesmo sem projetos).
+// "Comerciais" junta os tipos `loja` e `comercial` (lojas, escritórios, clínicas, restaurantes...).
+// `frase` completa a mensagem de "em breve" quando o filtro não tem projetos.
 const filtros = [
-  { tipo: 'apartamento', rotulo: 'Apartamentos', sempre: true },
-  { tipo: 'casa', rotulo: 'Casas', sempre: true },
-  { tipo: 'loja', rotulo: 'Lojas', sempre: true },
-  { tipo: 'comercial', rotulo: 'Comercial', sempre: false },
-].filter((f) => f.sempre || projetos.some((p) => p.data.tipo === f.tipo));
+  { tipos: ['apartamento'], rotulo: 'Apartamentos', frase: 'de apartamentos' },
+  { tipos: ['casa'], rotulo: 'Casas', frase: 'de casas' },
+  { tipos: ['loja', 'comercial'], rotulo: 'Comerciais', frase: 'comerciais' },
+];
 ---
 
-<BaseLayout titulo="Projetos" descricao="Projetos de arquitetura e interiores: apartamentos, casas e lojas.">
+<BaseLayout
+  titulo="Projetos"
+  descricao="Projetos de arquitetura e interiores: apartamentos, casas e espaços comerciais."
+>
   <div class="container pagina">
     <header class="pagina__cabecalho">
       <h1>Projetos</h1>
       <p>Apartamentos, casas e espaços comerciais, de Recife para todo o Brasil.</p>
     </header>
 
-    {
-      filtros.length > 1 && (
-        <div class="filtro" role="group" aria-label="Filtrar projetos por tipo" data-filtro>
-          <button type="button" class="filtro__opcao" aria-pressed="true" data-tipo="todos">
-            Todos
+    <div class="filtro" role="group" aria-label="Filtrar projetos por tipo" data-filtro>
+      <button type="button" class="filtro__opcao" aria-pressed="true" data-tipos="todos">
+        Todos
+      </button>
+      {
+        filtros.map((f) => (
+          <button
+            type="button"
+            class="filtro__opcao"
+            aria-pressed="false"
+            data-tipos={f.tipos.join(' ')}
+            data-frase={f.frase}
+          >
+            {f.rotulo}
           </button>
-          {filtros.map((f) => (
-            <button type="button" class="filtro__opcao" aria-pressed="false" data-tipo={f.tipo}>
-              {f.rotulo}
-            </button>
-          ))}
-        </div>
-      )
-    }
+        ))
+      }
+    </div>
 
     <ul class="grade">
       {
@@ -53,7 +59,7 @@ const filtros = [
 
     <!-- Aparece só quando o filtro escolhido não tem projetos -->
     <p class="vazio" hidden data-vazio role="status">
-      Os projetos de <span data-vazio-tipo></span> estão sendo preparados e chegam em breve. Enquanto
+      Os projetos <span data-vazio-tipo></span> estão sendo preparados e chegam em breve. Enquanto
       isso, me conte sobre o seu espaço pelo WhatsApp.
     </p>
 
@@ -73,18 +79,20 @@ const filtros = [
   filtro?.addEventListener('click', (e) => {
     const botao = (e.target as HTMLElement).closest('button');
     if (!botao) return;
-    const tipo = botao.dataset.tipo;
+    // Um filtro pode cobrir mais de um tipo (ex.: "Comerciais" = loja + comercial)
+    const tipos = (botao.dataset.tipos ?? '').split(' ');
+    const todos = tipos.includes('todos');
     botoes.forEach((b) => b.setAttribute('aria-pressed', String(b === botao)));
     itens.forEach((item) => {
-      item.hidden = tipo !== 'todos' && item.dataset.tipo !== tipo;
+      item.hidden = !todos && !tipos.includes(item.dataset.tipo ?? '');
     });
 
     // Nenhum projeto desse tipo: mostra a mensagem "em breve"
     const vazio = document.querySelector<HTMLElement>('[data-vazio]');
-    const nomeTipo = document.querySelector<HTMLElement>('[data-vazio-tipo]');
-    if (vazio && nomeTipo) {
+    const frase = document.querySelector<HTMLElement>('[data-vazio-tipo]');
+    if (vazio && frase) {
       vazio.hidden = itens.some((item) => !item.hidden);
-      nomeTipo.textContent = (botao.textContent ?? '').trim().toLowerCase();
+      frase.textContent = botao.dataset.frase ?? '';
     }
   });
 </script>
