@@ -1,0 +1,62 @@
+---
+// "Como funciona": os 4 passos, numerados. Uma coluna no celular, quatro no desktop.
+import { passosComoFunciona } from '../../config/home';
+---
+
+<ol class="passos">
+  {
+    passosComoFunciona.map((passo, i) => (
+      <li class="passo">
+        <span class="passo__numero" aria-hidden="true">
+          {String(i + 1).padStart(2, '0')}
+        </span>
+        <h3 class="passo__titulo">{passo.titulo}</h3>
+        <p class="passo__texto">{passo.texto}</p>
+      </li>
+    ))
+  }
+</ol>
+
+<style>
+  .passos {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: var(--esp-5);
+  }
+  .passo {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: var(--esp-1) var(--esp-3);
+    padding-top: var(--esp-4);
+    border-top: 1px solid var(--cor-filete);
+  }
+  .passo__numero {
+    grid-row: span 2;
+    font-size: 2rem;
+    font-weight: 300;
+    line-height: 1;
+    color: var(--cor-detalhe);
+  }
+  .passo__titulo {
+    font-size: var(--texto-base);
+    letter-spacing: 0.14em;
+  }
+  .passo__texto {
+    font-size: var(--texto-pequeno);
+  }
+
+  @media (min-width: 56rem) {
+    .passos {
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--esp-5);
+    }
+    .passo {
+      grid-template-columns: 1fr;
+    }
+    .passo__numero {
+      grid-row: auto;
+      margin-bottom: var(--esp-2);
+    }
+  }
+</style>

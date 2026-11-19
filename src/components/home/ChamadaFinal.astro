@@ -1,0 +1,51 @@
+---
+// Chamada final da home: WhatsApp em destaque e o formulário (página Contato) como alternativa.
+import BotaoWhatsApp from '../ui/BotaoWhatsApp.astro';
+---
+
+<div class="chamada">
+  <h2>Vamos conversar?</h2>
+  <p>Conte o que você precisa e receba um orçamento. Atendimento em Recife e em todo o Brasil.</p>
+  <div class="chamada__botoes">
+    <BotaoWhatsApp />
+    <a class="chamada__mensagem" href="/contato">Enviar mensagem</a>
+  </div>
+</div>
+
+<style>
+  .chamada {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--esp-4);
+    text-align: center;
+  }
+  .chamada h2 {
+    font-size: clamp(1.5rem, 1.2rem + 1.4vw, 2.375rem);
+  }
+  .chamada p {
+    max-width: 34rem;
+  }
+  .chamada__botoes {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--esp-3);
+    margin-top: var(--esp-2);
+  }
+  .chamada__mensagem {
+    display: inline-flex;
+    align-items: center;
+    min-height: 3.25rem;
+    padding: 0 var(--esp-5);
+    border: 1px solid var(--cor-principal);
+    border-radius: var(--raio-botao);
+    text-decoration: none;
+    font-size: 0.8125rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+  }
+  .chamada__mensagem:hover {
+    background: var(--cor-fundo-alt);
+  }
+</style>

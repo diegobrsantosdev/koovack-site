@@ -1,0 +1,252 @@
+---
+// Topo da home: slideshow de renders em tela cheia.
+// - Desliza na horizontal a cada 5 s, em loop; dá para arrastar com o dedo ou usar as setas.
+// - Cada imagem faz um zoom lento enquanto está na tela.
+// - Frase, linha de serviços e botões ficam fixos por cima, sobre um degradê escuro.
+// - Pausa no toque/mouse e quando a aba fica oculta. Com "reduzir movimento": sem autoplay e sem zoom.
+import { Picture } from 'astro:assets';
+import BotaoWhatsApp from '../ui/BotaoWhatsApp.astro';
+import { site } from '../../config/site';
+import { slidesHero } from '../../config/home';
+---
+
+<section class="hero" aria-label="Destaques" data-hero data-esconde-whatsapp-fixo>
+  <div class="hero__viewport" data-viewport>
+    <div class="hero__trilho">
+      {
+        slidesHero.map((slide, i) => (
+          <div class:list={['hero__slide', { 'is-ativo': i === 0 }]}>
+            <Picture
+              class="hero__img"
+              src={slide.imagem}
+              alt={slide.alt}
+              formats={['avif', 'webp']}
+              widths={[480, 800, 1200, 1920, 2560]}
+              sizes="100vw"
+              loading={i === 0 ? 'eager' : 'lazy'}
+              fetchpriority={i === 0 ? 'high' : 'auto'}
+              draggable="false"
+            />
+          </div>
+        ))
+      }
+    </div>
+  </div>
+
+  <div class="hero__sombra" aria-hidden="true"></div>
+
+  <div class="hero__conteudo container">
+    <h1 class="hero__frase">{site.hero.frase}</h1>
+    <p class="hero__linha">{site.hero.linha}</p>
+    <div class="hero__botoes">
+      <BotaoWhatsApp />
+      <a class="hero__ver-projetos" href="/projetos">Ver projetos</a>
+    </div>
+  </div>
+
+  <button class="hero__seta hero__seta--ant" type="button" aria-label="Imagem anterior" data-anterior>
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 4l-8 8 8 8"></path></svg>
+  </button>
+  <button class="hero__seta hero__seta--prox" type="button" aria-label="Próxima imagem" data-proximo>
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4l8 8-8 8"></path></svg>
+  </button>
+</section>
+
+<script>
+  import EmblaCarousel from 'embla-carousel';
+  import Autoplay from 'embla-carousel-autoplay';
+
+  const raiz = document.querySelector<HTMLElement>('[data-hero]');
+  const viewport = raiz?.querySelector<HTMLElement>('[data-viewport]');
+
+  if (raiz && viewport) {
+    const menosMovimento = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const plugins = menosMovimento
+      ? []
+      : [Autoplay({ delay: 5000, stopOnInteraction: false, stopOnMouseEnter: true })];
+
+    const embla = EmblaCarousel(viewport, { loop: true, duration: 35 }, plugins);
+    const slides = embla.slideNodes();
+
+    // Marca o slide da vez: é ele que recebe o zoom lento (CSS)
+    embla.on('select', () => {
+      const atual = embla.selectedScrollSnap();
+      slides.forEach((s, i) => s.classList.toggle('is-ativo', i === atual));
+    });
+
+    raiz.querySelector('[data-anterior]')?.addEventListener('click', () => embla.scrollPrev());
+    raiz.querySelector('[data-proximo]')?.addEventListener('click', () => embla.scrollNext());
+  }
+</script>
+
+<style>
+  .hero {
+    position: relative;
+    height: calc(100svh - var(--altura-header)); /* tela cheia abaixo do header */
+    min-height: 32rem;
+    overflow: hidden;
+    background: #222;
+    color: var(--cor-branco);
+  }
+
+  .hero__viewport,
+  .hero__trilho {
+    height: 100%;
+  }
+  .hero__viewport {
+    overflow: hidden;
+  }
+  .hero__trilho {
+    display: flex;
+    touch-action: pan-y pinch-zoom;
+  }
+  .hero__slide {
+    flex: 0 0 100%;
+    min-width: 0;
+    overflow: hidden;
+  }
+  .hero__slide :global(picture) {
+    display: block;
+    height: 100%;
+  }
+  .hero__slide :global(.hero__img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    -webkit-user-drag: none;
+  }
+
+  /* Zoom lento só para quem não pediu "reduzir movimento" */
+  @media (prefers-reduced-motion: no-preference) {
+    .hero__slide.is-ativo :global(.hero__img) {
+      animation: zoom-lento 7s ease-out forwards;
+    }
+  }
+  @keyframes zoom-lento {
+    from {
+      transform: scale(1);
+    }
+    to {
+      transform: scale(1.06);
+    }
+  }
+
+  /* Degradê escuro na base para o texto ficar legível */
+  .hero__sombra {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgb(0 0 0 / 0.65) 0%, rgb(0 0 0 / 0.25) 45%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero__conteudo {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin-inline: auto;
+    display: flex;
+    flex-direction: column;
+    gap: var(--esp-3);
+    padding-bottom: var(--esp-6);
+    pointer-events: none; /* deixa arrastar o slideshow por baixo do texto */
+  }
+  /* :global para alcançar também o botão do WhatsApp, que vem de outro componente */
+  .hero__conteudo :global(a) {
+    pointer-events: auto;
+  }
+
+  .hero__frase {
+    max-width: 22ch;
+    color: var(--cor-branco);
+    font-size: clamp(1.75rem, 1.2rem + 2.8vw, 3.25rem);
+  }
+  .hero__linha {
+    font-size: var(--texto-pequeno);
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+  }
+
+  .hero__botoes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--esp-3);
+    margin-top: var(--esp-2);
+  }
+  .hero__ver-projetos {
+    display: inline-flex;
+    align-items: center;
+    min-height: 3.25rem;
+    padding: 0 var(--esp-5);
+    border: 1px solid rgb(255 255 255 / 0.8);
+    border-radius: var(--raio-botao);
+    color: var(--cor-branco);
+    text-decoration: none;
+    font-size: 0.8125rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    transition: background-color var(--transicao);
+  }
+  .hero__ver-projetos:hover {
+    background: rgb(255 255 255 / 0.12);
+  }
+  .hero :global(:focus-visible) {
+    outline-color: var(--cor-branco);
+  }
+
+  /* Setas finas e transparentes nas laterais, acima do texto */
+  .hero__seta {
+    position: absolute;
+    top: 38%;
+    transform: translateY(-50%);
+    display: grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--cor-branco);
+    cursor: pointer;
+    filter: drop-shadow(0 1px 3px rgb(0 0 0 / 0.5));
+  }
+  .hero__seta svg {
+    width: 1.75rem;
+    height: 1.75rem;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.1;
+  }
+  .hero__seta--ant {
+    left: var(--esp-1);
+  }
+  .hero__seta--prox {
+    right: var(--esp-1);
+  }
+
+  @media (min-width: 48rem) {
+    .hero {
+      height: calc(90vh - var(--altura-header));
+    }
+    .hero__conteudo {
+      padding-bottom: var(--esp-7);
+    }
+    /* Desktop: sem limite de largura; o texto se divide em 2 linhas equilibradas */
+    .hero__frase {
+      max-width: none;
+    }
+    .hero__seta {
+      top: 50%;
+    }
+    .hero__seta svg {
+      width: 2.5rem;
+      height: 2.5rem;
+    }
+    .hero__seta--ant {
+      left: var(--esp-4);
+    }
+    .hero__seta--prox {
+      right: var(--esp-4);
+    }
+  }
+</style>

@@ -1,0 +1,69 @@
+---
+// Resumo do "Sobre" na home: foto + nome + poucas linhas + link para a página Sobre.
+import { Picture } from 'astro:assets';
+import { sobreResumo } from '../../config/home';
+---
+
+<div class="sobre">
+  <Picture
+    class="sobre__foto"
+    src={sobreResumo.foto}
+    alt={sobreResumo.alt}
+    formats={['avif', 'webp']}
+    widths={[400, 700, 900]}
+    sizes="(min-width: 56rem) 24rem, 100vw"
+    loading="lazy"
+  />
+  <div class="sobre__texto">
+    <h3 class="sobre__nome">{sobreResumo.titulo}</h3>
+    <p class="sobre__subtitulo">{sobreResumo.subtitulo}</p>
+    <p>{sobreResumo.texto}</p>
+    <a class="sobre__link" href="/sobre">Conheça minha história <span aria-hidden="true">→</span></a>
+  </div>
+</div>
+
+<style>
+  .sobre {
+    display: grid;
+    gap: var(--esp-5);
+    align-items: center;
+  }
+  .sobre :global(.sobre__foto) {
+    width: 100%;
+    aspect-ratio: 3 / 4;
+    object-fit: cover;
+  }
+  .sobre__texto {
+    display: flex;
+    flex-direction: column;
+    gap: var(--esp-3);
+    max-width: 34rem;
+  }
+  .sobre__nome {
+    font-size: var(--titulo-2);
+    font-weight: 300;
+  }
+  .sobre__subtitulo {
+    margin-top: calc(var(--esp-2) * -1);
+    font-size: var(--texto-pequeno);
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    opacity: 0.8;
+  }
+  .sobre__link {
+    font-size: var(--texto-pequeno);
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    text-decoration: none;
+  }
+  .sobre__link:hover {
+    text-decoration: underline;
+  }
+
+  @media (min-width: 56rem) {
+    .sobre {
+      grid-template-columns: 24rem 1fr;
+      gap: var(--esp-7);
+    }
+  }
+</style>

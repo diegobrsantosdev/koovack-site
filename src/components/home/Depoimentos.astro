@@ -1,0 +1,24 @@
+---
+// Depoimentos de clientes: uma coluna no celular, duas no desktop.
+import { getCollection } from 'astro:content';
+import Depoimento from '../ui/Depoimento.astro';
+
+const depoimentos = await getCollection('depoimentos');
+---
+
+<div class="depoimentos">
+  {depoimentos.map((d) => <Depoimento depoimento={d.data} />)}
+</div>
+
+<style>
+  .depoimentos {
+    display: grid;
+    gap: var(--esp-6);
+  }
+  @media (min-width: 56rem) {
+    .depoimentos {
+      grid-template-columns: 1fr 1fr;
+      gap: var(--esp-7);
+    }
+  }
+</style>

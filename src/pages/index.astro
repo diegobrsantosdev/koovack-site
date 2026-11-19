@@ -1,58 +1,72 @@
 ---
-// PROVISÓRIO (fase 0): página em branco só para conferir a identidade visual.
-// A home de verdade (slideshow, destaques, seções) é construída na fase 3.
+// Home. A ordem das seções segue o documento de contexto ("Páginas → Home").
+// As faixas alternam fundo branco e cinza-claro para dar ritmo à página.
 import BaseLayout from '../layouts/BaseLayout.astro';
+import Secao from '../components/ui/Secao.astro';
+import HeroSlideshow from '../components/home/HeroSlideshow.astro';
+import FaixaAreas from '../components/home/FaixaAreas.astro';
+import ComoFunciona from '../components/home/ComoFunciona.astro';
+import ResumoServicos from '../components/home/ResumoServicos.astro';
+import Depoimentos from '../components/home/Depoimentos.astro';
+import SobreResumo from '../components/home/SobreResumo.astro';
+import ChamadaFinal from '../components/home/ChamadaFinal.astro';
+import CarrosselProjetos from '../components/projetos/CarrosselProjetos.astro';
+import { projetosOrdenados } from '../lib/projetos';
+
+const destaques = (await projetosOrdenados()).filter((p) => p.data.destaque);
 ---
 
 <BaseLayout>
-  <section class="container provisorio">
-    <p class="provisorio__aviso">Página provisória · fase 0</p>
-    <h1>Interiores que contam a sua história</h1>
-    <p class="provisorio__linha">Arquitetura e interiores de alto padrão</p>
-    <hr />
-    <h2>Título de seção</h2>
-    <h3>Subtítulo</h3>
-    <p>
-      Texto corrido em Josefin Sans. Este parágrafo existe só para testar a leitura no celular, o
-      tamanho da fonte e o contraste com o fundo branco. Recife e todo o Brasil.
-    </p>
-    <a class="provisorio__botao" href="#">Botão de exemplo</a>
-  </section>
+  <HeroSlideshow />
+  <FaixaAreas />
+
+  {
+    destaques.length > 0 && (
+      <Secao titulo="Projetos em destaque">
+        <CarrosselProjetos projetos={destaques} rotulo="Projetos em destaque" />
+        <a class="botao-contorno" href="/projetos">
+          Ver todos os projetos
+        </a>
+      </Secao>
+    )
+  }
+
+  <Secao titulo="Como funciona" fundo="alt">
+    <ComoFunciona />
+  </Secao>
+
+  <Secao titulo="Formas de trabalhar comigo" subtitulo="Escolha como começar. Valores e prazos pelo WhatsApp.">
+    <ResumoServicos />
+  </Secao>
+
+  <Secao titulo="O que dizem os clientes" fundo="alt">
+    <Depoimentos />
+  </Secao>
+
+  <Secao>
+    <SobreResumo />
+  </Secao>
+
+  <Secao fundo="alt">
+    <ChamadaFinal />
+  </Secao>
 </BaseLayout>
 
 <style>
-  .provisorio {
-    display: flex;
-    flex-direction: column;
-    gap: var(--esp-4);
-    padding-block: var(--esp-7);
-  }
-  .provisorio__aviso {
-    align-self: flex-start;
-    padding: var(--esp-1) var(--esp-2);
-    border: 1px dashed var(--cor-detalhe);
-    font-size: var(--texto-pequeno);
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-  }
-  .provisorio__linha {
-    font-size: var(--texto-grande);
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-  }
-  hr {
-    width: 4rem;
-    border: 0;
-    border-top: 1px solid var(--cor-detalhe);
-  }
-  .provisorio__botao {
-    align-self: flex-start;
-    padding: var(--esp-3) var(--esp-5);
+  .botao-contorno {
+    align-self: center;
+    display: inline-flex;
+    align-items: center;
+    min-height: 3.25rem;
+    padding: 0 var(--esp-5);
     border: 1px solid var(--cor-principal);
     border-radius: var(--raio-botao);
     text-decoration: none;
     font-size: var(--texto-pequeno);
     text-transform: uppercase;
     letter-spacing: 0.14em;
+  }
+  .botao-contorno:hover {
+    background: var(--cor-fundo-alt);
   }
 </style>

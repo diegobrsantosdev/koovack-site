@@ -1,0 +1,92 @@
+---
+// "Formas de trabalhar comigo": um card por serviço, sem valores.
+// O serviço com `recomendado: true` ganha a etiqueta "Recomendado" e destaque visual.
+import { getCollection } from 'astro:content';
+import Etiqueta from '../ui/Etiqueta.astro';
+
+const servicos = (await getCollection('servicos')).sort((a, b) => a.data.ordem - b.data.ordem);
+---
+
+<ul class="servicos">
+  {
+    servicos.map((s) => (
+      <li class:list={['servico', { 'servico--recomendado': s.data.recomendado }]}>
+        {s.data.recomendado && (
+          <span class="servico__etiqueta">
+            <Etiqueta variante="solida">Recomendado</Etiqueta>
+          </span>
+        )}
+        <h3 class="servico__nome">{s.data.nome}</h3>
+        <p class="servico__para-quem">{s.data.para_quem}</p>
+        {s.data.online && <p class="servico__online">Também online, para todo o Brasil</p>}
+        <a class="servico__link" href={`/formas-de-trabalhar#${s.id}`}>
+          Ver detalhes <span aria-hidden="true">→</span>
+          <span class="sr-only"> de {s.data.nome}</span>
+        </a>
+      </li>
+    ))
+  }
+</ul>
+
+<style>
+  .servicos {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: var(--esp-4);
+  }
+  .servico {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: var(--esp-3);
+    padding: var(--esp-5) var(--esp-4);
+    background: var(--cor-branco);
+    border: 1px solid var(--cor-filete);
+    border-radius: var(--raio);
+  }
+  .servico--recomendado {
+    border: 1px solid var(--cor-principal);
+    box-shadow: 0 8px 24px rgb(62 78 104 / 0.12);
+  }
+  .servico__etiqueta {
+    position: absolute;
+    top: 0;
+    left: var(--esp-4);
+    transform: translateY(-50%);
+  }
+  .servico__nome {
+    font-size: var(--texto-grande);
+    letter-spacing: 0.14em;
+  }
+  .servico__para-quem {
+    flex: 1;
+    font-size: var(--texto-pequeno);
+  }
+  .servico__online {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    opacity: 0.75;
+  }
+  .servico__link {
+    font-size: var(--texto-pequeno);
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    text-decoration: none;
+  }
+  .servico__link:hover {
+    text-decoration: underline;
+  }
+
+  @media (min-width: 40rem) {
+    .servicos {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  @media (min-width: 64rem) {
+    .servicos {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+</style>
