@@ -25,6 +25,7 @@ interface Props {
   mostrarFooter?: boolean;
   naoIndexar?: boolean; // pede ao Google para não listar a página (ex.: /obrigado)
   rastreioWhatsApp?: RastreioWhatsApp; // contexto do clique no botão fixo (projeto, serviço...)
+  detalheWhatsApp?: string; // segunda linha do botão fixo (ex.: serviço escolhido)
 }
 
 const {
@@ -36,6 +37,7 @@ const {
   mostrarFooter = true,
   naoIndexar = false,
   rastreioWhatsApp,
+  detalheWhatsApp,
 } = Astro.props;
 
 const tituloCompleto = titulo ? `${titulo} | ${site.nome}` : site.nome;
@@ -61,7 +63,11 @@ const tituloCompleto = titulo ? `${titulo} | ${site.nome}` : site.nome;
       <slot />
     </main>
     {mostrarFooter && <Footer />}
-    {mostrarWhatsAppFixo && <WhatsAppFixo mensagem={mensagemWhatsApp} rastreio={rastreioWhatsApp} />}
+    {
+      mostrarWhatsAppFixo && (
+        <WhatsAppFixo mensagem={mensagemWhatsApp} rastreio={rastreioWhatsApp} detalhe={detalheWhatsApp} />
+      )
+    }
   </body>
 </html>
 

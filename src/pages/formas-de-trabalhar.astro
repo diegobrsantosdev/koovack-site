@@ -1,5 +1,7 @@
 ---
 // Formas de trabalhar: os 4 serviços em detalhe (sem valores), o FAQ e a chamada para o WhatsApp.
+// Os cards são SELECIONÁVEIS: a pessoa escolhe uma opção (o "Recomendado" vem marcado) e o botão
+// de WhatsApp (fixo na base e o do fim da página) passa a pedir orçamento daquele serviço.
 import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import CabecalhoPagina from '../components/ui/CabecalhoPagina.astro';
@@ -7,21 +9,44 @@ import Secao from '../components/ui/Secao.astro';
 import CardServico from '../components/servicos/CardServico.astro';
 import FAQ from '../components/servicos/FAQ.astro';
 import BotaoWhatsApp from '../components/ui/BotaoWhatsApp.astro';
+import { mensagemServico } from '../lib/whatsapp';
 
 const servicos = (await getCollection('servicos')).sort((a, b) => a.data.ordem - b.data.ordem);
+// Opção marcada ao abrir a página: a recomendada (ou a primeira, se nenhuma for)
+const padrao = servicos.find((s) => s.data.recomendado) ?? servicos[0];
+const nomePadrao = padrao.data.nome;
 ---
 
 <BaseLayout
   titulo="Formas de trabalhar"
   descricao="Consultoria, projeto de um ambiente, projeto completo e projetos comerciais. Atendimento em Recife e online para todo o Brasil."
+  mensagemWhatsApp={mensagemServico(nomePadrao)}
+  rastreioWhatsApp={{ servico: nomePadrao }}
+  detalheWhatsApp={nomePadrao}
 >
   <CabecalhoPagina
     titulo="Escolha como começar"
     intro="Do ajuste de um ambiente ao projeto completo. Atendimento em Recife e online para todo o Brasil."
   />
 
-  <div class="container servicos">
-    {servicos.map((s) => <CardServico servico={s} />)}
+  <div class="container">
+    <fieldset class="servicos">
+      <legend class="sr-only">Escolha uma forma de trabalhar</legend>
+      <p class="servicos__dica">Escolha uma opção para pedir o orçamento.</p>
+      {servicos.map((s) => <CardServico servico={s} selecionado={s.id === padrao.id} />)}
+    </fieldset>
+
+    <!--
+      Só no desktop: o pedido fica logo abaixo das opções, mostrando qual foi escolhida.
+      Enquanto este bloco está visível, o botão fixo do canto some (data-esconde-whatsapp-fixo).
+      No celular o bloco não aparece: lá o botão fixo da base já mostra a escolha.
+    -->
+    <div class="escolha" data-esconde-whatsapp-fixo>
+      <p class="escolha__texto">
+        Opção escolhida: <strong data-servico-escolhido>{nomePadrao}</strong>
+      </p>
+      <BotaoWhatsApp mensagem={mensagemServico(nomePadrao)} rastreio={{ servico: nomePadrao }} dinamico />
+    </div>
   </div>
 
   <Secao titulo="Perguntas frequentes" fundo="alt">
@@ -31,22 +56,88 @@ const servicos = (await getCollection('servicos')).sort((a, b) => a.data.ordem -
   <Secao>
     <div class="chamada">
       <h2>Quer saber valores e prazos?</h2>
-      <p>Cada projeto é orçado conforme o tamanho e o escopo. Me chame no WhatsApp e eu explico.</p>
-      <BotaoWhatsApp />
+      <p>
+        Cada projeto é orçado conforme o tamanho e o escopo. Me chame no WhatsApp para
+        <strong data-servico-escolhido>{nomePadrao}</strong> e eu explico.
+      </p>
+      <BotaoWhatsApp mensagem={mensagemServico(nomePadrao)} rastreio={{ servico: nomePadrao }} dinamico />
     </div>
   </Secao>
 </BaseLayout>
+
+<script>
+  import { linkWhatsApp, mensagemServico } from '../lib/whatsapp';
+
+  const opcoes = [...document.querySelectorAll<HTMLInputElement>('[data-servico-opcao]')];
+
+  /** Aplica a escolha em todos os botões de WhatsApp da página (fixo + o do fim). */
+  function aplicar(nome: string) {
+    const links = document.querySelectorAll<HTMLAnchorElement>('a[data-whatsapp-servico], a.whatsapp-fixo');
+    links.forEach((link) => {
+      link.href = linkWhatsApp(mensagemServico(nome));
+      link.dataset.servico = nome; // vai junto no evento whatsapp_click
+    });
+    const detalhe = document.querySelector<HTMLElement>('[data-whatsapp-detalhe]');
+    if (detalhe) {
+      detalhe.textContent = nome;
+      detalhe.hidden = false;
+    }
+    document.querySelectorAll<HTMLElement>('[data-servico-escolhido]').forEach((el) => (el.textContent = nome));
+  }
+
+  opcoes.forEach((opcao) => opcao.addEventListener('change', () => aplicar(opcao.value)));
+
+  // Link direto (ex.: /formas-de-trabalhar#consultoria, vindo de "Ver detalhes" na home):
+  // já chega com aquela opção escolhida
+  const doLink = opcoes.find((o) => o.closest('label')?.id === decodeURIComponent(location.hash.slice(1)));
+  if (doLink) {
+    doLink.checked = true;
+    aplicar(doLink.value);
+  }
+</script>
 
 <style>
   .servicos {
     display: grid;
     gap: var(--esp-6);
-    padding-block: var(--esp-4) var(--esp-8);
+    margin: 0;
+    padding: var(--esp-2) 0 var(--esp-8);
+    border: 0;
+    min-width: 0;
   }
+  .servicos__dica {
+    font-size: var(--texto-pequeno);
+    opacity: 0.75;
+    margin-bottom: calc(var(--esp-2) * -1);
+  }
+  /* Bloco "Opção escolhida + Pedir orçamento": escondido no celular */
+  .escolha {
+    display: none;
+  }
+
   @media (min-width: 56rem) {
     .servicos {
       grid-template-columns: 1fr 1fr;
       gap: var(--esp-6) var(--esp-5);
+      padding-bottom: var(--esp-5);
+    }
+    .servicos__dica {
+      grid-column: 1 / -1;
+    }
+    .escolha {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--esp-3);
+      padding: var(--esp-5) 0 var(--esp-8);
+      text-align: center;
+    }
+    .escolha__texto {
+      font-size: var(--texto-grande);
+      font-weight: 300;
+    }
+    .escolha__texto strong {
+      font-weight: 600;
     }
   }
   .chamada {
@@ -58,5 +149,8 @@ const servicos = (await getCollection('servicos')).sort((a, b) => a.data.ordem -
   }
   .chamada h2 {
     font-size: clamp(1.375rem, 1.1rem + 1.2vw, 2.125rem);
+  }
+  .chamada strong {
+    font-weight: 600;
   }
 </style>

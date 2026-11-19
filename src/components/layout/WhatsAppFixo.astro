@@ -8,9 +8,10 @@ import IconeWhatsApp from '../ui/IconeWhatsApp.astro';
 interface Props {
   mensagem?: string; // mensagem pré-preenchida; sem ela, usa a geral
   rastreio?: RastreioWhatsApp;
+  detalhe?: string; // segunda linha, menor (ex.: o serviço escolhido em Formas de trabalhar)
 }
 
-const { mensagem, rastreio } = Astro.props;
+const { mensagem, rastreio, detalhe } = Astro.props;
 ---
 
 <a
@@ -21,7 +22,10 @@ const { mensagem, rastreio } = Astro.props;
   {...atributosRastreio(rastreio)}
 >
   <IconeWhatsApp />
-  <span>{site.textoBotaoWhatsApp}<span class="sr-only"> {site.complementoAcessivelWhatsApp}</span></span>
+  <span class="whatsapp-fixo__textos">
+    <span>{site.textoBotaoWhatsApp}<span class="sr-only"> {site.complementoAcessivelWhatsApp}</span></span>
+    <span class="whatsapp-fixo__detalhe" data-whatsapp-detalhe hidden={!detalhe}>{detalhe}</span>
+  </span>
 </a>
 
 <script>
@@ -74,6 +78,22 @@ const { mensagem, rastreio } = Astro.props;
 
   .whatsapp-fixo:hover {
     background: var(--cor-principal-escura);
+  }
+
+  .whatsapp-fixo__textos {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    line-height: 1.25;
+  }
+  .whatsapp-fixo__detalhe {
+    font-size: 0.75rem;
+    text-transform: none;
+    letter-spacing: 0.02em;
+    opacity: 0.85;
+  }
+  .whatsapp-fixo__detalhe[hidden] {
+    display: none;
   }
 
   .whatsapp-fixo:focus-visible {

@@ -1,19 +1,28 @@
 ---
-// Card completo de uma forma de trabalhar: para quem é, o que inclui e o botão de WhatsApp
-// com a mensagem já citando o serviço. O id do card permite links diretos (/formas-de-trabalhar#consultoria).
+// Card de uma forma de trabalhar, SELECIONÁVEL: tocar no card escolhe aquela opção.
+// Por baixo é um <input type="radio"> (escondido): funciona com teclado (setas) e leitor de tela.
+// A escolha atualiza o botão de WhatsApp da página (ver formas-de-trabalhar.astro).
+// O id do card permite links diretos (/formas-de-trabalhar#consultoria), que já chegam selecionando.
 import type { CollectionEntry } from 'astro:content';
 import Etiqueta from '../ui/Etiqueta.astro';
-import BotaoWhatsApp from '../ui/BotaoWhatsApp.astro';
-import { mensagemServico } from '../../lib/whatsapp';
 
 interface Props {
   servico: CollectionEntry<'servicos'>;
+  selecionado?: boolean;
 }
-const { servico } = Astro.props;
+const { servico, selecionado = false } = Astro.props;
 const s = servico.data;
 ---
 
-<article class:list={['card', { 'card--recomendado': s.recomendado }]} id={servico.id}>
+<label class:list={['card', { 'card--recomendado': s.recomendado }]} id={servico.id}>
+  <input
+    class="card__radio"
+    type="radio"
+    name="servico"
+    value={s.nome}
+    checked={selecionado}
+    data-servico-opcao
+  />
   {
     s.recomendado && (
       <span class="card__etiqueta">
@@ -21,42 +30,95 @@ const s = servico.data;
       </span>
     )
   }
-  <h2 class="card__nome">{s.nome}</h2>
+  <span class="card__marca" aria-hidden="true">
+    <svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg>
+  </span>
 
-  <div class="card__bloco">
-    <h3>Para quem é</h3>
-    <p>{s.para_quem}</p>
-  </div>
+  <span class="card__nome">{s.nome}</span>
 
-  <div class="card__bloco">
-    <h3>O que inclui</h3>
-    <ul class="card__inclui">
-      {s.inclui.map((item) => <li>{item}</li>)}
-    </ul>
-  </div>
+  <span class="card__bloco">
+    <span class="card__subtitulo">Para quem é</span>
+    <span>{s.para_quem}</span>
+  </span>
 
-  {s.online && <p class="card__online">Disponível online, para todo o Brasil</p>}
+  <span class="card__bloco">
+    <span class="card__subtitulo">O que inclui</span>
+    <span class="card__inclui">
+      {s.inclui.map((item) => <span class="card__item">{item}</span>)}
+    </span>
+  </span>
 
-  <BotaoWhatsApp mensagem={mensagemServico(s.nome)} rastreio={{ servico: s.nome }} />
-</article>
+  {s.online && <span class="card__online">Disponível online, para todo o Brasil</span>}
+</label>
 
 <style>
   .card {
     position: relative;
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
     gap: var(--esp-4);
     padding: var(--esp-6) var(--esp-3) var(--esp-5);
     border: 1px solid var(--cor-filete);
     border-radius: var(--raio);
     background: var(--cor-branco);
+    cursor: pointer;
     scroll-margin-top: calc(var(--altura-header) + var(--esp-4)); /* o header não cobre o card no link direto */
+    transition: border-color var(--transicao), box-shadow var(--transicao);
   }
-  .card--recomendado {
+  .card:hover {
     border-color: var(--cor-principal);
-    box-shadow: 0 8px 24px rgb(62 78 104 / 0.12);
   }
+
+  /* O radio existe, mas fica invisível: o card inteiro é a área de clique */
+  .card__radio {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  /* Selecionado: borda mais forte, sombra e marca preenchida */
+  .card:has(.card__radio:checked) {
+    border-color: var(--cor-principal);
+    box-shadow:
+      0 0 0 1px var(--cor-principal),
+      0 10px 28px rgb(62 78 104 / 0.14);
+  }
+  /* Foco pelo teclado (setas/Tab) */
+  .card:has(.card__radio:focus-visible) {
+    outline: 2px solid var(--cor-principal);
+    outline-offset: 4px;
+  }
+
+  /* Marca no canto: círculo vazio (não escolhido) ou preenchido com ✓ (escolhido) */
+  .card__marca {
+    position: absolute;
+    top: var(--esp-4);
+    right: var(--esp-4);
+    display: grid;
+    place-items: center;
+    width: 1.75rem;
+    height: 1.75rem;
+    border: 1px solid var(--cor-filete);
+    border-radius: 50%;
+    color: var(--cor-branco);
+    transition: background-color var(--transicao), border-color var(--transicao);
+  }
+  .card__marca svg {
+    width: 1rem;
+    height: 1rem;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    opacity: 0;
+  }
+  .card:has(.card__radio:checked) .card__marca {
+    background: var(--cor-principal);
+    border-color: var(--cor-principal);
+  }
+  .card:has(.card__radio:checked) .card__marca svg {
+    opacity: 1;
+  }
+
   .card__etiqueta {
     position: absolute;
     top: 0;
@@ -64,39 +126,58 @@ const s = servico.data;
     transform: translateY(-50%);
   }
   .card__nome {
+    padding-right: var(--esp-6); /* não encosta na marca do canto */
     font-size: clamp(1.25rem, 1.1rem + 0.8vw, 1.75rem);
+    font-weight: var(--peso-titulo);
+    text-transform: uppercase;
+    letter-spacing: var(--espacamento-titulo);
+    line-height: 1.3;
   }
   .card__bloco {
     display: flex;
     flex-direction: column;
     gap: var(--esp-2);
   }
-  .card__bloco h3 {
+  .card__subtitulo {
     font-size: 0.75rem;
-    font-weight: 400;
+    text-transform: uppercase;
     letter-spacing: 0.18em;
     opacity: 0.75;
   }
   .card__inclui {
-    padding-left: 1.1rem;
     display: flex;
     flex-direction: column;
     gap: var(--esp-1);
   }
-  .card__inclui li::marker {
-    color: var(--cor-detalhe);
+  .card__item {
+    position: relative;
+    padding-left: 1.1rem;
+  }
+  .card__item::before {
+    content: '';
+    position: absolute;
+    left: 0.2rem;
+    top: 0.7em;
+    width: 0.3rem;
+    height: 0.3rem;
+    border-radius: 50%;
+    background: var(--cor-detalhe);
   }
   .card__online {
     font-size: 0.75rem;
     text-transform: uppercase;
     letter-spacing: 0.14em;
   }
+
   @media (min-width: 48rem) {
     .card {
       padding-inline: var(--esp-6);
     }
     .card__etiqueta {
       left: var(--esp-6);
+    }
+    .card__marca {
+      right: var(--esp-5);
     }
   }
 </style>
