@@ -1,35 +1,112 @@
 ---
-// PROVISÓRIO: logo só em texto até chegar o arquivo SVG da direção 2 (empilhada).
-// Quando o SVG chegar em src/assets/marca/, este componente passa a renderizar a imagem.
+// PROVISÓRIO: logo montado em HTML/CSS até chegar o arquivo SVG final.
+// Desenho escolhido pelo Diego (versão "F · Símbolo + nome"):
+//
+//   ┌───┐ │ KOOVACK
+//   │ K │ │
+//   └───┘ │ A R Q U I T E T U R A   (espalhado na largura de "KOOVACK")
+//
+// variante "escura": quadrado azul com K branco, textos azuis (fundo claro, ex.: header)
+// variante "clara":  quadrado branco com K azul, textos brancos (fundo escuro, ex.: rodapé)
+// grande: versão maior, usada no rodapé
 import { site } from '../../config/site';
+
+interface Props {
+  variante?: 'escura' | 'clara';
+  grande?: boolean;
+}
+
+const { variante = 'escura', grande = false } = Astro.props;
+const letrasSub = [...'Arquitetura'];
 ---
 
-<a href="/" class="logo" aria-label={`${site.nome}, página inicial`}>
-  <span class="logo__nome">Koovack</span>
-  <span class="logo__sub">Arquitetura</span>
+<a
+  href="/"
+  class:list={['logo', `logo--${variante}`, { 'logo--grande': grande }]}
+  aria-label={`${site.nome}, página inicial`}
+>
+  <span class="logo__k" aria-hidden="true">K</span>
+  <span class="logo__divisoria" aria-hidden="true"></span>
+  <span class="logo__textos" aria-hidden="true">
+    <span class="logo__nome">Koovack</span>
+    <span class="logo__sub">{letrasSub.map((l) => <span>{l}</span>)}</span>
+  </span>
 </a>
 
 <style>
   .logo {
+    --s: 2.75rem; /* lado do quadrado do K; todo o resto é proporcional a ele */
     display: inline-flex;
-    flex-direction: column;
     align-items: center;
+    gap: calc(var(--s) * 0.26);
     text-decoration: none;
-    font-family: var(--fonte-titulo);
+    font-family: var(--fonte-marca);
     text-transform: uppercase;
     line-height: 1;
+  }
+
+  .logo__k {
+    width: var(--s);
+    height: var(--s);
+    line-height: var(--s);
+    text-align: center;
+    font-size: calc(var(--s) * 0.62);
+    padding-top: calc(var(--s) * 0.06); /* centraliza opticamente a letra no quadrado */
+  }
+
+  .logo__divisoria {
+    width: 1px;
+    align-self: stretch;
+    background: currentColor;
+    opacity: 0.4;
+  }
+
+  .logo__textos {
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--s) * 0.12);
+  }
+
+  .logo__nome {
+    font-size: calc(var(--s) * 0.4);
+    letter-spacing: 0.2em;
+    margin-right: -0.2em; /* o espaço depois da última letra não conta na largura */
+  }
+
+  /* "ARQUITETURA" espalhado na largura exata de "KOOVACK" */
+  .logo__sub {
+    display: flex;
+    justify-content: space-between;
+    font-size: calc(var(--s) * 0.15);
+  }
+
+  .logo--escura {
     color: var(--cor-principal);
   }
-  .logo__nome {
-    font-size: 1.25rem;
-    letter-spacing: 0.22em;
-    margin-right: -0.22em; /* compensa o espaçamento da última letra para centralizar */
+  .logo--escura .logo__k {
+    background: var(--cor-principal);
+    color: var(--cor-branco);
   }
-  .logo__sub {
-    margin-top: 0.3rem;
-    font-size: 0.625rem;
-    letter-spacing: 0.42em;
-    margin-right: -0.42em;
-    color: var(--cor-detalhe);
+
+  .logo--clara {
+    color: var(--cor-branco);
+  }
+  .logo--clara .logo__k {
+    background: var(--cor-branco);
+    color: var(--cor-principal);
+  }
+
+  .logo--grande {
+    --s: 3.75rem;
+  }
+
+  /* Desktop: logo 30% maior, para o "ARQUITETURA" ficar legível em monitores comuns (1x) */
+  @media (min-width: 48rem) {
+    .logo {
+      --s: 4.25rem;
+    }
+    .logo--grande {
+      --s: 4.25rem;
+    }
   }
 </style>
