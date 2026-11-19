@@ -6,6 +6,7 @@ import { getEntry, render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import FichaRapida from '../../components/case/FichaRapida.astro';
 import ComparadorPlantaRender from '../../components/case/ComparadorPlantaRender.astro';
+import ComparacaoLadoALado from '../../components/case/ComparacaoLadoALado.astro';
 import Galeria from '../../components/case/Galeria.astro';
 import Materiais from '../../components/case/Materiais.astro';
 import CarrosselProjetos from '../../components/projetos/CarrosselProjetos.astro';
@@ -35,6 +36,8 @@ const { Content } = await render(projeto);
 const depoimento = p.depoimento ? await getEntry(p.depoimento) : undefined;
 const mensagem = mensagemCase(p.titulo);
 const temComparador = p.planta && p.render_comparacao;
+const ehModelo = p.comparacao_tipo === 'modelo';
+const rotuloReferencia = ehModelo ? 'Modelo 3D' : 'Planta';
 ---
 
 <BaseLayout
@@ -78,9 +81,23 @@ const temComparador = p.planta && p.render_comparacao;
       {
         temComparador && (
           <section class="case__secao">
-            <h2>Da planta ao render</h2>
-            <p class="case__dica">Arraste a linha para comparar.</p>
-            <ComparadorPlantaRender planta={p.planta!} render={p.render_comparacao!} />
+            <h2>{ehModelo ? 'Do modelo 3D ao render' : 'Da planta ao render'}</h2>
+            {p.comparacao_estilo === 'deslizar' ? (
+              <>
+                <p class="case__dica">Arraste a linha para comparar.</p>
+                <ComparadorPlantaRender
+                  planta={p.planta!}
+                  render={p.render_comparacao!}
+                  rotuloReferencia={rotuloReferencia}
+                />
+              </>
+            ) : (
+              <ComparacaoLadoALado
+                referencia={p.planta!}
+                render={p.render_comparacao!}
+                rotuloReferencia={rotuloReferencia}
+              />
+            )}
           </section>
         )
       }

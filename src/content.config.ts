@@ -39,8 +39,14 @@ const projetos = defineCollection({
 
       capa: imagemComAlt,
       galeria: z.array(imagemComAlt.extend({ legenda: z.string().optional() })).min(1),
+      // Comparação "antes × render": `planta` guarda a imagem de referência (planta baixa OU tela do
+      // modelo 3D) e `render_comparacao` o render correspondente.
       planta: imagemComAlt.optional(),
-      render_comparacao: imagemComAlt.optional(), // render do mesmo ângulo da planta
+      render_comparacao: imagemComAlt.optional(),
+      comparacao_tipo: z.enum(['planta', 'modelo']).default('planta'), // muda títulos e rótulos
+      // "deslizar": linha de arrastar (as duas imagens precisam do MESMO enquadramento);
+      // "lado-a-lado": duas imagens separadas (quando os ângulos não coincidem exatamente)
+      comparacao_estilo: z.enum(['deslizar', 'lado-a-lado']).default('deslizar'),
 
       materiais: z
         .array(

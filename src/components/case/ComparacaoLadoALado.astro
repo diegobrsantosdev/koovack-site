@@ -1,0 +1,69 @@
+---
+// Comparação "referência × render" com as duas imagens separadas, cada uma com seu rótulo.
+// Usada quando a planta/modelo e o render NÃO têm exatamente o mesmo enquadramento
+// (nesse caso o comparador de arrastar ficaria desalinhado).
+// Celular: uma embaixo da outra. Desktop: lado a lado.
+import { Picture } from 'astro:assets';
+
+interface ImagemComAlt {
+  imagem: ImageMetadata;
+  alt: string;
+}
+interface Props {
+  referencia: ImagemComAlt;
+  render: ImagemComAlt;
+  rotuloReferencia?: string; // "Planta" ou "Modelo 3D"
+}
+const { referencia, render, rotuloReferencia = 'Planta' } = Astro.props;
+
+const itens = [
+  { ...referencia, rotulo: rotuloReferencia },
+  { ...render, rotulo: 'Render' },
+];
+---
+
+<div class="lado-a-lado">
+  {
+    itens.map((item) => (
+      <figure class="lado-a-lado__item">
+        <Picture
+          class="lado-a-lado__img"
+          src={item.imagem}
+          alt={item.alt}
+          formats={['avif', 'webp']}
+          widths={[480, 800, 1200]}
+          sizes="(min-width: 56rem) 36rem, 100vw"
+          loading="lazy"
+        />
+        <figcaption>{item.rotulo}</figcaption>
+      </figure>
+    ))
+  }
+</div>
+
+<style>
+  .lado-a-lado {
+    display: grid;
+    gap: var(--esp-4);
+  }
+  .lado-a-lado__item {
+    display: flex;
+    flex-direction: column;
+    gap: var(--esp-2);
+  }
+  .lado-a-lado :global(.lado-a-lado__img) {
+    width: 100%;
+    aspect-ratio: 3 / 2;
+    object-fit: cover;
+  }
+  figcaption {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+  }
+  @media (min-width: 56rem) {
+    .lado-a-lado {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+</style>

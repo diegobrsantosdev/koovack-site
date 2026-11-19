@@ -10,8 +10,9 @@ interface ImagemComAlt {
 interface Props {
   planta: ImagemComAlt;
   render: ImagemComAlt;
+  rotuloReferencia?: string; // "Planta" ou "Modelo 3D"
 }
-const { planta, render } = Astro.props;
+const { planta, render, rotuloReferencia = 'Planta' } = Astro.props;
 
 const larguras = [480, 800, 1200, 1600];
 const tamanhos = '(min-width: 72rem) 72rem, 100vw';
@@ -38,7 +39,7 @@ const tamanhos = '(min-width: 72rem) 72rem, 100vw';
   </div>
 
   <span class="comparador__rotulo comparador__rotulo--render" aria-hidden="true">Render</span>
-  <span class="comparador__rotulo comparador__rotulo--planta" aria-hidden="true">Planta</span>
+  <span class="comparador__rotulo comparador__rotulo--planta" aria-hidden="true">{rotuloReferencia}</span>
 
   <div class="comparador__linha" aria-hidden="true">
     <span class="comparador__alca">
@@ -54,7 +55,7 @@ const tamanhos = '(min-width: 72rem) 72rem, 100vw';
     min="0"
     max="100"
     value="50"
-    aria-label="Comparar planta e render: arraste para a esquerda para ver a planta e para a direita para ver o render"
+    aria-label={`Comparar ${rotuloReferencia.toLowerCase()} e render: arraste para a esquerda para ver ${rotuloReferencia === 'Planta' ? 'a planta' : 'o modelo'} e para a direita para ver o render`}
     data-comparador-controle
   />
 </div>
