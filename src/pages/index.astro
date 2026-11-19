@@ -1,0 +1,47 @@
+---
+// PROVISÓRIO (fase 0): página em branco só para conferir a identidade visual.
+// A home de verdade (slideshow, destaques, seções) é construída na fase 3.
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout>
+  <section class="container provisorio">
+    <p class="provisorio__aviso">Página provisória · fase 0</p>
+    <h1>Interiores que contam a sua história</h1>
+    <p class="provisorio__linha">Arquitetura e interiores de alto padrão</p>
+    <hr />
+    <h2>Título de seção</h2>
+    <h3>Subtítulo em Alice</h3>
+    <p>
+      Texto corrido em Josefin Sans. Este parágrafo existe só para testar a leitura no celular, o
+      tamanho da fonte e o contraste com o fundo off-white. Recife e todo o Brasil.
+    </p>
+  </section>
+</BaseLayout>
+
+<style>
+  .provisorio {
+    display: flex;
+    flex-direction: column;
+    gap: var(--esp-4);
+    padding-block: var(--esp-7);
+  }
+  .provisorio__aviso {
+    align-self: flex-start;
+    padding: var(--esp-1) var(--esp-2);
+    border: 1px dashed var(--cor-detalhe);
+    font-size: var(--texto-pequeno);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+  }
+  .provisorio__linha {
+    font-size: var(--texto-grande);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+  }
+  hr {
+    width: 4rem;
+    border: 0;
+    border-top: 1px solid var(--cor-detalhe);
+  }
+</style>
