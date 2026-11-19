@@ -7,7 +7,7 @@ export const site = {
   url: 'https://koovackarquitetura.com.br',
   descricao: 'Arquitetura e interiores de alto padrão. Recife e todo o Brasil.',
   atendimento: 'Recife e todo o Brasil',
-  email: 'diogokoovack@gmail.com',
+  email: 'koovackarquitetura@gmail.com', // e-mail público da marca
 
   // Só números, com DDI e DDD (formato exigido pelo wa.me)
   whatsapp: '5581979127146',
@@ -31,8 +31,18 @@ export const site = {
 
   prazoResposta: 'Resposta em até 1 dia útil', // PROVISÓRIO: o Diogo confirma
 
-  // Preenchidos nas fases 5 (formulário) e 7 (medição)
-  web3formsChave: '',
+  // Formulário de contato (Web3Forms). As mensagens chegam em koovackarquitetura@gmail.com.
+  // A chave vem da variável de ambiente PUBLIC_WEB3FORMS_KEY (arquivo .env, fora do Git;
+  // na Cloudflare, em Settings → Environment variables). Veja o .env.example.
+  // Vazia = formulário desligado (mostra um aviso e não envia).
+  web3formsChave: import.meta.env.PUBLIC_WEB3FORMS_KEY ?? '',
+
+  // hCaptcha ("não sou um robô") no formulário. DESLIGADO de propósito: pode pedir para a pessoa
+  // resolver desafios e espantar clientes. O honeypot já barra a maioria dos robôs.
+  // Ligar (true) só se começar a chegar spam. Se ligar, citar o hCaptcha na página de Privacidade.
+  hcaptchaAtivo: false,
+
+  // Preenchido na fase 7 (medição)
   gtmId: '',
 
   menu: [
