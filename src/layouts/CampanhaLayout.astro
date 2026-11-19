@@ -1,0 +1,46 @@
+---
+// Layout das landing pages de anúncio (/lp/...).
+// Diferenças em relação ao BaseLayout:
+// - sem o menu completo: só o logo no topo (a pessoa não se distrai);
+// - fora do Google (noindex): as páginas existem só para os anúncios;
+// - botão fixo de WhatsApp com a mensagem e o rastreio da campanha.
+// O rodapé continua, porque traz o link da política de privacidade (há formulário na página).
+import BaseLayout from './BaseLayout.astro';
+import Logo from '../components/layout/Logo.astro';
+
+interface Props {
+  titulo: string;
+  descricao: string;
+  campanha: string; // ex.: "apartamento"
+  mensagemWhatsApp: string;
+}
+const { titulo, descricao, campanha, mensagemWhatsApp } = Astro.props;
+---
+
+<BaseLayout
+  titulo={titulo}
+  descricao={descricao}
+  naoIndexar
+  mostrarHeader={false}
+  mensagemWhatsApp={mensagemWhatsApp}
+  rastreioWhatsApp={{ campanha }}
+>
+  <header class="topo-campanha">
+    <div class="container topo-campanha__barra">
+      <Logo />
+    </div>
+  </header>
+  <slot />
+</BaseLayout>
+
+<style>
+  .topo-campanha {
+    border-bottom: 1px solid var(--cor-filete);
+    background: var(--cor-fundo);
+  }
+  .topo-campanha__barra {
+    display: flex;
+    align-items: center;
+    height: var(--altura-header);
+  }
+</style>
