@@ -1,0 +1,206 @@
+---
+// Página de um projeto (case). Uma página é gerada no build para cada pasta em src/content/projetos/.
+// O nome do arquivo [slug] funciona como um @PathVariable: /projetos/apartamento-exemplo.
+import { Picture } from 'astro:assets';
+import { getEntry, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import FichaRapida from '../../components/case/FichaRapida.astro';
+import ComparadorPlantaRender from '../../components/case/ComparadorPlantaRender.astro';
+import Galeria from '../../components/case/Galeria.astro';
+import Materiais from '../../components/case/Materiais.astro';
+import CarrosselProjetos from '../../components/projetos/CarrosselProjetos.astro';
+import Depoimento from '../../components/ui/Depoimento.astro';
+import BotaoWhatsApp from '../../components/ui/BotaoWhatsApp.astro';
+import Etiqueta from '../../components/ui/Etiqueta.astro';
+import { projetosOrdenados, ROTULO_TIPO, formatarArea, type Projeto } from '../../lib/projetos';
+import { mensagemCase } from '../../lib/whatsapp';
+
+// Diz ao Astro quais páginas gerar (uma por projeto) e o que cada uma recebe
+export async function getStaticPaths() {
+  const projetos = await projetosOrdenados();
+  return projetos.map((projeto) => ({
+    params: { slug: projeto.id },
+    props: { projeto, outros: projetos.filter((p) => p.id !== projeto.id) },
+  }));
+}
+
+interface Props {
+  projeto: Projeto;
+  outros: Projeto[];
+}
+const { projeto, outros } = Astro.props;
+const p = projeto.data;
+
+const { Content } = await render(projeto);
+const depoimento = p.depoimento ? await getEntry(p.depoimento) : undefined;
+const mensagem = mensagemCase(p.titulo);
+const temComparador = p.planta && p.render_comparacao;
+---
+
+<BaseLayout titulo={p.titulo} descricao={p.resumo} mensagemWhatsApp={mensagem}>
+  <article class="case">
+    <!-- Render principal: carrega primeiro (é o maior elemento da tela) -->
+    <Picture
+      class="case__capa"
+      src={p.capa.imagem}
+      alt={p.capa.alt}
+      formats={['avif', 'webp']}
+      widths={[480, 800, 1200, 1920, 2560]}
+      sizes="100vw"
+      loading="eager"
+      fetchpriority="high"
+    />
+
+    <div class="container">
+      <header class="case__cabecalho">
+        {p.provisorio && <Etiqueta>Conteúdo provisório</Etiqueta>}
+        <p class="case__tipo">{ROTULO_TIPO[p.tipo]}</p>
+        <h1>{p.titulo}</h1>
+        <p class="case__dados">
+          {p.cidade} <span aria-hidden="true">·</span> {formatarArea(p.area_m2)}
+          <span aria-hidden="true">·</span> {p.ano}
+        </p>
+        {p.credito && <p class="case__credito">{p.credito}</p>}
+      </header>
+
+      <FichaRapida projeto={p} />
+
+      <section class="case__secao">
+        <h2>O desafio</h2>
+        <div class="case__prosa"><Content /></div>
+      </section>
+
+      {
+        temComparador && (
+          <section class="case__secao">
+            <h2>Da planta ao render</h2>
+            <p class="case__dica">Arraste a linha para comparar.</p>
+            <ComparadorPlantaRender planta={p.planta!} render={p.render_comparacao!} />
+          </section>
+        )
+      }
+
+      <section class="case__secao">
+        <h2 class="sr-only">Imagens do projeto</h2>
+        <Galeria itens={p.galeria} />
+      </section>
+
+      {
+        p.materiais && p.materiais.length > 0 && (
+          <section class="case__secao">
+            <h2>Materiais e paleta</h2>
+            <Materiais materiais={p.materiais} />
+          </section>
+        )
+      }
+
+      {
+        depoimento && (
+          <section class="case__secao">
+            <h2 class="sr-only">O que o cliente disse</h2>
+            <Depoimento depoimento={depoimento.data} />
+          </section>
+        )
+      }
+
+      <section class="case__secao case__chamada">
+        <h2>Quer um projeto assim?</h2>
+        <p>Conte o que você precisa e receba um orçamento. Atendimento em Recife e em todo o Brasil.</p>
+        <BotaoWhatsApp mensagem={mensagem} />
+      </section>
+
+      {
+        outros.length > 0 && (
+          <section class="case__secao">
+            <h2>Outros projetos</h2>
+            <CarrosselProjetos projetos={outros} rotulo="Outros projetos" />
+            <a class="case__ver-todos" href="/projetos">
+              Ver todos os projetos
+            </a>
+          </section>
+        )
+      }
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  /* Render principal de borda a borda */
+  .case :global(.case__capa) {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+  }
+
+  .case__cabecalho {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--esp-2);
+    padding-block: var(--esp-5) var(--esp-4);
+  }
+  .case__tipo,
+  .case__dados {
+    font-size: var(--texto-pequeno);
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+  }
+  .case__credito {
+    font-size: var(--texto-pequeno);
+    font-style: italic;
+    opacity: 0.8;
+  }
+
+  .case__secao {
+    display: flex;
+    flex-direction: column;
+    gap: var(--esp-4);
+    margin-top: var(--esp-7);
+  }
+  .case__secao h2 {
+    font-size: clamp(1.25rem, 1.1rem + 0.8vw, 1.75rem);
+  }
+
+  /* Texto vindo do Markdown (o desafio) */
+  .case__prosa {
+    max-width: 40rem;
+  }
+  .case__prosa :global(p + p) {
+    margin-top: var(--esp-3);
+  }
+
+  .case__dica {
+    margin-top: calc(var(--esp-3) * -1);
+    font-size: var(--texto-pequeno);
+    opacity: 0.75;
+  }
+
+  .case__chamada {
+    align-items: flex-start;
+    padding: var(--esp-6) var(--margem-lateral);
+    margin-inline: calc(var(--margem-lateral) * -1);
+    background: var(--cor-fundo-alt);
+  }
+
+  .case__ver-todos {
+    align-self: center;
+    padding: var(--esp-3) var(--esp-5);
+    border: 1px solid var(--cor-principal);
+    border-radius: var(--raio-botao);
+    text-decoration: none;
+    font-size: var(--texto-pequeno);
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+  }
+
+  @media (min-width: 48rem) {
+    .case :global(.case__capa) {
+      aspect-ratio: auto;
+      height: min(80vh, 56.25vw);
+    }
+    .case__chamada {
+      margin-inline: 0;
+      padding-inline: var(--esp-6);
+    }
+  }
+</style>
