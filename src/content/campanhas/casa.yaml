@@ -1,0 +1,16 @@
+# PROVISÓRIO: promessa, benefícios e imagem de exemplo. O Diogo ajusta os textos antes dos anúncios.
+# Página gerada: /lp/casa (fora do Google: só para anúncios).
+titulo: A casa que você imaginou, projetada para você
+subtitulo: Arquitetura e interiores com renders 3D de alto padrão. Recife e todo o Brasil.
+imagem: ../../assets/hero/03.jpg
+imagem_alt: Render provisório de uma casa
+tipo: casa
+beneficios:
+  - titulo: Projeto completo
+    texto: Texto provisório. Da planta aos acabamentos, tudo pensado em conjunto.
+  - titulo: Renders 3D realistas
+    texto: Texto provisório. Você aprova cada ambiente antes da obra começar.
+  - titulo: Atendimento online
+    texto: Texto provisório. Reuniões por vídeo e arquivos digitais, para qualquer cidade.
+mensagem_whatsapp: Olá! Vi o anúncio de projeto para casa e gostaria de um orçamento.
+provisorio: true

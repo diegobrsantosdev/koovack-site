@@ -105,4 +105,24 @@ const faq = defineCollection({
   }),
 });
 
-export const collections = { projetos, servicos, depoimentos, faq };
+// ───────────────────────── Campanhas (landing pages de anúncio) ─────────────────────────
+// Um arquivo YAML por campanha: src/content/campanhas/apartamento.yaml → /lp/apartamento
+const campanhas = defineCollection({
+  loader: glob({ pattern: '*.yaml', base: './src/content/campanhas' }),
+  schema: ({ image }) =>
+    z.object({
+      titulo: z.string(), // a promessa, no topo da página
+      subtitulo: z.string(),
+      imagem: image(), // render de fundo do topo
+      imagem_alt: z.string().min(5, 'Descreva a imagem no alt'),
+      tipo: tipoProjeto, // filtra os projetos mostrados
+      beneficios: z
+        .array(z.object({ titulo: z.string(), texto: z.string() }))
+        .min(2, 'Liste pelo menos 2 benefícios'),
+      depoimento: reference('depoimentos').optional(),
+      mensagem_whatsapp: z.string(),
+      provisorio,
+    }),
+});
+
+export const collections = { projetos, servicos, depoimentos, faq, campanhas };

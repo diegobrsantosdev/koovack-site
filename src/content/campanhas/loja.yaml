@@ -1,0 +1,17 @@
+# PROVISÓRIO: promessa, benefícios e imagem de exemplo. O Diogo ajusta os textos antes dos anúncios.
+# Página gerada: /lp/loja (fora do Google: só para anúncios).
+titulo: Uma loja que traduz a sua marca
+subtitulo: Projeto comercial com layout pensado para vender e renders 3D antes da obra. Recife e todo o Brasil.
+imagem: ../../assets/hero/02.jpg
+imagem_alt: Render provisório de uma loja
+tipo: loja
+beneficios:
+  - titulo: Layout que vende
+    texto: Texto provisório. Circulação e exposição pensadas para o cliente encontrar o que procura.
+  - titulo: Identidade no espaço
+    texto: Texto provisório. Materiais, cores e iluminação alinhados à sua marca.
+  - titulo: Renders 3D realistas
+    texto: Texto provisório. Você aprova a loja antes de investir na obra.
+depoimento: exemplo-loja
+mensagem_whatsapp: Olá! Vi o anúncio de projeto para loja e gostaria de um orçamento.
+provisorio: true

@@ -1,0 +1,17 @@
+# PROVISÓRIO: promessa, benefícios e imagem de exemplo. O Diogo ajusta os textos antes dos anúncios.
+# Página gerada: /lp/apartamento (fora do Google: só para anúncios).
+titulo: Seu apartamento pensado em cada detalhe
+subtitulo: Projeto de interiores sob medida, com renders 3D para você ver tudo antes da obra. Recife e todo o Brasil.
+imagem: ../../assets/hero/01.jpg
+imagem_alt: Render provisório de um apartamento
+tipo: apartamento
+beneficios:
+  - titulo: Renders 3D realistas
+    texto: Texto provisório. Você vê como o apartamento vai ficar antes de comprar qualquer móvel.
+  - titulo: Projeto sob medida
+    texto: Texto provisório. Layout, marcenaria e materiais pensados para a sua rotina.
+  - titulo: Atendimento online
+    texto: Texto provisório. Reuniões por vídeo e arquivos digitais, para qualquer cidade.
+depoimento: exemplo-apartamento
+mensagem_whatsapp: Olá! Vi o anúncio de projeto para apartamento e gostaria de um orçamento.
+provisorio: true
