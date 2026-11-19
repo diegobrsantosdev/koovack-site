@@ -41,7 +41,7 @@ const nomePadrao = (servicos.find((s) => s.data.recomendado) ?? servicos[0]).dat
     <div class="chamada">
       <h2>Quer saber valores e prazos?</h2>
       <p>
-        Cada projeto é orçado conforme o tamanho e o escopo. Me chame no WhatsApp para
+        Cada projeto é orçado conforme o tamanho e o escopo. Me chame no WhatsApp para{' '}
         <strong data-servico-escolhido>{nomePadrao}</strong> e eu explico.
       </p>
       <BotaoWhatsApp mensagem={mensagemServico(nomePadrao)} rastreio={{ servico: nomePadrao }} dinamico />
