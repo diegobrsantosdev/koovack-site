@@ -1,0 +1,152 @@
+---
+// Página Projetos: filtro por tipo + grade de capas + chamada para o WhatsApp.
+// O filtro funciona no navegador (sem recarregar). Sem JavaScript, todos os projetos aparecem.
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import CardProjeto from '../../components/projetos/CardProjeto.astro';
+import BotaoWhatsApp from '../../components/ui/BotaoWhatsApp.astro';
+import { projetosOrdenados } from '../../lib/projetos';
+
+const projetos = await projetosOrdenados();
+
+// Filtros na ordem do desenho da página. Só aparecem os tipos que têm pelo menos um projeto,
+// para ninguém clicar num filtro e encontrar a grade vazia.
+const filtros = [
+  { tipo: 'apartamento', rotulo: 'Apartamentos' },
+  { tipo: 'casa', rotulo: 'Casas' },
+  { tipo: 'loja', rotulo: 'Lojas' },
+  { tipo: 'comercial', rotulo: 'Comercial' },
+].filter((f) => projetos.some((p) => p.data.tipo === f.tipo));
+---
+
+<BaseLayout titulo="Projetos" descricao="Projetos de arquitetura e interiores: apartamentos, casas e lojas.">
+  <div class="container pagina">
+    <header class="pagina__cabecalho">
+      <h1>Projetos</h1>
+      <p>Apartamentos, casas e espaços comerciais, de Recife para todo o Brasil.</p>
+    </header>
+
+    {
+      filtros.length > 1 && (
+        <div class="filtro" role="group" aria-label="Filtrar projetos por tipo" data-filtro>
+          <button type="button" class="filtro__opcao" aria-pressed="true" data-tipo="todos">
+            Todos
+          </button>
+          {filtros.map((f) => (
+            <button type="button" class="filtro__opcao" aria-pressed="false" data-tipo={f.tipo}>
+              {f.rotulo}
+            </button>
+          ))}
+        </div>
+      )
+    }
+
+    <ul class="grade">
+      {
+        projetos.map((p) => (
+          <li data-tipo={p.data.tipo}>
+            <CardProjeto projeto={p} />
+          </li>
+        ))
+      }
+    </ul>
+
+    <section class="nao-achou">
+      <h2>Não achou o que procura?</h2>
+      <p>Me conte sobre o seu espaço. Cada projeto é feito sob medida.</p>
+      <BotaoWhatsApp />
+    </section>
+  </div>
+</BaseLayout>
+
+<script>
+  const filtro = document.querySelector('[data-filtro]');
+  const botoes = [...document.querySelectorAll<HTMLButtonElement>('[data-filtro] button')];
+  const itens = [...document.querySelectorAll<HTMLElement>('.grade > li')];
+
+  filtro?.addEventListener('click', (e) => {
+    const botao = (e.target as HTMLElement).closest('button');
+    if (!botao) return;
+    const tipo = botao.dataset.tipo;
+    botoes.forEach((b) => b.setAttribute('aria-pressed', String(b === botao)));
+    itens.forEach((item) => {
+      item.hidden = tipo !== 'todos' && item.dataset.tipo !== tipo;
+    });
+  });
+</script>
+
+<style>
+  .pagina {
+    display: flex;
+    flex-direction: column;
+    gap: var(--esp-5);
+    padding-block: var(--esp-6) var(--esp-8);
+  }
+  .pagina__cabecalho {
+    display: flex;
+    flex-direction: column;
+    gap: var(--esp-2);
+  }
+
+  .filtro {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--esp-2);
+  }
+  .filtro__opcao {
+    min-height: 2.75rem;
+    padding: 0 var(--esp-4);
+    border: 1px solid var(--cor-filete);
+    border-radius: var(--raio-botao);
+    background: none;
+    cursor: pointer;
+    font-size: 0.8125rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    transition: background-color var(--transicao), border-color var(--transicao);
+  }
+  .filtro__opcao:hover {
+    border-color: var(--cor-principal);
+  }
+  .filtro__opcao[aria-pressed='true'] {
+    background: var(--cor-principal);
+    border-color: var(--cor-principal);
+    color: var(--cor-branco);
+  }
+
+  .grade {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: var(--esp-6) var(--esp-4);
+  }
+  @media (min-width: 40rem) {
+    .grade {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  @media (min-width: 64rem) {
+    .grade {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .nao-achou {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--esp-3);
+    margin-top: var(--esp-5);
+    padding: var(--esp-6) var(--margem-lateral);
+    margin-inline: calc(var(--margem-lateral) * -1);
+    background: var(--cor-fundo-alt);
+  }
+  .nao-achou h2 {
+    font-size: clamp(1.25rem, 1.1rem + 0.8vw, 1.75rem);
+  }
+  @media (min-width: 48rem) {
+    .nao-achou {
+      margin-inline: 0;
+      padding-inline: var(--esp-6);
+    }
+  }
+</style>
