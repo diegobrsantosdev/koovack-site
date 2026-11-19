@@ -38,12 +38,14 @@ export const passosComoFunciona = [
   },
 ];
 
-// PROVISÓRIO: foto e texto de exemplo para a seção "Sobre" da home.
+// Foto e texto do "Sobre" (home e página Sobre). A foto atual tem só ~700 px: trocar pela
+// original em alta resolução quando possível.
 export const sobreResumo = {
   foto: fotoDiogo,
-  alt: 'Foto provisória de Diogo Koovack',
+  alt: 'Diogo Koovack, de óculos e jaqueta clara, de braços cruzados encostado em uma parede branca',
   titulo: 'Diogo Koovack',
   subtitulo: 'Arquiteto e urbanista',
+  // Adaptado do post de apresentação do Diogo no Instagram. Revisar com ele.
   texto:
-    'Texto provisório: duas ou três linhas sobre o Diogo, a forma como ele trabalha e o que valoriza em cada projeto. O texto real vem dele.',
+    'Arquiteto e urbanista em Recife, cheguei à arquitetura depois de um caminho que começou na História. Quatro anos de estágios me ensinaram que um bom projeto começa por entender quem vai viver o espaço.',
 };
