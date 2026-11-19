@@ -1,0 +1,58 @@
+---
+// Página exibida depois que o formulário é enviado.
+// Na fase 7 ela dispara o evento de conversão "generate_lead". Não aparece no Google (noindex).
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { site } from '../config/site';
+---
+
+<BaseLayout titulo="Mensagem recebida" naoIndexar>
+  <section class="container obrigado">
+    <h1>Obrigado!</h1>
+    <p>Recebi sua mensagem e vou responder em breve pelo WhatsApp ou por e-mail.</p>
+    <p class="obrigado__prazo">{site.prazoResposta}</p>
+    <div class="obrigado__links">
+      <a href="/projetos">Ver projetos</a>
+      <a href="/">Voltar ao início</a>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .obrigado {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--esp-4);
+    padding-block: var(--esp-8);
+    min-height: 60svh;
+  }
+  .obrigado p {
+    max-width: 34rem;
+    font-size: var(--texto-grande);
+    font-weight: 300;
+  }
+  .obrigado .obrigado__prazo {
+    font-size: var(--texto-pequeno);
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+  }
+  .obrigado__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--esp-3);
+    margin-top: var(--esp-3);
+  }
+  .obrigado__links a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 3rem;
+    padding: 0 var(--esp-5);
+    border: 1px solid var(--cor-principal);
+    border-radius: var(--raio-botao);
+    text-decoration: none;
+    font-size: 0.8125rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+  }
+</style>

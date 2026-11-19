@@ -1,0 +1,102 @@
+---
+// Contato: WhatsApp em destaque no topo → formulário como alternativa → redes sociais.
+// Esta página não tem o botão fixo de WhatsApp (o WhatsApp já está no topo).
+import BaseLayout from '../layouts/BaseLayout.astro';
+import CabecalhoPagina from '../components/ui/CabecalhoPagina.astro';
+import BotaoWhatsApp from '../components/ui/BotaoWhatsApp.astro';
+import FormContato from '../components/forms/FormContato.astro';
+import IconeRede from '../components/ui/IconeRede.astro';
+import { site } from '../config/site';
+---
+
+<BaseLayout
+  titulo="Contato"
+  descricao="Fale com a Koovack Arquitetura pelo WhatsApp ou envie uma mensagem. Recife e todo o Brasil."
+  mostrarWhatsAppFixo={false}
+>
+  <CabecalhoPagina titulo="Contato" intro="O jeito mais rápido de falar comigo é pelo WhatsApp.">
+    <div class="whatsapp">
+      <BotaoWhatsApp />
+      <p class="whatsapp__prazo">{site.prazoResposta}</p>
+    </div>
+  </CabecalhoPagina>
+
+  <section class="container bloco">
+    <h2>Prefere escrever?</h2>
+    <p>Preencha o formulário e eu respondo pelo WhatsApp ou por e-mail.</p>
+    <FormContato />
+  </section>
+
+  <section class="container bloco redes">
+    <h2>Siga o trabalho</h2>
+    <ul class="redes__lista">
+      <li>
+        <a href={site.redes.instagram.url} target="_blank" rel="noopener">
+          <IconeRede rede="instagram" />
+          <span>Instagram <span class="redes__usuario">{site.redes.instagram.usuario}</span></span>
+        </a>
+      </li>
+      <li>
+        <a href={site.redes.tiktok.url} target="_blank" rel="noopener">
+          <IconeRede rede="tiktok" />
+          <span>TikTok <span class="redes__usuario">{site.redes.tiktok.usuario}</span></span>
+        </a>
+      </li>
+    </ul>
+  </section>
+</BaseLayout>
+
+<style>
+  .whatsapp {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--esp-2);
+    margin-top: var(--esp-2);
+  }
+  .whatsapp__prazo {
+    font-size: var(--texto-pequeno);
+    opacity: 0.8;
+  }
+
+  .bloco {
+    display: flex;
+    flex-direction: column;
+    gap: var(--esp-3);
+    padding-block: var(--esp-6);
+    border-top: 1px solid var(--cor-filete);
+  }
+  .bloco h2 {
+    font-size: clamp(1.25rem, 1.1rem + 0.8vw, 1.75rem);
+  }
+  .bloco > p {
+    margin-bottom: var(--esp-2);
+  }
+
+  .redes {
+    padding-bottom: var(--esp-8);
+  }
+  .redes__lista {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--esp-3) var(--esp-6);
+  }
+  .redes__lista a {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--esp-2);
+    min-height: 2.75rem;
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-size: var(--texto-pequeno);
+  }
+  .redes__usuario {
+    text-transform: none;
+    letter-spacing: 0;
+    opacity: 0.75;
+    margin-left: var(--esp-1);
+  }
+</style>
