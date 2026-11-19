@@ -1,0 +1,56 @@
+---
+// Página exibida quando o endereço não existe. A Cloudflare usa este arquivo (404.html) sozinha.
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout titulo="Página não encontrada" naoIndexar>
+  <section class="container erro">
+    <p class="erro__codigo">404</p>
+    <h1>Página não encontrada</h1>
+    <p>O endereço pode ter mudado ou não existe mais. Que tal ver os projetos?</p>
+    <div class="erro__links">
+      <a class="erro__principal" href="/projetos">Ver projetos</a>
+      <a href="/">Ir para o início</a>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .erro {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--esp-4);
+    padding-block: var(--esp-8);
+    min-height: 60svh;
+  }
+  .erro__codigo {
+    font-size: clamp(4rem, 3rem + 6vw, 8rem);
+    font-weight: 300;
+    line-height: 1;
+    letter-spacing: 0.1em;
+    color: var(--cor-detalhe);
+  }
+  .erro__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--esp-3);
+    margin-top: var(--esp-2);
+  }
+  .erro__links a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 3rem;
+    padding: 0 var(--esp-5);
+    border: 1px solid var(--cor-principal);
+    border-radius: var(--raio-botao);
+    text-decoration: none;
+    font-size: 0.8125rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+  }
+  .erro__links .erro__principal {
+    background: var(--cor-principal);
+    color: var(--cor-branco);
+  }
+</style>

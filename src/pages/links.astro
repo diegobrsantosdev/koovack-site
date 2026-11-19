@@ -1,0 +1,265 @@
+---
+// Página de links (bio do Instagram/TikTok): sem header, sem rodapé e sem botão fixo.
+// Logo sobre foto desfocada → linha de serviços → 3 botões grandes → redes → 2 projetos recentes.
+import { Picture } from 'astro:assets';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Logo from '../components/layout/Logo.astro';
+import IconeWhatsApp from '../components/ui/IconeWhatsApp.astro';
+import IconeRede from '../components/ui/IconeRede.astro';
+import { site } from '../config/site';
+import { slidesHero } from '../config/home';
+import { linkWhatsApp } from '../lib/whatsapp';
+import { projetosOrdenados, ROTULO_TIPO } from '../lib/projetos';
+
+// "Recentes" = os de ano mais novo; em caso de empate, a ordem definida no conteúdo
+const recentes = (await projetosOrdenados())
+  .sort((a, b) => b.data.ano - a.data.ano)
+  .slice(0, 2);
+
+const botoes = [
+  {
+    href: linkWhatsApp(),
+    texto: site.textoBotaoWhatsApp,
+    frase: site.prazoResposta,
+    externo: true,
+    whatsapp: true,
+  },
+  { href: '/projetos', texto: 'Ver projetos', frase: 'Apartamentos, casas e espaços comerciais' },
+  {
+    href: '/formas-de-trabalhar',
+    texto: 'Formas de trabalhar',
+    frase: 'Da consultoria ao projeto completo, também online',
+  },
+];
+---
+
+<BaseLayout
+  titulo="Links"
+  descricao="Koovack Arquitetura: orçamento pelo WhatsApp, projetos e formas de trabalhar."
+  mostrarHeader={false}
+  mostrarFooter={false}
+  mostrarWhatsAppFixo={false}
+>
+  <div class="links">
+    <header class="topo">
+      <!-- Foto pequena e desfocada de fundo: leve de carregar -->
+      <Picture
+        class="topo__fundo"
+        src={slidesHero[0].imagem}
+        alt=""
+        formats={['avif', 'webp']}
+        widths={[480]}
+        sizes="100vw"
+        loading="eager"
+      />
+      <div class="topo__conteudo">
+        <Logo variante="clara" grande />
+        <p class="topo__linha">{site.hero.linha}</p>
+        <p class="topo__local">{site.atendimento}</p>
+      </div>
+    </header>
+
+    <nav class="botoes" aria-label="Links principais">
+      {
+        botoes.map((b) => (
+          <div class="botao-bloco">
+            <a
+              class:list={['botao', { 'botao--principal': b.whatsapp }]}
+              href={b.href}
+              {...(b.externo ? { target: '_blank', rel: 'noopener' } : {})}
+            >
+              {b.whatsapp && <IconeWhatsApp />}
+              {b.texto}
+              {b.whatsapp && <span class="sr-only"> {site.complementoAcessivelWhatsApp}</span>}
+            </a>
+            <p class="botao-bloco__frase">{b.frase}</p>
+          </div>
+        ))
+      }
+    </nav>
+
+    <ul class="redes">
+      <li>
+        <a href={site.redes.instagram.url} target="_blank" rel="noopener" aria-label="Instagram">
+          <IconeRede rede="instagram" />
+        </a>
+      </li>
+      <li>
+        <a href={site.redes.tiktok.url} target="_blank" rel="noopener" aria-label="TikTok">
+          <IconeRede rede="tiktok" />
+        </a>
+      </li>
+    </ul>
+
+    <section class="recentes">
+      <h2>Projetos recentes</h2>
+      <ul class="recentes__lista">
+        {
+          recentes.map((p) => (
+            <li>
+              <a href={`/projetos/${p.id}`}>
+                <Picture
+                  src={p.data.capa.imagem}
+                  alt={p.data.capa.alt}
+                  formats={['avif', 'webp']}
+                  widths={[320, 480]}
+                  sizes="(min-width: 30rem) 14rem, 45vw"
+                  loading="lazy"
+                />
+                <span class="recentes__tipo">{ROTULO_TIPO[p.data.tipo]}</span>
+                <span class="recentes__titulo">{p.data.titulo}</span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+  .links {
+    max-width: 30rem;
+    margin-inline: auto;
+    padding-bottom: var(--esp-7);
+  }
+
+  .topo {
+    position: relative;
+    overflow: hidden;
+    display: grid;
+    place-items: center;
+    min-height: 15rem;
+    padding: var(--esp-6) var(--margem-lateral);
+    color: var(--cor-branco);
+    text-align: center;
+  }
+  .topo :global(.topo__fundo) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: blur(14px) brightness(0.55);
+    transform: scale(1.15); /* esconde a borda clara que o desfoque cria */
+  }
+  .topo__conteudo {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--esp-3);
+  }
+  .topo__linha {
+    margin-top: var(--esp-2);
+    font-size: var(--texto-pequeno);
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+  }
+  .topo__local {
+    font-size: var(--texto-pequeno);
+    opacity: 0.85;
+  }
+
+  .botoes {
+    display: flex;
+    flex-direction: column;
+    gap: var(--esp-4);
+    padding: var(--esp-5) var(--margem-lateral) 0;
+  }
+  .botao-bloco {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--esp-2);
+    text-align: center;
+  }
+  .botao {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--esp-2);
+    min-height: 3.5rem;
+    padding: 0 var(--esp-4);
+    border: 1px solid var(--cor-principal);
+    border-radius: var(--raio-botao);
+    text-decoration: none;
+    font-size: 0.8125rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    transition: background-color var(--transicao);
+  }
+  .botao:hover {
+    background: var(--cor-fundo-alt);
+  }
+  .botao--principal {
+    background: var(--cor-principal);
+    color: var(--cor-branco);
+  }
+  .botao--principal:hover {
+    background: var(--cor-principal-escura);
+  }
+  .botao-bloco__frase {
+    font-size: var(--texto-pequeno);
+    opacity: 0.8;
+  }
+
+  .redes {
+    list-style: none;
+    display: flex;
+    justify-content: center;
+    gap: var(--esp-4);
+    padding: var(--esp-5) 0;
+  }
+  .redes a {
+    display: grid;
+    place-items: center;
+    width: 3rem;
+    height: 3rem;
+    border: 1px solid var(--cor-filete);
+    border-radius: 50%;
+  }
+
+  .recentes {
+    display: flex;
+    flex-direction: column;
+    gap: var(--esp-3);
+    padding: var(--esp-4) var(--margem-lateral) 0;
+    border-top: 1px solid var(--cor-filete);
+  }
+  .recentes h2 {
+    font-size: var(--texto-base);
+    letter-spacing: 0.18em;
+    text-align: center;
+  }
+  .recentes__lista {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--esp-3);
+  }
+  .recentes__lista a {
+    display: flex;
+    flex-direction: column;
+    gap: var(--esp-1);
+    text-decoration: none;
+  }
+  .recentes__lista :global(img) {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    margin-bottom: var(--esp-1);
+  }
+  .recentes__tipo {
+    font-size: 0.6875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    opacity: 0.75;
+  }
+  .recentes__titulo {
+    font-size: var(--texto-pequeno);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+</style>

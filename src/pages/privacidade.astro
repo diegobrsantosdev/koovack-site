@@ -1,0 +1,117 @@
+---
+// Política de privacidade e cookies.
+// PROVISÓRIO: estrutura de exemplo baseada na LGPD. Revisar o texto antes do lançamento
+// (idealmente com alguém da área jurídica) e completar quando a medição (fase 7) estiver definida.
+import BaseLayout from '../layouts/BaseLayout.astro';
+import CabecalhoPagina from '../components/ui/CabecalhoPagina.astro';
+import Etiqueta from '../components/ui/Etiqueta.astro';
+import { site } from '../config/site';
+---
+
+<BaseLayout titulo="Privacidade e cookies" descricao="Como a Koovack Arquitetura trata os seus dados pessoais.">
+  <CabecalhoPagina titulo="Privacidade e cookies">
+    <Etiqueta>Texto provisório: revisar antes do lançamento</Etiqueta>
+  </CabecalhoPagina>
+
+  <article class="container prosa">
+    <section>
+      <h2>Quem cuida dos seus dados</h2>
+      <p>
+        Este site é da {site.nome}, de {site.arquiteto}. Para qualquer assunto sobre os seus dados,
+        escreva para <a href={`mailto:${site.email}`}>{site.email}</a>.
+      </p>
+    </section>
+
+    <section>
+      <h2>Quais dados coletamos</h2>
+      <ul>
+        <li>
+          <strong>Formulário de contato:</strong> nome, WhatsApp, cidade, tipo de projeto e a mensagem
+          que você escrever.
+        </li>
+        <li>
+          <strong>WhatsApp:</strong> ao clicar no botão, a conversa acontece no próprio WhatsApp, com as
+          regras de privacidade dele.
+        </li>
+        <li>
+          <strong>Navegação:</strong> só com a sua permissão no aviso de cookies, dados de uso do site
+          (páginas visitadas, cliques e origem da visita) para medir resultados e anúncios.
+        </li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Para que usamos</h2>
+      <p>
+        Para responder ao seu contato, enviar orçamentos e entender quais páginas e anúncios funcionam
+        melhor. Não vendemos os seus dados.
+      </p>
+    </section>
+
+    <section>
+      <h2>Com quem compartilhamos</h2>
+      <p>
+        Texto provisório: listar os serviços usados para operar o site, como o serviço que entrega as
+        mensagens do formulário por e-mail e, se você aceitar os cookies, as ferramentas de medição
+        (Google Analytics, Meta e TikTok).
+      </p>
+    </section>
+
+    <section>
+      <h2>Cookies</h2>
+      <p>
+        Texto provisório: os cookies de estatística e de marketing só são ativados depois que você
+        aceita no aviso. Você pode mudar a escolha a qualquer momento. (O aviso de cookies entra na
+        fase 7.)
+      </p>
+    </section>
+
+    <section>
+      <h2>Por quanto tempo guardamos</h2>
+      <p>Texto provisório: definir por quanto tempo as mensagens e os dados de contato são guardados.</p>
+    </section>
+
+    <section>
+      <h2>Seus direitos</h2>
+      <p>
+        Pela Lei Geral de Proteção de Dados (LGPD), você pode pedir para confirmar, acessar, corrigir
+        ou apagar os seus dados, entre outros direitos. Basta escrever para
+        <a href={`mailto:${site.email}`}>{site.email}</a>.
+      </p>
+    </section>
+  </article>
+</BaseLayout>
+
+<style>
+  .prosa {
+    display: flex;
+    flex-direction: column;
+    gap: var(--esp-5);
+    max-width: 44rem;
+    margin-inline: 0;
+    padding-bottom: var(--esp-8);
+  }
+  @media (min-width: 72rem) {
+    .prosa {
+      margin-inline: auto;
+    }
+  }
+  .prosa section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--esp-2);
+  }
+  .prosa h2 {
+    font-size: var(--texto-grande);
+    letter-spacing: 0.14em;
+  }
+  .prosa ul {
+    padding-left: 1.1rem;
+    display: flex;
+    flex-direction: column;
+    gap: var(--esp-2);
+  }
+  .prosa strong {
+    font-weight: 600;
+  }
+</style>
