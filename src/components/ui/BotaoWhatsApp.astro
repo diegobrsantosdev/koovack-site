@@ -3,15 +3,22 @@
 // O texto é sempre o mesmo em todo o site; só a mensagem pré-preenchida muda.
 import IconeWhatsApp from './IconeWhatsApp.astro';
 import { site } from '../../config/site';
-import { linkWhatsApp } from '../../lib/whatsapp';
+import { linkWhatsApp, atributosRastreio, type RastreioWhatsApp } from '../../lib/whatsapp';
 
 interface Props {
   mensagem?: string;
+  rastreio?: RastreioWhatsApp; // contexto enviado no evento whatsapp_click
 }
-const { mensagem } = Astro.props;
+const { mensagem, rastreio } = Astro.props;
 ---
 
-<a class="botao-whatsapp" href={linkWhatsApp(mensagem)} target="_blank" rel="noopener">
+<a
+  class="botao-whatsapp"
+  href={linkWhatsApp(mensagem)}
+  target="_blank"
+  rel="noopener"
+  {...atributosRastreio(rastreio)}
+>
   <IconeWhatsApp />
   <span>{site.textoBotaoWhatsApp}<span class="sr-only"> {site.complementoAcessivelWhatsApp}</span></span>
 </a>

@@ -2,14 +2,15 @@
 // Botão de WhatsApp fixo na base da tela.
 // Celular: barra de largura total. Desktop: botão flutuante no canto inferior direito.
 import { site } from '../../config/site';
-import { linkWhatsApp } from '../../lib/whatsapp';
+import { linkWhatsApp, atributosRastreio, type RastreioWhatsApp } from '../../lib/whatsapp';
 import IconeWhatsApp from '../ui/IconeWhatsApp.astro';
 
 interface Props {
   mensagem?: string; // mensagem pré-preenchida; sem ela, usa a geral
+  rastreio?: RastreioWhatsApp;
 }
 
-const { mensagem } = Astro.props;
+const { mensagem, rastreio } = Astro.props;
 ---
 
 <a
@@ -17,6 +18,7 @@ const { mensagem } = Astro.props;
   href={linkWhatsApp(mensagem)}
   target="_blank"
   rel="noopener"
+  {...atributosRastreio(rastreio)}
 >
   <IconeWhatsApp />
   <span>{site.textoBotaoWhatsApp}<span class="sr-only"> {site.complementoAcessivelWhatsApp}</span></span>

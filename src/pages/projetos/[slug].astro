@@ -37,7 +37,12 @@ const mensagem = mensagemCase(p.titulo);
 const temComparador = p.planta && p.render_comparacao;
 ---
 
-<BaseLayout titulo={p.titulo} descricao={p.resumo} mensagemWhatsApp={mensagem}>
+<BaseLayout
+  titulo={p.titulo}
+  descricao={p.resumo}
+  mensagemWhatsApp={mensagem}
+  rastreioWhatsApp={{ projeto: p.titulo }}
+>
   <article class="case">
     <!-- Render principal: carrega primeiro (é o maior elemento da tela) -->
     <Picture
@@ -106,7 +111,7 @@ const temComparador = p.planta && p.render_comparacao;
       <section class="case__secao case__chamada">
         <h2>Quer um projeto assim?</h2>
         <p>Conte o que você precisa e receba um orçamento. Atendimento em Recife e em todo o Brasil.</p>
-        <BotaoWhatsApp mensagem={mensagem} />
+        <BotaoWhatsApp mensagem={mensagem} rastreio={{ projeto: p.titulo }} />
       </section>
 
       {

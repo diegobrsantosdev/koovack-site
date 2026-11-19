@@ -15,6 +15,26 @@ export function mensagemServico(nomeServico: string): string {
   return `Olá! Tenho interesse em ${nomeServico}. Pode me passar valores e prazos?`;
 }
 
+/**
+ * Contexto de um botão de WhatsApp, enviado no evento whatsapp_click
+ * (vira os atributos data-projeto, data-servico e data-campanha do link).
+ */
+export interface RastreioWhatsApp {
+  projeto?: string;
+  servico?: string;
+  campanha?: string;
+}
+
+/** Atributos que marcam um link como WhatsApp para o rastreio de cliques. */
+export function atributosRastreio(r: RastreioWhatsApp = {}) {
+  return {
+    'data-whatsapp': '',
+    'data-projeto': r.projeto,
+    'data-servico': r.servico,
+    'data-campanha': r.campanha,
+  };
+}
+
 export function linkWhatsApp(mensagem: string = MENSAGEM_GERAL): string {
   return `https://wa.me/${site.whatsapp}?text=${encodeURIComponent(mensagem)}`;
 }

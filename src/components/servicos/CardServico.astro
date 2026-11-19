@@ -37,7 +37,7 @@ const s = servico.data;
 
   {s.online && <p class="card__online">Disponível online, para todo o Brasil</p>}
 
-  <BotaoWhatsApp mensagem={mensagemServico(s.nome)} />
+  <BotaoWhatsApp mensagem={mensagemServico(s.nome)} rastreio={{ servico: s.nome }} />
 </article>
 
 <style>

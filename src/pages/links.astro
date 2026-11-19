@@ -8,7 +8,7 @@ import IconeWhatsApp from '../components/ui/IconeWhatsApp.astro';
 import IconeRede from '../components/ui/IconeRede.astro';
 import { site } from '../config/site';
 import { slidesHero } from '../config/home';
-import { linkWhatsApp } from '../lib/whatsapp';
+import { linkWhatsApp, atributosRastreio } from '../lib/whatsapp';
 import { projetosOrdenados, ROTULO_TIPO } from '../lib/projetos';
 
 // "Recentes" = os de ano mais novo; em caso de empate, a ordem definida no conteúdo
@@ -67,6 +67,7 @@ const botoes = [
               class:list={['botao', { 'botao--principal': b.whatsapp }]}
               href={b.href}
               {...(b.externo ? { target: '_blank', rel: 'noopener' } : {})}
+              {...(b.whatsapp ? atributosRastreio() : {})}
             >
               {b.whatsapp && <IconeWhatsApp />}
               {b.texto}
