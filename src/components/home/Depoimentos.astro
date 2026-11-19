@@ -7,7 +7,7 @@ const depoimentos = await getCollection('depoimentos');
 ---
 
 <div class="depoimentos">
-  {depoimentos.map((d) => <Depoimento depoimento={d.data} />)}
+  {depoimentos.map((d) => <Depoimento depoimento={d.data} centralizado />)}
 </div>
 
 <style>
