@@ -1,0 +1,11 @@
+# PROVISÓRIO: textos de exemplo.
+nome: Comercial
+para_quem: Para lojas e espaços comerciais que precisam traduzir a marca no ambiente.
+inclui:
+  - Layout pensado para o fluxo de clientes (texto provisório)
+  - Renders 3D da loja (texto provisório)
+  - Detalhamento de mobiliário e comunicação visual no espaço (texto provisório)
+recomendado: false
+online: true
+ordem: 4
+provisorio: true

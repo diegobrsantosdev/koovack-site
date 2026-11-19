@@ -1,0 +1,12 @@
+# PROVISÓRIO: textos de exemplo.
+nome: Projeto completo
+para_quem: Para quem vai reformar ou montar o imóvel inteiro e quer tudo pensado em conjunto.
+inclui:
+  - Projeto de interiores de todos os ambientes (texto provisório)
+  - Renders 3D de alto padrão (texto provisório)
+  - Plantas técnicas e detalhamentos para a obra (texto provisório)
+  - Lista de materiais e acompanhamento (texto provisório)
+recomendado: true
+online: true
+ordem: 3
+provisorio: true

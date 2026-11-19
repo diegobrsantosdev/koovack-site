@@ -1,0 +1,8 @@
+# PROVISÓRIO: depoimento fictício só para montar o layout.
+# Depoimentos reais só com autorização do cliente.
+texto: Texto provisório de depoimento. Aqui entra o relato real de um cliente, com autorização, em duas ou três frases.
+nome: Cliente (provisório)
+tipo_projeto: apartamento
+cidade: Recife-PE
+projeto: apartamento-exemplo
+provisorio: true

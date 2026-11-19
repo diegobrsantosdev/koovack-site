@@ -1,0 +1,11 @@
+# PROVISÓRIO: textos de exemplo. O Diogo vai definir o conteúdo real de cada forma de trabalhar.
+nome: Consultoria
+para_quem: Para quem quer orientação pontual antes de reformar ou mobiliar um ambiente.
+inclui:
+  - Conversa sobre o espaço e as necessidades (texto provisório)
+  - Sugestões de layout, cores e materiais (texto provisório)
+  - Lista de recomendações para executar por conta própria (texto provisório)
+recomendado: false
+online: true
+ordem: 1
+provisorio: true

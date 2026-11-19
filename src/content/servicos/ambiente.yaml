@@ -1,0 +1,11 @@
+# PROVISÓRIO: textos de exemplo.
+nome: Projeto de um ambiente
+para_quem: Para quem quer transformar um cômodo específico, como sala, cozinha ou quarto.
+inclui:
+  - Planta de layout do ambiente (texto provisório)
+  - Renders 3D do ambiente (texto provisório)
+  - Detalhamento de marcenaria e lista de materiais (texto provisório)
+recomendado: false
+online: true
+ordem: 2
+provisorio: true
