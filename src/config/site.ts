@@ -37,6 +37,11 @@ export const site = {
   // Vazia = formulário desligado (mostra um aviso e não envia).
   web3formsChave: import.meta.env.PUBLIC_WEB3FORMS_KEY ?? '',
 
+  // PRÉ-LANÇAMENTO: enquanto for true, TODAS as páginas pedem ao Google para não indexar (noindex).
+  // Assim o site pode ficar online para testes (ex.: koovack.pages.dev) sem aparecer nas buscas
+  // com conteúdo provisório. No lançamento (fase 9), trocar para false.
+  emConstrucao: true,
+
   // hCaptcha ("não sou um robô") no formulário. DESLIGADO de propósito: pode pedir para a pessoa
   // resolver desafios e espantar clientes. O honeypot já barra a maioria dos robôs.
   // Ligar (true) só se começar a chegar spam. Se ligar, citar o hCaptcha na página de Privacidade.
