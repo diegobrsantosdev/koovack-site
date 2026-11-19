@@ -1,17 +1,21 @@
 // Conteúdo da home que não pertence a uma coleção (projetos, serviços, depoimentos).
 // Para trocar uma imagem do slideshow: coloque o arquivo em src/assets/hero/ e ajuste a lista abaixo.
-import hero01 from '../assets/hero/01.jpg';
-import hero02 from '../assets/hero/02.jpg';
-import hero03 from '../assets/hero/03.jpg';
-import hero04 from '../assets/hero/04.jpg';
+import saireJantar from '../assets/hero/saire-jantar.jpg';
+import saireFachada from '../assets/hero/saire-fachada.jpg';
+import saireCozinha from '../assets/hero/saire-cozinha.jpg';
+import sairePiscina from '../assets/hero/saire-piscina.jpg';
 import fotoDiogo from '../assets/sobre/diogo.jpg';
 
-// PROVISÓRIO: imagens de exemplo. Trocar por 4 a 6 renders reais (horizontais, de alta qualidade).
+// Renders reais da Casa Sairé. Quando houver outros projetos, misturar ambientes de projetos
+// diferentes (4 a 6 imagens horizontais). A primeira é a que carrega mais rápido.
 export const slidesHero = [
-  { imagem: hero01, alt: 'Render provisório 1 do slideshow da home' },
-  { imagem: hero02, alt: 'Render provisório 2 do slideshow da home' },
-  { imagem: hero03, alt: 'Render provisório 3 do slideshow da home' },
-  { imagem: hero04, alt: 'Render provisório 4 do slideshow da home' },
+  {
+    imagem: saireJantar,
+    alt: 'Sala de jantar com mesa de mármore, cadeiras de madeira e luminárias circulares, na Casa Sairé',
+  },
+  { imagem: saireFachada, alt: 'Fachada da Casa Sairé, com muro de pedra natural e ripado de madeira' },
+  { imagem: saireCozinha, alt: 'Cozinha com ilha de mármore e armários de madeira iluminados, na Casa Sairé' },
+  { imagem: sairePiscina, alt: 'Piscina com cascata na parede de pedra e deck de madeira, na Casa Sairé' },
 ];
 
 // PROVISÓRIO: passos de exemplo. O Diogo confirma como funciona o processo dele.
