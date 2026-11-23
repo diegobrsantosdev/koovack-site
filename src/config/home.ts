@@ -4,7 +4,7 @@ import saireJantar from '../assets/hero/saire-jantar.jpg';
 import saireFachada from '../assets/hero/saire-fachada.jpg';
 import saireCozinha from '../assets/hero/saire-cozinha.jpg';
 import sairePiscina from '../assets/hero/saire-piscina.jpg';
-import fotoDiogo from '../assets/sobre/diogo.jpg';
+import fotoDiogo from '../assets/sobre/diogo-poltrona.jpg';
 
 // Renders reais da Casa Sairé. Quando houver outros projetos, misturar ambientes de projetos
 // diferentes (4 a 6 imagens horizontais). A primeira é a que carrega mais rápido.
@@ -38,14 +38,17 @@ export const passosComoFunciona = [
   },
 ];
 
-// Foto e texto do "Sobre" (home e página Sobre). A foto atual tem só ~700 px: trocar pela
-// original em alta resolução quando possível.
+// Foto e texto do "Sobre" (home e página Sobre).
+// Foto: fotoperfil3 (docs/referencias), recortada em RETRATO 3:4 (o mesmo espaço da foto antiga),
+// da cabeça aos joelhos, em alta resolução (1688 × 2250). Diego, 23/11/2026: manter o tamanho/
+// formato de antes e só encaixar a foto nova (o layout horizontal 4:3 foi testado e recusado).
+// Texto: reescrito em 23/11/2026 sem os "4 anos de estágio", a partir do que o próprio Diogo diz
+// (História → arquitetura, foco em interiores, renders e vídeos). Revisar com ele.
 export const sobreResumo = {
   foto: fotoDiogo,
-  alt: 'Diogo Koovack, de óculos e jaqueta clara, de braços cruzados encostado em uma parede branca',
+  alt: 'Diogo Koovack sorrindo, de camiseta preta, sentado em uma poltrona clara diante de um painel de madeira',
   titulo: 'Diogo Koovack',
   subtitulo: 'Arquiteto e urbanista',
-  // Adaptado do post de apresentação do Diogo no Instagram. Revisar com ele.
   texto:
-    'Arquiteto e urbanista em Recife, cheguei à arquitetura depois de um caminho que começou na História. Quatro anos de estágios me ensinaram que um bom projeto começa por entender quem vai viver o espaço.',
+    'Arquiteto e urbanista em Recife, com foco em arquitetura de interiores. Do primeiro estudo ao render final, cuido de cada etapa para que você enxergue o seu espaço antes mesmo da obra.',
 };

@@ -1,7 +1,8 @@
 ---
-// Página Sobre: foto + nome → história → ferramentas → chamada para o WhatsApp.
-// Texto adaptado do post de apresentação do próprio Diogo no Instagram (só fatos que ele mesmo
-// publicou: caminho da História à Arquitetura, 4 anos de estágios, Recife). REVISAR COM ELE.
+// Página Sobre: foto + nome → história → especialidades e ferramentas → chamada para o WhatsApp.
+// Texto reescrito em 23/11/2026, mais profissional e SEM os "4 anos de estágio" (pedido do Diego).
+// Só usa o que o próprio Diogo disse/publicou: veio da História, arquiteto e urbanista em Recife,
+// foco em arquitetura de interiores, gera imagens e vídeos (renderização). REVISAR COM ELE.
 // A seção "Bastidores" volta quando houver fotos do processo (croquis, maquetes, obra).
 import { Picture } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
@@ -9,6 +10,15 @@ import Secao from '../components/ui/Secao.astro';
 import BotaoWhatsApp from '../components/ui/BotaoWhatsApp.astro';
 import { sobreResumo } from '../config/home';
 
+// O que o Diogo faz (fonte: o que ele mesmo descreveu em 23/11/2026). REVISAR COM ELE.
+const especialidades = [
+  'Arquitetura residencial',
+  'Espaços comerciais',
+  'Arquitetura de interiores',
+  'Modelagem 3D',
+  'Renderização realista',
+  'Vídeos e animações',
+];
 // Ferramentas que o Diogo usa (fonte: documento de contexto)
 const ferramentas = ['AutoCAD', 'Revit', 'SketchUp', 'Layout', 'Enscape'];
 ---
@@ -23,7 +33,7 @@ const ferramentas = ['AutoCAD', 'Revit', 'SketchUp', 'Layout', 'Enscape'];
       src={sobreResumo.foto}
       alt={sobreResumo.alt}
       formats={['avif', 'webp']}
-      widths={[400, 700, 900]}
+      widths={[400, 700, 900, 1200]}
       sizes="(min-width: 56rem) 26rem, 100vw"
       loading="eager"
     />
@@ -31,9 +41,9 @@ const ferramentas = ['AutoCAD', 'Revit', 'SketchUp', 'Layout', 'Enscape'];
       <h1>Diogo Koovack</h1>
       <p class="topo__cargo">Arquiteto e urbanista</p>
       <p>
-        Sou arquiteto e urbanista em Recife e acredito que um bom projeto começa por entender quem vai
-        viver o espaço. Desenvolvo projetos de arquitetura e interiores para casas, apartamentos e
-        espaços comerciais, em Recife e em todo o Brasil.
+        Sou arquiteto e urbanista em Recife, com foco em arquitetura de interiores. Acredito que um bom
+        projeto começa por entender quem vai viver o espaço. Desenvolvo projetos para casas,
+        apartamentos e espaços comerciais, em Recife e em todo o Brasil.
       </p>
     </div>
   </section>
@@ -41,22 +51,27 @@ const ferramentas = ['AutoCAD', 'Revit', 'SketchUp', 'Layout', 'Enscape'];
   <Secao titulo="Minha história" fundo="alt">
     <div class="prosa">
       <p>
-        Cheguei à arquitetura depois de um longo caminho. Antes dela veio a História, e foi esse olhar
-        para as pessoas, a cidade e o tempo que me trouxe até aqui. A arquitetura se revelou como
-        vocação e me conduziu naturalmente à área em que atuo hoje.
+        Cheguei à arquitetura pela História. O olhar para as pessoas, a cidade e o tempo continua
+        presente na forma como projeto: espaços que fazem sentido para quem vive neles, com identidade
+        e atenção a cada detalhe.
       </p>
       <p>
-        Foram quatro anos de estágios em arquitetura, vivendo de perto o dia a dia de escritório e da
-        prática profissional. É dessa experiência que vem a forma como trabalho: técnica,
-        sensibilidade e cuidado em cada etapa, do primeiro esboço ao render final.
+        Hoje meu trabalho une projeto e imagem. Desenvolvo a arquitetura e os interiores e também
+        produzo os renders e vídeos realistas que mostram, antes da obra, como cada ambiente vai ficar.
+        Assim, as decisões são tomadas com clareza e segurança, do primeiro estudo à entrega.
       </p>
     </div>
   </Secao>
 
-  <Secao titulo="Ferramentas">
-    <ul class="ferramentas">
-      {ferramentas.map((f) => <li>{f}</li>)}
-    </ul>
+  <Secao titulo="Especialidades e ferramentas">
+    <div class="habilidades">
+      <ul class="ferramentas" aria-label="Especialidades">
+        {especialidades.map((e) => <li>{e}</li>)}
+      </ul>
+      <ul class="ferramentas ferramentas--programas" aria-label="Ferramentas">
+        {ferramentas.map((f) => <li>{f}</li>)}
+      </ul>
+    </div>
   </Secao>
 
   <Secao>
@@ -107,6 +122,16 @@ const ferramentas = ['AutoCAD', 'Revit', 'SketchUp', 'Layout', 'Enscape'];
     max-width: 40rem;
   }
 
+  .habilidades {
+    display: flex;
+    flex-direction: column;
+    gap: var(--esp-4);
+  }
+  /* Programas: mesmo formato das especialidades, mais discretos (contorno tracejado) */
+  .ferramentas--programas li {
+    border-style: dashed;
+    opacity: 0.85;
+  }
   .ferramentas {
     list-style: none;
     padding: 0;
