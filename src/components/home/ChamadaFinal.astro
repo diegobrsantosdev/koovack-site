@@ -1,20 +1,26 @@
 ---
-// Chamada final (home e Sobre): WhatsApp em destaque e o formulário (página Contato) como alternativa.
+// Chamada final (home, Sobre e Formas de trabalhar): WhatsApp em destaque e o formulário
+// (página Contato, "Enviar mensagem") como alternativa.
+// Personalização por página:
+// - `titulo` e `texto` (texto simples), ou um <p> próprio no slot padrão (ex.: com o serviço escolhido);
+// - slot "whatsapp": troca o botão padrão por outro (ex.: o botão dinâmico de Formas de trabalhar).
 import BotaoWhatsApp from '../ui/BotaoWhatsApp.astro';
 
 interface Props {
-  texto?: string; // frase abaixo do título (cada página pode ter a sua)
+  titulo?: string;
+  texto?: string; // frase abaixo do título (ignorada se a página passar o seu próprio texto no slot)
 }
 const {
+  titulo = 'Vamos conversar?',
   texto = 'Conte o que você precisa e receba um orçamento. Atendimento em Recife e em todo o Brasil.',
 } = Astro.props;
 ---
 
 <div class="chamada">
-  <h2>Vamos conversar?</h2>
-  <p>{texto}</p>
+  <h2>{titulo}</h2>
+  {Astro.slots.has('default') ? <slot /> : <p>{texto}</p>}
   <div class="chamada__botoes">
-    <BotaoWhatsApp />
+    {Astro.slots.has('whatsapp') ? <slot name="whatsapp" /> : <BotaoWhatsApp />}
     <a class="chamada__mensagem" href="/contato">Enviar mensagem</a>
   </div>
 </div>
@@ -30,7 +36,7 @@ const {
   .chamada h2 {
     font-size: clamp(1.5rem, 1.2rem + 1.4vw, 2.375rem);
   }
-  .chamada p {
+  .chamada :global(p) {
     max-width: 34rem;
   }
   .chamada__botoes {

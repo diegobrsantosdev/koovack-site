@@ -11,6 +11,7 @@ import SeletorServicos from '../components/servicos/SeletorServicos.astro';
 import FAQ from '../components/servicos/FAQ.astro';
 import BotaoWhatsApp from '../components/ui/BotaoWhatsApp.astro';
 import FaixaEscritorios from '../components/ui/FaixaEscritorios.astro';
+import ChamadaFinal from '../components/home/ChamadaFinal.astro';
 import { mensagemServico } from '../lib/whatsapp';
 
 const servicos = (await getCollection('servicos')).sort((a, b) => a.data.ordem - b.data.ordem);
@@ -39,14 +40,18 @@ const nomePadrao = (servicos.find((s) => s.data.recomendado) ?? servicos[0]).dat
   </Secao>
 
   <Secao>
-    <div class="chamada">
-      <h2>Quer saber valores e prazos?</h2>
+    <ChamadaFinal titulo="Quer saber valores e prazos?">
       <p>
         Cada projeto é orçado conforme o tamanho e o escopo. Me chame no WhatsApp para{' '}
         <strong data-servico-escolhido>{nomePadrao}</strong> e eu explico.
       </p>
-      <BotaoWhatsApp mensagem={mensagemServico(nomePadrao)} rastreio={{ servico: nomePadrao }} dinamico />
-    </div>
+      <BotaoWhatsApp
+        slot="whatsapp"
+        mensagem={mensagemServico(nomePadrao)}
+        rastreio={{ servico: nomePadrao }}
+        dinamico
+      />
+    </ChamadaFinal>
   </Secao>
 
   <!-- Só no fim, depois de todo o conteúdo do cliente final: caminho para o serviço B2B -->
@@ -57,17 +62,8 @@ const nomePadrao = (servicos.find((s) => s.data.recomendado) ?? servicos[0]).dat
   .servicos {
     padding-block: var(--esp-2) var(--esp-8);
   }
-  .chamada {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: var(--esp-4);
-    text-align: center;
-  }
-  .chamada h2 {
-    font-size: clamp(1.375rem, 1.1rem + 1.2vw, 2.125rem);
-  }
-  .chamada strong {
+  /* nome do serviço escolhido, dentro do texto da chamada final */
+  strong[data-servico-escolhido] {
     font-weight: 600;
   }
 </style>
