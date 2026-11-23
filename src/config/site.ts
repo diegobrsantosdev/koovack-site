@@ -5,7 +5,7 @@ export const site = {
   nome: 'Koovack Arquitetura',
   arquiteto: 'Diogo Koovack',
   url: 'https://koovackarquitetura.com.br',
-  descricao: 'Arquitetura e interiores de alto padrão. Recife e todo o Brasil.',
+  descricao: 'Arquitetura e interiores. Recife e todo o Brasil.',
   atendimento: 'Recife e todo o Brasil',
   email: 'koovackarquitetura@gmail.com', // e-mail público da marca
 
@@ -23,7 +23,7 @@ export const site = {
   // Textos do topo da home
   hero: {
     frase: 'Interiores que contam a sua história', // PROVISÓRIO
-    linha: 'Arquitetura e interiores de alto padrão',
+    linha: 'Arquitetura e interiores',
   },
 
   // Faixa de áreas da home
