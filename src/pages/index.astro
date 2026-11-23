@@ -10,6 +10,7 @@ import SeletorServicos from '../components/servicos/SeletorServicos.astro';
 import Depoimentos from '../components/home/Depoimentos.astro';
 import SobreResumo from '../components/home/SobreResumo.astro';
 import ChamadaFinal from '../components/home/ChamadaFinal.astro';
+import FaixaEscritorios from '../components/ui/FaixaEscritorios.astro';
 import CarrosselProjetos from '../components/projetos/CarrosselProjetos.astro';
 import { projetosOrdenados } from '../lib/projetos';
 
@@ -50,6 +51,9 @@ const destaques = (await projetosOrdenados()).filter((p) => p.data.destaque);
   <Secao fundo="alt">
     <ChamadaFinal />
   </Secao>
+
+  <!-- Só no fim, depois de todo o conteúdo do cliente final: caminho para arquitetos/escritórios -->
+  <FaixaEscritorios fundo="claro" />
 </BaseLayout>
 
 <style>

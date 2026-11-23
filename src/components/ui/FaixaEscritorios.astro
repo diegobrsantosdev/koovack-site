@@ -1,0 +1,50 @@
+---
+// Faixa discreta que leva arquitetos/escritórios à página /renderizacao (serviço B2B).
+// Vai SEMPRE no fim da página, depois de todo o conteúdo do cliente final, para não misturar.
+// Usada no fim da home e de Formas de trabalhar.
+// fundo "alt" (cinza-claro) ou "claro" (branco): escolha o contrário da seção logo acima.
+interface Props {
+  fundo?: 'claro' | 'alt';
+}
+const { fundo = 'alt' } = Astro.props;
+---
+
+<section class:list={['escritorios', `escritorios--${fundo}`]}>
+  <div class="container escritorios__dentro">
+    <p class="escritorios__rotulo">Para escritórios de arquitetura</p>
+    <p>Também faço renders realistas a partir do seu modelo 3D.</p>
+    <a href="/renderizacao">Conheça a renderização →</a>
+  </div>
+</section>
+
+<style>
+  .escritorios {
+    padding-block: var(--esp-6);
+    border-top: 1px solid var(--cor-filete);
+  }
+  .escritorios--alt {
+    background: var(--cor-fundo-alt);
+  }
+  .escritorios--claro {
+    background: var(--cor-fundo);
+  }
+  .escritorios__dentro {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--esp-2);
+    text-align: center;
+  }
+  .escritorios__rotulo {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    opacity: 0.75;
+  }
+  .escritorios a {
+    font-size: var(--texto-pequeno);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    text-underline-offset: 0.3em;
+  }
+</style>
