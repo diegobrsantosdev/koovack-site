@@ -42,7 +42,7 @@
   --largura-max: 72rem;   /* 1152px */
   --margem-lateral: 1.25rem; /* 20px no celular */
   --altura-header: 4rem;
-  --altura-whatsapp-fixo: 3.5rem;
+  --altura-whatsapp-fixo: 2.75rem; /* 44 px: mínimo confortável para o dedo (era 3.5rem até 23/11/2026) */
   --raio: 2px; /* cards e imagens: cantos quase retos */
   --raio-botao: 999px; /* botões: cantos totalmente arredondados (pílula) */
 
