@@ -65,8 +65,15 @@ const rotuloReferencia = ehModelo ? 'Modelo 3D' : 'Planta';
         <p class="case__tipo">{ROTULO_TIPO[p.tipo]}</p>
         <h1>{p.titulo}</h1>
         <p class="case__dados">
-          {p.cidade} <span aria-hidden="true">·</span> {formatarArea(p.area_m2)}
-          <span aria-hidden="true">·</span> {p.ano}
+          {p.cidade}
+          {
+            p.area_m2 && (
+              <>
+                {' '}<span aria-hidden="true">·</span> {formatarArea(p.area_m2)}
+              </>
+            )
+          }
+          {' '}<span aria-hidden="true">·</span> {p.ano}
         </p>
         {p.credito && <p class="case__credito">{p.credito}</p>}
       </header>

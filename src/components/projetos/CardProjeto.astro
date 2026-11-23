@@ -24,7 +24,7 @@ const p = projeto.data;
   </div>
   <span class="card__tipo">{ROTULO_TIPO[p.tipo]}</span>
   <h3 class="card__titulo">{p.titulo}</h3>
-  <span class="card__dados">{p.cidade} · {formatarArea(p.area_m2)}</span>
+  <span class="card__dados">{p.cidade}{p.area_m2 && ` · ${formatarArea(p.area_m2)}`}</span>
 </a>
 
 <style>

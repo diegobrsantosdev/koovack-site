@@ -31,7 +31,7 @@ const projetos = defineCollection({
       titulo: z.string(),
       tipo: tipoProjeto,
       cidade: z.string(),
-      area_m2: z.number().positive(),
+      area_m2: z.number().positive().optional(), // sem valor = o site não mostra a área (melhor que inventar)
       ano: z.number().int().min(2000).max(2100),
       escopo: z.string(),
       ferramentas: z.array(z.string()).min(1),

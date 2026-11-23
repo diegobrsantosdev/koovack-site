@@ -10,7 +10,8 @@ const { projeto } = Astro.props;
 
 const itens = [
   { rotulo: 'Tipo', valor: ROTULO_TIPO[projeto.tipo] },
-  { rotulo: 'Área', valor: formatarArea(projeto.area_m2) },
+  // a área é opcional: sem ela, o item não aparece
+  ...(projeto.area_m2 ? [{ rotulo: 'Área', valor: formatarArea(projeto.area_m2) }] : []),
   { rotulo: 'Escopo', valor: projeto.escopo },
   { rotulo: 'Ferramentas', valor: projeto.ferramentas.join(', ') },
 ];
