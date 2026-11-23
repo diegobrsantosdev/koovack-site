@@ -1,11 +1,18 @@
 ---
-// Chamada final da home: WhatsApp em destaque e o formulário (página Contato) como alternativa.
+// Chamada final (home e Sobre): WhatsApp em destaque e o formulário (página Contato) como alternativa.
 import BotaoWhatsApp from '../ui/BotaoWhatsApp.astro';
+
+interface Props {
+  texto?: string; // frase abaixo do título (cada página pode ter a sua)
+}
+const {
+  texto = 'Conte o que você precisa e receba um orçamento. Atendimento em Recife e em todo o Brasil.',
+} = Astro.props;
 ---
 
 <div class="chamada">
   <h2>Vamos conversar?</h2>
-  <p>Conte o que você precisa e receba um orçamento. Atendimento em Recife e em todo o Brasil.</p>
+  <p>{texto}</p>
   <div class="chamada__botoes">
     <BotaoWhatsApp />
     <a class="chamada__mensagem" href="/contato">Enviar mensagem</a>
