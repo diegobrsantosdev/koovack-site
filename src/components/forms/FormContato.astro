@@ -6,17 +6,19 @@
 // hCaptcha opcional: só aparece se site.hcaptchaAtivo for true (desligado por padrão).
 // Se a chave do Web3Forms estiver vazia (.env), o formulário mostra um aviso e não envia.
 //
-// Duas variantes:
+// Três variantes:
 // - "contato" (padrão): nome, WhatsApp, cidade, tipo de projeto e mensagem (página Contato).
 // - "campanha": formulário mínimo das landing pages: nome, WhatsApp, cidade e metragem.
 //   O e-mail sai com o nome da campanha e o tipo de projeto já preenchidos.
+// - "renderizacao": para escritórios (página /renderizacao): nome, WhatsApp, cidade e
+//   "sobre o projeto" (em vez da metragem). O tipo sai fixo como "Renderização".
 import { site } from '../../config/site';
 import { linkWhatsApp } from '../../lib/whatsapp';
 
 interface Props {
-  variante?: 'contato' | 'campanha';
-  campanha?: string; // ex.: "apartamento" (só na variante campanha)
-  tipoProjeto?: string; // ex.: "Apartamento" (só na variante campanha)
+  variante?: 'contato' | 'campanha' | 'renderizacao';
+  campanha?: string; // ex.: "apartamento" (variantes campanha e renderizacao)
+  tipoProjeto?: string; // ex.: "Apartamento" (variantes campanha e renderizacao)
   textoBotao?: string;
 }
 const {
@@ -27,6 +29,7 @@ const {
 } = Astro.props;
 
 const ehCampanha = variante === 'campanha';
+const ehRenderizacao = variante === 'renderizacao';
 const tipos = ['Apartamento', 'Casa', 'Loja', 'Comercial', 'Outro'];
 const configurado = site.web3formsChave !== '';
 ---
@@ -97,6 +100,19 @@ const configurado = site.web3formsChave !== '';
           required
         />
         <p class="campo__erro">Informe a metragem aproximada, em m².</p>
+      </div>
+    ) : ehRenderizacao ? (
+      <div class="campo">
+        <label for="mensagem">
+          Sobre o projeto <span class="campo__opcional">(opcional)</span>
+        </label>
+        <textarea
+          id="mensagem"
+          name="mensagem"
+          rows="4"
+          maxlength="2000"
+          placeholder="Ex.: casa de 200 m², 5 imagens internas e 2 externas, para o dia 10."
+        />
       </div>
     ) : (
       <>
@@ -216,9 +232,14 @@ const configurado = site.web3formsChave !== '';
     const tipo = form.dataset.tipoFixo ?? String(dados.get('tipo'));
 
     // Campos que mudam conforme a variante do formulário
-    const especificos = campanha
-      ? { Metragem: `${dados.get('metragem')} m²`, 'Landing page': campanha }
-      : { Mensagem: dados.get('mensagem') || '(sem mensagem)' };
+    // (metragem só existe na variante campanha; nas outras vai a mensagem)
+    const metragem = dados.get('metragem');
+    const especificos = {
+      ...(metragem
+        ? { Metragem: `${metragem} m²` }
+        : { Mensagem: dados.get('mensagem') || '(sem mensagem)' }),
+      ...(campanha ? { 'Landing page': campanha } : {}),
+    };
 
     // O que chega no e-mail (cada campo vira uma linha)
     const corpo = {

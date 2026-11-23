@@ -13,7 +13,7 @@ export const TIPOS_PROJETO = ['apartamento', 'casa', 'loja', 'comercial'] as con
 const tipoProjeto = z.enum(TIPOS_PROJETO);
 
 // Páginas onde uma pergunta do FAQ pode aparecer
-export const PAGINAS_FAQ = ['formas-de-trabalhar', 'contato', 'campanha'] as const;
+export const PAGINAS_FAQ = ['formas-de-trabalhar', 'contato', 'campanha', 'renderizacao'] as const;
 
 // ───────────────────────── Projetos ─────────────────────────
 // Uma pasta por projeto: src/content/projetos/<slug>/index.md + imagens.

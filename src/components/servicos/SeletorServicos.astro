@@ -7,7 +7,7 @@
 // - (opcional) o botão fixo da base também passa a mostrar/pedir aquele serviço;
 // - (opcional) o link "Ver detalhes" leva à página Formas de trabalhar já com a opção marcada.
 import { getCollection } from 'astro:content';
-import CardServico from './CardServico.astro';
+import CardServico, { type OpcaoServico } from './CardServico.astro';
 import BotaoWhatsApp from '../ui/BotaoWhatsApp.astro';
 import { mensagemServico } from '../../lib/whatsapp';
 
@@ -17,6 +17,11 @@ interface Props {
   blocoNoCelular?: boolean; // mostrar o bloco "Opção escolhida" também no celular
   atualizarBotaoFixo?: boolean; // o botão fixo da base acompanha a escolha
   linkDetalhes?: boolean; // mostrar "Ver detalhes de X" no bloco (home)
+  // Para usar com outras opções (ex.: pacotes da /renderizacao). Sem isso, usa as formas de trabalhar.
+  opcoes?: OpcaoServico[];
+  // Mensagem do WhatsApp com {nome} no lugar da opção escolhida. Sem isso, usa mensagemServico().
+  modeloMensagem?: string;
+  legenda?: string; // lida só por leitores de tela
 }
 const {
   compacto = false,
@@ -24,21 +29,30 @@ const {
   blocoNoCelular = true,
   atualizarBotaoFixo = false,
   linkDetalhes = false,
+  opcoes,
+  modeloMensagem,
+  legenda = 'Escolha uma forma de trabalhar',
 } = Astro.props;
 
-const servicos = (await getCollection('servicos')).sort((a, b) => a.data.ordem - b.data.ordem);
+const servicos: OpcaoServico[] =
+  opcoes ??
+  (await getCollection('servicos'))
+    .sort((a, b) => a.data.ordem - b.data.ordem)
+    .map((s) => ({ id: s.id, ...s.data }));
+const mensagem = (nome: string) => (modeloMensagem ? modeloMensagem.replace('{nome}', nome) : mensagemServico(nome));
 // Opção marcada ao abrir: a recomendada (ou a primeira, se nenhuma for)
-const padrao = servicos.find((s) => s.data.recomendado) ?? servicos[0];
-const nomePadrao = padrao.data.nome;
+const padrao = servicos.find((s) => s.recomendado) ?? servicos[0];
+const nomePadrao = padrao.nome;
 ---
 
 <div
   class="seletor"
   data-seletor-servicos
   data-atualizar-fixo={atualizarBotaoFixo ? '' : undefined}
+  data-modelo-mensagem={modeloMensagem}
 >
   <fieldset class:list={['seletor__opcoes', `seletor__opcoes--${colunas}`]}>
-    <legend class="sr-only">Escolha uma forma de trabalhar</legend>
+    <legend class="sr-only">{legenda}</legend>
     <p class="seletor__dica">Escolha uma opção para pedir o orçamento.</p>
     {servicos.map((s) => <CardServico servico={s} selecionado={s.id === padrao.id} compacto={compacto} />)}
   </fieldset>
@@ -48,7 +62,7 @@ const nomePadrao = padrao.data.nome;
     <p class="seletor__texto">
       Opção escolhida: <strong data-servico-escolhido>{nomePadrao}</strong>
     </p>
-    <BotaoWhatsApp mensagem={mensagemServico(nomePadrao)} rastreio={{ servico: nomePadrao }} dinamico />
+    <BotaoWhatsApp mensagem={mensagem(nomePadrao)} rastreio={{ servico: nomePadrao }} dinamico />
     {
       linkDetalhes && (
         <a class="seletor__detalhes" href={`/formas-de-trabalhar#${padrao.id}`} data-servico-detalhes>
@@ -66,6 +80,8 @@ const nomePadrao = padrao.data.nome;
   document.querySelectorAll<HTMLElement>('[data-seletor-servicos]').forEach((seletor) => {
     const opcoes = [...seletor.querySelectorAll<HTMLInputElement>('[data-servico-opcao]')];
     const atualizarFixo = seletor.hasAttribute('data-atualizar-fixo');
+    const modelo = seletor.dataset.modeloMensagem;
+    const mensagem = (nome: string) => (modelo ? modelo.replace('{nome}', nome) : mensagemServico(nome));
 
     function aplicar(opcao: HTMLInputElement) {
       const nome = opcao.value;
@@ -85,7 +101,7 @@ const nomePadrao = padrao.data.nome;
         }
       }
       links.forEach((link) => {
-        link.href = linkWhatsApp(mensagemServico(nome));
+        link.href = linkWhatsApp(mensagem(nome));
         link.dataset.servico = nome; // vai junto no evento whatsapp_click
       });
 

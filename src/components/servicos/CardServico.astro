@@ -3,22 +3,33 @@
 // Por baixo é um <input type="radio"> (escondido): funciona com teclado (setas) e leitor de tela.
 // A escolha atualiza o botão de WhatsApp da página (ver formas-de-trabalhar.astro).
 // O id do card permite links diretos (/formas-de-trabalhar#consultoria), que já chegam selecionando.
-import type { CollectionEntry } from 'astro:content';
+// Também é usado na página /renderizacao (pacotes), por isso recebe os dados prontos (OpcaoServico)
+// em vez de ler direto a coleção de serviços.
 import Etiqueta from '../ui/Etiqueta.astro';
 
+export interface OpcaoServico {
+  id: string;
+  nome: string;
+  para_quem: string;
+  inclui: string[];
+  recomendado: boolean;
+  online: boolean;
+  preco?: string; // ex.: "R$ 99,00" (aparece como "A partir de R$ 99,00")
+}
+
 interface Props {
-  servico: CollectionEntry<'servicos'>;
+  servico: OpcaoServico;
   selecionado?: boolean;
   compacto?: boolean; // versão da home: sem a lista "O que inclui"
 }
 const { servico, selecionado = false, compacto = false } = Astro.props;
-const s = servico.data;
+const s = servico;
 ---
 
 <label
   class:list={['card', { 'card--recomendado': s.recomendado, 'card--compacto': compacto }]}
-  id={compacto ? undefined : servico.id}
-  data-servico-id={servico.id}
+  id={compacto ? undefined : s.id}
+  data-servico-id={s.id}
 >
   <input
     class="card__radio"
@@ -40,6 +51,15 @@ const s = servico.data;
   </span>
 
   <span class="card__nome">{s.nome}</span>
+
+  {
+    s.preco && (
+      <span class="card__preco">
+        <span class="card__subtitulo">A partir de</span>
+        <span class="card__valor">{s.preco}</span>
+      </span>
+    )
+  }
 
   <span class="card__bloco">
     {!compacto && <span class="card__subtitulo">Para quem é</span>}
@@ -149,6 +169,15 @@ const s = servico.data;
     text-transform: uppercase;
     letter-spacing: var(--espacamento-titulo);
     line-height: 1.3;
+  }
+  .card__preco {
+    display: flex;
+    flex-direction: column;
+    gap: var(--esp-1);
+  }
+  .card__valor {
+    font-size: var(--texto-grande);
+    color: var(--cor-principal);
   }
   .card__bloco {
     display: flex;

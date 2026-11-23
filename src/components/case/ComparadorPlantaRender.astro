@@ -11,14 +11,15 @@ interface Props {
   planta: ImagemComAlt;
   render: ImagemComAlt;
   rotuloReferencia?: string; // "Planta" ou "Modelo 3D"
+  largo?: boolean; // ocupa toda a largura do conteúdo (página /renderizacao), sem o limite de 56rem
 }
-const { planta, render, rotuloReferencia = 'Planta' } = Astro.props;
+const { planta, render, rotuloReferencia = 'Planta', largo = false } = Astro.props;
 
 const larguras = [480, 800, 1200, 1600];
 const tamanhos = '(min-width: 72rem) 72rem, 100vw';
 ---
 
-<div class="comparador" style="--pos: 50%" data-comparador>
+<div class:list={['comparador', { 'comparador--largo': largo }]} style="--pos: 50%" data-comparador>
   <Picture
     class="comparador__img"
     src={planta.imagem}
@@ -111,6 +112,9 @@ const tamanhos = '(min-width: 72rem) 72rem, 100vw';
     touch-action: pan-y; /* arrastar na horizontal move a linha; na vertical, rola a página */
     width: 100%;
     max-width: 56rem; /* no desktop, cabe inteiro na tela */
+  }
+  .comparador--largo {
+    max-width: none;
   }
 
   .comparador :global(.comparador__img) {

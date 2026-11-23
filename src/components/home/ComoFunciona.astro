@@ -1,11 +1,17 @@
 ---
 // "Como funciona": os 4 passos, numerados. Uma coluna no celular, quatro no desktop.
+// Por padrão mostra os passos da home; outra página pode passar os seus em `passos`.
 import { passosComoFunciona } from '../../config/home';
+
+interface Props {
+  passos?: { titulo: string; texto: string }[];
+}
+const { passos = passosComoFunciona } = Astro.props;
 ---
 
 <ol class="passos">
   {
-    passosComoFunciona.map((passo, i) => (
+    passos.map((passo, i) => (
       <li class="passo">
         <span class="passo__numero" aria-hidden="true">
           {String(i + 1).padStart(2, '0')}
