@@ -17,6 +17,7 @@ import lavaboRender from '../assets/renderizacao/lavabo-render.jpg';
 export const renderizacao = {
   provisorio: true, // mostra a etiqueta "Conteúdo provisório" no topo. No lançamento: false.
 
+  publico: 'Para arquitetos e escritórios', // etiqueta acima do título: deixa claro que não é para o cliente final
   titulo: 'Renderização realista para o seu projeto', // PROVISÓRIO
   subtitulo:
     'Você envia o modelo 3D, eu entrego imagens prontas para apresentar ao seu cliente. Para escritórios de arquitetura, designers de interiores e construtoras.', // PROVISÓRIO

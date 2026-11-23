@@ -54,6 +54,7 @@ export const site = {
     { texto: 'Início', href: '/' },
     { texto: 'Projetos', href: '/projetos' },
     { texto: 'Formas de trabalhar', href: '/formas-de-trabalhar' },
+    { texto: 'Renderização', href: '/renderizacao' }, // para arquitetos e escritórios (B2B)
     { texto: 'Sobre', href: '/sobre' },
     { texto: 'Contato', href: '/contato' },
   ],

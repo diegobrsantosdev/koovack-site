@@ -47,6 +47,15 @@ const nomePadrao = (servicos.find((s) => s.data.recomendado) ?? servicos[0]).dat
       <BotaoWhatsApp mensagem={mensagemServico(nomePadrao)} rastreio={{ servico: nomePadrao }} dinamico />
     </div>
   </Secao>
+
+  <!-- Só no fim, depois de todo o conteúdo do cliente final: caminho para o serviço B2B -->
+  <section class="escritorios">
+    <div class="container escritorios__dentro">
+      <p class="escritorios__rotulo">Para escritórios de arquitetura</p>
+      <p>Também faço renders realistas a partir do seu modelo 3D.</p>
+      <a href="/renderizacao">Conheça a renderização →</a>
+    </div>
+  </section>
 </BaseLayout>
 
 <style>
@@ -65,5 +74,31 @@ const nomePadrao = (servicos.find((s) => s.data.recomendado) ?? servicos[0]).dat
   }
   .chamada strong {
     font-weight: 600;
+  }
+
+  /* Faixa discreta para escritórios (fim da página) */
+  .escritorios {
+    padding-block: var(--esp-6);
+    border-top: 1px solid var(--cor-filete);
+    background: var(--cor-fundo-alt);
+  }
+  .escritorios__dentro {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--esp-2);
+    text-align: center;
+  }
+  .escritorios__rotulo {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    opacity: 0.75;
+  }
+  .escritorios a {
+    font-size: var(--texto-pequeno);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    text-underline-offset: 0.3em;
   }
 </style>

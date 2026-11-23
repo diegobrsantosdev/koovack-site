@@ -24,6 +24,11 @@ const ano = new Date().getFullYear();
       </ul>
     </nav>
 
+    <!-- Caminho discreto para o serviço B2B, separado dos links do cliente final -->
+    <p class="footer__escritorios">
+      É arquiteto ou escritório? <a href="/renderizacao">Renderização para o seu projeto →</a>
+    </p>
+
     <p class="footer__copy">© {ano} {site.nome}</p>
   </div>
 </footer>
@@ -82,6 +87,17 @@ const ano = new Date().getFullYear();
   }
   .footer a:hover {
     text-decoration: underline;
+  }
+
+  .footer__escritorios {
+    padding-top: var(--esp-4);
+    border-top: 1px solid rgb(255 255 255 / 0.25);
+    font-size: var(--texto-pequeno);
+    opacity: 0.9;
+  }
+  .footer__escritorios a {
+    text-decoration: underline;
+    text-underline-offset: 0.3em;
   }
 
   .footer__copy {

@@ -1,6 +1,7 @@
 ---
 // Header fixo no topo. No celular: logo + botão "Menu" que abre uma gaveta.
-// No desktop (a partir de 56rem ≈ 900px): o menu aparece em linha e o botão some.
+// No desktop (a partir de 72rem ≈ 1152px): o menu aparece em linha e o botão some.
+// (Era 56rem; subiu em 23/11/2026, quando o menu ganhou o 6º item "Renderização" e deixou de caber abaixo de ~1100px.)
 import Logo from './Logo.astro';
 import { site } from '../../config/site';
 
@@ -55,7 +56,7 @@ const ativo = (href: string) =>
   // ou quando a tela cresce para o layout de desktop.
   const botao = document.querySelector<HTMLButtonElement>('[data-menu-botao]');
   const menu = document.querySelector<HTMLElement>('[data-menu]');
-  const desktop = window.matchMedia('(min-width: 56rem)');
+  const desktop = window.matchMedia('(min-width: 72rem)');
 
   function definirAberto(aberto: boolean) {
     if (!botao || !menu) return;
@@ -199,7 +200,7 @@ const ativo = (href: string) =>
   }
 
   /* Desktop: menu em linha */
-  @media (min-width: 56rem) {
+  @media (min-width: 72rem) {
     .header__botao-menu {
       display: none;
     }
@@ -215,7 +216,7 @@ const ativo = (href: string) =>
     }
     .menu__lista {
       flex-direction: row;
-      gap: var(--esp-5);
+      gap: var(--esp-4); /* um pouco menor até 80rem, para os 6 itens caberem */
     }
     .menu__lista li {
       border-bottom: 0;
@@ -225,6 +226,7 @@ const ativo = (href: string) =>
     }
     .menu__link {
       display: inline;
+      white-space: nowrap; /* "Formas de trabalhar" nunca quebra em 2 linhas */
       min-height: 0;
       font-size: var(--texto-pequeno);
       letter-spacing: 0.14em;
@@ -239,6 +241,11 @@ const ativo = (href: string) =>
     }
     .menu__redes {
       display: none;
+    }
+  }
+  @media (min-width: 80rem) {
+    .menu__lista {
+      gap: var(--esp-5);
     }
   }
 

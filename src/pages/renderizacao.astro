@@ -1,12 +1,13 @@
 ---
 // Página de renderização para escritórios de arquitetura, designers e construtoras (B2B).
 // ESQUELETO (23/11/2026): textos e valores provisórios em src/config/renderizacao.ts.
-// Fica separada do site de projetos (público final): usa o layout das landing pages
-// (só o logo no topo, fora do Google) e ainda não tem link em nenhum lugar do site.
+// Público: arquitetos e escritórios, NÃO o cliente final. Por isso o topo diz "Para arquitetos e
+// escritórios". Tem item próprio no menu, linha no rodapé, faixa no fim de Formas de trabalhar e
+// botão na página da bio (/links). Usa o layout normal do site (header, menu e rodapé).
 // Ordem: promessa → modelo × render → nossas entregas → pacotes (cards selecionáveis, como em
 // Formas de trabalhar) → como funciona → projetos → perguntas → orçamento (WhatsApp + formulário).
 import { Picture } from 'astro:assets';
-import CampanhaLayout from '../layouts/CampanhaLayout.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
 import Secao from '../components/ui/Secao.astro';
 import Etiqueta from '../components/ui/Etiqueta.astro';
 import BotaoWhatsApp from '../components/ui/BotaoWhatsApp.astro';
@@ -24,11 +25,11 @@ const rastreio = { campanha: 'renderizacao' };
 const projetos = await projetosOrdenados();
 ---
 
-<CampanhaLayout
+<BaseLayout
   titulo="Renderização"
   descricao={r.subtitulo}
-  campanha="renderizacao"
   mensagemWhatsApp={r.mensagemWhatsApp}
+  rastreioWhatsApp={rastreio}
 >
   <!-- Topo: render + promessa -->
   <section class="topo" data-esconde-whatsapp-fixo>
@@ -44,7 +45,10 @@ const projetos = await projetosOrdenados();
     />
     <div class="topo__sombra" aria-hidden="true"></div>
     <div class="container topo__conteudo">
-      {r.provisorio && <span class="topo__provisorio"><Etiqueta>Conteúdo provisório</Etiqueta></span>}
+      <div class="topo__etiquetas">
+        <Etiqueta variante="solida">{r.publico}</Etiqueta>
+        {r.provisorio && <span class="topo__provisorio"><Etiqueta>Conteúdo provisório</Etiqueta></span>}
+      </div>
       <h1>{r.titulo}</h1>
       <p class="topo__subtitulo">{r.subtitulo}</p>
       <div class="topo__botoes">
@@ -131,7 +135,7 @@ const projetos = await projetosOrdenados();
       </div>
     </div>
   </Secao>
-</CampanhaLayout>
+</BaseLayout>
 
 <script>
   // Abas do "Do modelo ao render": mostra o comparador do ambiente escolhido.
@@ -209,6 +213,11 @@ const projetos = await projetosOrdenados();
     align-items: flex-start;
     gap: var(--esp-3);
     padding-block: var(--esp-7) var(--esp-6);
+  }
+  .topo__etiquetas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--esp-2);
   }
   .topo__provisorio {
     color: var(--cor-branco);
