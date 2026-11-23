@@ -34,7 +34,7 @@ galeria:
     legenda: Hall de entrada
 
 destaque: true
-ordem: 1
+ordem: 2
 provisorio: true
 ---
 

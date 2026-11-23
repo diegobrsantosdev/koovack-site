@@ -68,7 +68,7 @@ materiais:
     cor: "#B8935A"
 
 destaque: true
-ordem: 2
+ordem: 1
 provisorio: true
 ---
 

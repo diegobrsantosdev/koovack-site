@@ -1,17 +1,22 @@
 // Conteúdo da home que não pertence a uma coleção (projetos, serviços, depoimentos).
 // Para trocar uma imagem do slideshow: coloque o arquivo em src/assets/hero/ e ajuste a lista abaixo.
 import lisboaSala from '../assets/hero/lisboa-sala.jpg';
+import lisboaEstar from '../assets/hero/lisboa-estar.jpg';
 import saireCozinha from '../assets/hero/saire-cozinha.jpg';
 import sairePiscina from '../assets/hero/saire-piscina.jpg';
 import fotoDiogo from '../assets/sobre/diogo-poltrona.jpg';
 
-// Slideshow do topo da home: os projetos se alternando (Diego, 23/11/2026).
-// Apartamento Lisboa (capa, "foto 6") → Casa Sairé (piscina, a capa nova) → Casa Sairé (cozinha).
+// Slideshow do topo da home: os projetos se ALTERNANDO, com o MESMO número de fotos por projeto
+// (regra do Diego, 23/11/2026: "se tem 2 de um, tem que ter 2 do outro").
+// Ordem: Casa Sairé (cozinha, SEMPRE a primeira) → Lisboa (sala, "foto 6") → Casa Sairé (piscina) → Lisboa (estar).
 // A fachada e o jantar da Casa Sairé saíram (a fachada "não valoriza o projeto").
-// Novo projeto: copie a imagem para src/assets/hero/ e acrescente aqui. A primeira carrega mais rápido.
+// Novo projeto: copie as fotos para src/assets/hero/ e intercale aqui, com a mesma quantidade dos
+// outros. A primeira carrega mais rápido (e também é o fundo da página /links).
 // `posicao` (opcional): qual parte da foto fica visível quando a tela corta a imagem (CSS object-position).
 // Ex.: 'center 75%' mostra mais a parte de baixo; útil no desktop, onde o topo é largo e baixo.
 export const slidesHero: { imagem: ImageMetadata; alt: string; posicao?: string }[] = [
+  // A PRIMEIRA foto do site tem que ser a cozinha da Casa Sairé (Diego, 23/11/2026)
+  { imagem: saireCozinha, alt: 'Cozinha com ilha de mármore e armários de madeira iluminados, na Casa Sairé' },
   {
     imagem: lisboaSala,
     alt: 'Sala integrada com mesa de jantar redonda de madeira, pendente de tecido e sofá claro, no Apartamento Lisboa',
@@ -21,7 +26,10 @@ export const slidesHero: { imagem: ImageMetadata; alt: string; posicao?: string 
     alt: 'Área externa com piscina, cascata na parede de pedra natural e deck de madeira, na Casa Sairé',
     posicao: 'center 80%', // mostra mais piscina e deck (sem isso, no desktop aparecia quase só a parede)
   },
-  { imagem: saireCozinha, alt: 'Cozinha com ilha de mármore e armários de madeira iluminados, na Casa Sairé' },
+  {
+    imagem: lisboaEstar,
+    alt: 'Sala de estar com rack branco, mesa de centro redonda de madeira e porta de vidro para a varanda, no Apartamento Lisboa',
+  },
 ];
 
 // PROVISÓRIO: passos de exemplo. O Diogo confirma como funciona o processo dele.
