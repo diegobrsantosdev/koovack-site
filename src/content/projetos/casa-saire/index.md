@@ -15,8 +15,10 @@ ferramentas: [SketchUp, Enscape]
 resumo: Casa construída do zero em dois terrenos, com pedra natural, madeira e área de lazer com piscina.
 
 capa:
+  # Capa = área externa com a piscina (render 34, recortado em 16:9 a partir de y=240), escolhida
+  # pelo Diego em 23/11/2026; a fachada (capa antiga) "não valoriza o projeto".
   imagem: ./capa.jpg
-  alt: Fachada da Casa Sairé, com muro de pedra natural, ripado de madeira e telhado cerâmico sob céu azul
+  alt: Área externa da Casa Sairé, com piscina, cascata na parede de pedra natural, palmeiras e deck de madeira
 galeria:
   - imagem: ./01.jpg
     alt: Sala de jantar com mesa redonda de mármore, cadeiras de madeira, luminárias circulares e cristaleira iluminada

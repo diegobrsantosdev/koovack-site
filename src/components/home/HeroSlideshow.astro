@@ -26,6 +26,7 @@ import { slidesHero } from '../../config/home';
               loading={i === 0 ? 'eager' : 'lazy'}
               fetchpriority={i === 0 ? 'high' : 'auto'}
               draggable="false"
+              style={slide.posicao ? `object-position: ${slide.posicao}` : undefined}
             />
           </div>
         ))

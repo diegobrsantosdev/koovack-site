@@ -1,21 +1,27 @@
 // Conteúdo da home que não pertence a uma coleção (projetos, serviços, depoimentos).
 // Para trocar uma imagem do slideshow: coloque o arquivo em src/assets/hero/ e ajuste a lista abaixo.
-import saireJantar from '../assets/hero/saire-jantar.jpg';
-import saireFachada from '../assets/hero/saire-fachada.jpg';
+import lisboaSala from '../assets/hero/lisboa-sala.jpg';
 import saireCozinha from '../assets/hero/saire-cozinha.jpg';
 import sairePiscina from '../assets/hero/saire-piscina.jpg';
 import fotoDiogo from '../assets/sobre/diogo-poltrona.jpg';
 
-// Renders reais da Casa Sairé. Quando houver outros projetos, misturar ambientes de projetos
-// diferentes (4 a 6 imagens horizontais). A primeira é a que carrega mais rápido.
-export const slidesHero = [
+// Slideshow do topo da home: os projetos se alternando (Diego, 23/11/2026).
+// Apartamento Lisboa (capa, "foto 6") → Casa Sairé (piscina, a capa nova) → Casa Sairé (cozinha).
+// A fachada e o jantar da Casa Sairé saíram (a fachada "não valoriza o projeto").
+// Novo projeto: copie a imagem para src/assets/hero/ e acrescente aqui. A primeira carrega mais rápido.
+// `posicao` (opcional): qual parte da foto fica visível quando a tela corta a imagem (CSS object-position).
+// Ex.: 'center 75%' mostra mais a parte de baixo; útil no desktop, onde o topo é largo e baixo.
+export const slidesHero: { imagem: ImageMetadata; alt: string; posicao?: string }[] = [
   {
-    imagem: saireJantar,
-    alt: 'Sala de jantar com mesa de mármore, cadeiras de madeira e luminárias circulares, na Casa Sairé',
+    imagem: lisboaSala,
+    alt: 'Sala integrada com mesa de jantar redonda de madeira, pendente de tecido e sofá claro, no Apartamento Lisboa',
   },
-  { imagem: saireFachada, alt: 'Fachada da Casa Sairé, com muro de pedra natural e ripado de madeira' },
+  {
+    imagem: sairePiscina,
+    alt: 'Área externa com piscina, cascata na parede de pedra natural e deck de madeira, na Casa Sairé',
+    posicao: 'center 80%', // mostra mais piscina e deck (sem isso, no desktop aparecia quase só a parede)
+  },
   { imagem: saireCozinha, alt: 'Cozinha com ilha de mármore e armários de madeira iluminados, na Casa Sairé' },
-  { imagem: sairePiscina, alt: 'Piscina com cascata na parede de pedra e deck de madeira, na Casa Sairé' },
 ];
 
 // PROVISÓRIO: passos de exemplo. O Diogo confirma como funciona o processo dele.
