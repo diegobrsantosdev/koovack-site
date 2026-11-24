@@ -2,7 +2,6 @@
 // ESQUELETO: textos e valores PROVISÓRIOS. O Diogo ainda decide preços, prazos, revisões,
 // o que entrega e quanto falar de "IA" (ver o PDF de preços de 23/11/2026).
 // Para mudar um texto ou um preço, mexa só aqui; a página lê tudo deste arquivo.
-import heroImagem from '../assets/hero/saire-cozinha.jpg';
 // Pares "modelo 3D × render" da Casa Sairé, ALINHADOS (mesmo enquadramento) para o comparador
 // de arrastar. Originais em docs/casa-saire (render nº × modelo nº, anotados abaixo).
 import cozinhaModelo from '../assets/renderizacao/cozinha-modelo.jpg';
@@ -20,16 +19,14 @@ export const renderizacao = {
   publico: 'Para arquitetos e escritórios', // etiqueta acima do título: deixa claro que não é para o cliente final
   titulo: 'Renderização realista para o seu projeto', // PROVISÓRIO
   subtitulo:
-    'Você envia o modelo 3D, eu entrego imagens prontas para apresentar ao seu cliente. Para escritórios de arquitetura, designers de interiores e construtoras.', // PROVISÓRIO
-  hero: {
-    imagem: heroImagem,
-    alt: 'Cozinha com ilha de mármore e armários de madeira iluminados, render da Casa Sairé',
-  },
+    'Você envia o modelo 3D, eu entrego imagens prontas para apresentar ao seu cliente.', // PROVISÓRIO. O público já está na etiqueta acima do título.
 
   mensagemWhatsApp:
     'Olá! Sou de um escritório de arquitetura e quero um orçamento de renderização.', // PROVISÓRIO
 
-  // "Do modelo ao render": uma aba por ambiente. A primeira é a que abre.
+  // Ambientes "modelo 3D × render", usados em 2 lugares, NESTA ordem:
+  // - topo da página (modelo virando render, um ambiente por vez; a cozinha abre, pedido do Diego 24/11/2026);
+  // - seção "Do modelo ao render" (uma aba por ambiente; a primeira é a que abre).
   comparacoes: [
     {
       nome: 'Cozinha', // render 18 × modelo 63
@@ -61,9 +58,12 @@ export const renderizacao = {
   ],
 
   // Pacotes: mesmos cards da página Formas de trabalhar (selecionáveis), com "A partir de".
-  // Valores definidos pelo Diogo em 23/11/2026, menos o de 10 imagens, que é uma CONTA PROVISÓRIA:
-  // de 1 para 3 imagens o preço por imagem cai ~16% (R$ 99 → R$ 83,30); aplicando a mesma queda
-  // de novo, fica ~R$ 70 por imagem → 10 imagens por R$ 699,90. O Diogo confirma.
+  // Avulsa e vídeo: valores definidos pelo Diogo em 23/11/2026. Os pacotes de 5 e 10 são CONTAS
+  // PROVISÓRIAS (o Diogo confirma):
+  // - 10 imagens: o antigo pacote de 3 (R$ 249,90, do Diogo) dava R$ 83,30 por imagem, ~16% menos
+  //   que a avulsa; aplicando a mesma queda de novo, ~R$ 70 por imagem → R$ 699,90.
+  // - 5 imagens (24/11/2026, substituiu o de 3 a pedido do Diego: degraus 1 → 5 → 10): desconto
+  //   proporcional entre o de 3 e o de 10, ~R$ 77,65 por imagem → R$ 389,90 (R$ 77,98 por imagem).
   // "inclui" ainda é provisório (prazo e ajustes dependem dele).
   pacotes: [
     {
@@ -76,11 +76,11 @@ export const renderizacao = {
       online: false,
     },
     {
-      id: 'pacote-3',
-      nome: 'Pacote de 3 imagens',
-      preco: 'R$ 249,90',
-      para_quem: 'Ângulos diferentes do mesmo projeto.',
-      inclui: ['3 imagens em alta resolução', 'Ajustes incluídos (texto provisório)'],
+      id: 'pacote-5',
+      nome: 'Pacote de 5 imagens',
+      preco: 'R$ 389,90', // PROVISÓRIO (ver a conta acima)
+      para_quem: 'Os principais ambientes de um projeto.',
+      inclui: ['5 imagens em alta resolução', 'Ajustes incluídos (texto provisório)'],
       recomendado: false,
       online: false,
     },

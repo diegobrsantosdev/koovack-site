@@ -3,7 +3,7 @@
 // O filtro funciona no navegador (sem recarregar). Sem JavaScript, todos os projetos aparecem.
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import CardProjeto from '../../components/projetos/CardProjeto.astro';
-import BotaoWhatsApp from '../../components/ui/BotaoWhatsApp.astro';
+import ChamadaFinal from '../../components/home/ChamadaFinal.astro';
 import { projetosOrdenados } from '../../lib/projetos';
 
 const projetos = await projetosOrdenados();
@@ -64,9 +64,10 @@ const filtros = [
     </p>
 
     <section class="nao-achou">
-      <h2>Não achou o que procura?</h2>
-      <p>Me conte sobre o seu espaço. Cada projeto é feito sob medida.</p>
-      <BotaoWhatsApp />
+      <ChamadaFinal
+        titulo="Não achou o que procura?"
+        texto="Me conte sobre o seu espaço. Cada projeto é feito sob medida."
+      />
     </section>
   </div>
 </BaseLayout>
@@ -163,18 +164,12 @@ const filtros = [
     display: none;
   }
 
+  /* Faixa cinza com a chamada final (WhatsApp + "Enviar mensagem") */
   .nao-achou {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: var(--esp-3);
     margin-top: var(--esp-5);
     padding: var(--esp-6) var(--margem-lateral);
     margin-inline: calc(var(--margem-lateral) * -1);
     background: var(--cor-fundo-alt);
-  }
-  .nao-achou h2 {
-    font-size: clamp(1.25rem, 1.1rem + 0.8vw, 1.75rem);
   }
   @media (min-width: 48rem) {
     .nao-achou {

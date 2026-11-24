@@ -1,0 +1,466 @@
+---
+// Conteúdo da página de renderização (B2B: escritórios de arquitetura, designers e construtoras).
+// Usado por DUAS páginas, para um texto trocado valer nas duas:
+// - /renderizacao (layout normal do site, com menu): src/pages/renderizacao.astro
+// - /lp/renderizacao (anúncios e redes sociais: só o logo no topo, fora do Google): src/pages/lp/renderizacao.astro
+// Textos e valores (provisórios) em src/config/renderizacao.ts.
+// Ordem: promessa → modelo × render → nossas entregas → pacotes (cards selecionáveis, como em
+// Formas de trabalhar) → como funciona → projetos → perguntas → orçamento (WhatsApp + formulário).
+import { Picture } from 'astro:assets';
+import Secao from '../ui/Secao.astro';
+import Etiqueta from '../ui/Etiqueta.astro';
+import BotaoWhatsApp from '../ui/BotaoWhatsApp.astro';
+import ComparadorPlantaRender from '../case/ComparadorPlantaRender.astro';
+import CarrosselProjetos from '../projetos/CarrosselProjetos.astro';
+import ComoFunciona from '../home/ComoFunciona.astro';
+import FAQ from '../servicos/FAQ.astro';
+import SeletorServicos from '../servicos/SeletorServicos.astro';
+import FormContato from '../forms/FormContato.astro';
+import { projetosOrdenados } from '../../lib/projetos';
+import { renderizacao as r } from '../../config/renderizacao';
+
+interface Props {
+  campanha: string; // de onde veio o contato (aparece no WhatsApp/formulário): "renderizacao" ou "lp-renderizacao"
+}
+const { campanha } = Astro.props;
+const rastreio = { campanha };
+
+const projetos = await projetosOrdenados();
+---
+
+<!--
+  Topo: "modelo virando render" (escolhido pelo Diego em 24/11/2026, entre isso e fade com zoom).
+  Cada ambiente de r.comparacoes (na mesma ordem; a cozinha abre) começa como a tela do modelo 3D;
+  uma linha branca revela o render da esquerda para a direita; depois passa ao próximo ambiente.
+  Tempos: modelo 2 s → revelação 2,2 s → render ~5 s (ciclo de 9,5 s, no <script>).
+  Só começa quando a primeira foto carregou. Com "reduzir movimento": só o primeiro render, parado.
+-->
+<section class="topo" data-esconde-whatsapp-fixo data-topo-render>
+  <div class="topo__slides">
+    {
+      r.comparacoes.map((c, i) => (
+        <div class:list={['topo__slide', { 'is-ativo': i === 0 }]}>
+          <Picture
+            class="topo__img"
+            src={c.modelo.imagem}
+            alt=""
+            formats={['avif', 'webp']}
+            widths={[480, 800, 1200, 1920]}
+            sizes="100vw"
+            loading={i === 0 ? 'eager' : 'lazy'}
+            fetchpriority={i === 0 ? 'high' : 'auto'}
+          />
+          <div class="topo__render">
+            <Picture
+              class="topo__img"
+              src={c.render.imagem}
+              alt={c.render.alt}
+              formats={['avif', 'webp']}
+              widths={[480, 800, 1200, 1920]}
+              sizes="100vw"
+              loading={i === 0 ? 'eager' : 'lazy'}
+              fetchpriority={i === 0 ? 'high' : 'auto'}
+            />
+          </div>
+          <span class="topo__linha" aria-hidden="true" />
+          <span class="topo__rotulo" aria-hidden="true">
+            <span class="topo__rotulo-modelo">Modelo 3D</span>
+            <span class="topo__rotulo-render">Render</span>
+          </span>
+        </div>
+      ))
+    }
+  </div>
+  <div class="topo__sombra" aria-hidden="true"></div>
+  <div class="container topo__conteudo">
+    <div class="topo__etiquetas">
+      <Etiqueta variante="solida">{r.publico}</Etiqueta>
+      {r.provisorio && <span class="topo__provisorio"><Etiqueta>Conteúdo provisório</Etiqueta></span>}
+    </div>
+    <h1>{r.titulo}</h1>
+    <p class="topo__subtitulo">{r.subtitulo}</p>
+    <div class="topo__botoes">
+      <BotaoWhatsApp mensagem={r.mensagemWhatsApp} rastreio={rastreio} />
+      <a class="topo__link" href="#pacotes">Ver pacotes</a>
+    </div>
+  </div>
+</section>
+
+<Secao titulo="Do modelo ao render" subtitulo="Arraste a linha para comparar a tela do modelo 3D com a imagem final.">
+  <div class="antes-depois" data-abas>
+    <div class="antes-depois__abas" role="group" aria-label="Escolha o ambiente">
+      {
+        r.comparacoes.map((c, i) => (
+          <button type="button" class="aba" aria-pressed={i === 0 ? 'true' : 'false'} data-aba={i}>
+            {c.nome}
+          </button>
+        ))
+      }
+    </div>
+    {
+      r.comparacoes.map((c, i) => (
+        <div class="antes-depois__painel" data-painel={i} hidden={i !== 0}>
+          <ComparadorPlantaRender planta={c.modelo} render={c.render} rotuloReferencia="Modelo 3D" largo />
+        </div>
+      ))
+    }
+  </div>
+</Secao>
+
+<Secao titulo="Nossas entregas" fundo="alt">
+  <ul class="lista-tres">
+    {
+      r.entregas.map((s) => (
+        <li class="item">
+          <h3>{s.titulo}</h3>
+          <p>{s.texto}</p>
+        </li>
+      ))
+    }
+  </ul>
+</Secao>
+
+<Secao titulo="Pacotes" id="pacotes">
+  <p class="nota">{r.notaPacotes}</p>
+  <SeletorServicos
+    opcoes={r.pacotes}
+    modeloMensagem={r.mensagemPacote}
+    legenda="Escolha um pacote"
+    colunas={2}
+  />
+</Secao>
+
+<Secao titulo="Como funciona" fundo="alt">
+  <ComoFunciona passos={r.passos} />
+</Secao>
+
+{
+  projetos.length > 0 && (
+    <Secao titulo="Projetos renderizados" fundo="alt">
+      <CarrosselProjetos projetos={projetos} rotulo="Projetos renderizados" />
+    </Secao>
+  )
+}
+
+<Secao titulo="Perguntas frequentes">
+  <FAQ pagina="renderizacao" />
+</Secao>
+
+<Secao titulo="Peça seu orçamento" fundo="alt" id="orcamento">
+  <div class="orcamento">
+    <div class="orcamento__whatsapp">
+      <p>O jeito mais rápido é pelo WhatsApp:</p>
+      <BotaoWhatsApp mensagem={r.mensagemWhatsApp} rastreio={rastreio} />
+    </div>
+    <div class="orcamento__form">
+      <p>Ou deixe seus dados que eu entro em contato:</p>
+      <FormContato
+        variante="renderizacao"
+        campanha={campanha}
+        tipoProjeto="Renderização"
+        textoBotao="Quero meu orçamento"
+      />
+    </div>
+  </div>
+</Secao>
+
+
+<script>
+  // Topo "modelo virando render": troca de ambiente a cada 9,5 s
+  // (2 s de modelo + 2,2 s de revelação + ~5 s de render; os tempos da animação estão no CSS).
+  const topo = document.querySelector<HTMLElement>('[data-topo-render]');
+  const menosMovimento = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (topo && !menosMovimento) {
+    const slides = [...topo.querySelectorAll<HTMLElement>('.topo__slide')];
+    // Só começa quando as 2 fotos do primeiro ambiente (modelo e render) carregaram
+    const fotos = [...slides[0].querySelectorAll('img')];
+    const carregada = (img: HTMLImageElement) =>
+      new Promise<void>((ok) => {
+        if (img.complete) return ok();
+        img.addEventListener('load', () => ok(), { once: true });
+        img.addEventListener('error', () => ok(), { once: true }); // se falhar, começa mesmo assim
+      });
+    Promise.all(fotos.map(carregada)).then(() => {
+      topo.classList.add('is-pronto');
+      let atual = 0;
+      setInterval(() => {
+        if (document.hidden) return; // aba escondida: não avança
+        slides[atual].classList.remove('is-ativo');
+        atual = (atual + 1) % slides.length;
+        slides[atual].classList.add('is-ativo');
+      }, 9500);
+    });
+  }
+
+  // Abas do "Do modelo ao render": mostra o comparador do ambiente escolhido.
+  document.querySelectorAll<HTMLElement>('[data-abas]').forEach((bloco) => {
+    const abas = [...bloco.querySelectorAll<HTMLButtonElement>('[data-aba]')];
+    const paineis = [...bloco.querySelectorAll<HTMLElement>('[data-painel]')];
+    abas.forEach((aba) =>
+      aba.addEventListener('click', () => {
+        abas.forEach((a) => a.setAttribute('aria-pressed', String(a === aba)));
+        paineis.forEach((p) => (p.hidden = p.dataset.painel !== aba.dataset.aba));
+      }),
+    );
+  });
+</script>
+
+<style>
+  /* Do modelo ao render: abas em pílula + comparador grande */
+  .antes-depois {
+    display: flex;
+    flex-direction: column;
+    gap: var(--esp-4);
+  }
+  .antes-depois__abas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--esp-2);
+  }
+  .aba {
+    min-height: 2.75rem;
+    padding: var(--esp-1) var(--esp-4);
+    border: 1px solid var(--cor-principal);
+    border-radius: var(--raio-botao);
+    background: transparent;
+    color: var(--cor-principal);
+    font: inherit;
+    font-size: var(--texto-pequeno);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    cursor: pointer;
+    transition: background-color var(--transicao), color var(--transicao);
+  }
+  .aba[aria-pressed='true'] {
+    background: var(--cor-principal);
+    color: var(--cor-branco);
+  }
+
+  /* Topo com render de fundo e promessa por cima (mesmo visual das landing pages) */
+  .topo {
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    min-height: calc(88svh - var(--altura-header));
+    color: var(--cor-branco);
+    background: #222;
+    overflow: hidden;
+  }
+  .topo :global(picture) {
+    position: absolute;
+    inset: 0;
+  }
+  .topo :global(.topo__img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* Ambientes empilhados; só o ativo aparece (troca com fade) */
+  .topo__slides,
+  .topo__slide,
+  .topo__render {
+    position: absolute;
+    inset: 0;
+  }
+  .topo__slides {
+    z-index: 0; /* fica atrás do degradê e do texto */
+  }
+  .topo__slide {
+    opacity: 0;
+    transition: opacity 1.2s ease;
+  }
+  .topo__slide.is-ativo {
+    opacity: 1;
+    z-index: 1;
+  }
+  .topo__linha,
+  .topo__rotulo {
+    display: none;
+  }
+
+  /* Modelo virando render (só para quem não pediu "reduzir movimento") */
+  @media (prefers-reduced-motion: no-preference) {
+    /* Antes de a primeira foto carregar: mostra o modelo, sem animar ainda */
+    .topo:not(.is-pronto) .topo__slide.is-ativo .topo__render {
+      clip-path: inset(0 100% 0 0);
+    }
+    /* Revelação: o render "abre" da esquerda para a direita, depois de 2 s de modelo */
+    .topo.is-pronto .topo__slide.is-ativo .topo__render {
+      animation: revelar 2.2s ease-in-out 2s both;
+    }
+    .topo__linha {
+      display: block;
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      width: 2px;
+      background: rgb(255 255 255 / 0.9);
+      box-shadow: 0 0 12px rgb(255 255 255 / 0.6);
+      opacity: 0;
+    }
+    .topo.is-pronto .topo__slide.is-ativo .topo__linha {
+      animation: linha 2.2s ease-in-out 2s both;
+    }
+
+    /* Rótulo no alto à esquerda: "Modelo 3D", depois "Render" */
+    .topo__rotulo {
+      display: block;
+      position: absolute;
+      top: var(--esp-3);
+      left: var(--margem-lateral);
+      font-size: var(--texto-pequeno);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      text-shadow: 0 1px 4px rgb(0 0 0 / 0.6);
+    }
+    .topo__rotulo-modelo,
+    .topo__rotulo-render {
+      position: absolute;
+      white-space: nowrap;
+      opacity: 0;
+    }
+    .topo__slide.is-ativo .topo__rotulo-modelo {
+      opacity: 1;
+    }
+    .topo.is-pronto .topo__slide.is-ativo .topo__rotulo-modelo {
+      animation: sumir 0.4s ease 2.6s both;
+    }
+    .topo.is-pronto .topo__slide.is-ativo .topo__rotulo-render {
+      animation: aparecer 0.4s ease 4s both;
+    }
+  }
+  @keyframes revelar {
+    from {
+      clip-path: inset(0 100% 0 0);
+    }
+    to {
+      clip-path: inset(0 0 0 0);
+    }
+  }
+  @keyframes linha {
+    0% {
+      left: 0;
+      opacity: 0;
+    }
+    10%,
+    90% {
+      opacity: 1;
+    }
+    100% {
+      left: 100%;
+      opacity: 0;
+    }
+  }
+  @keyframes sumir {
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 0;
+    }
+  }
+  @keyframes aparecer {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  .topo__sombra {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgb(0 0 0 / 0.7) 0%, rgb(0 0 0 / 0.3) 50%, transparent 80%);
+  }
+  .topo__conteudo {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--esp-3);
+    padding-block: var(--esp-7) var(--esp-6);
+  }
+  .topo__etiquetas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--esp-2);
+  }
+  .topo__provisorio {
+    color: var(--cor-branco);
+  }
+  .topo h1 {
+    color: var(--cor-branco);
+    max-width: 20ch;
+    font-size: clamp(1.75rem, 1.2rem + 2.8vw, 3.25rem);
+  }
+  .topo__subtitulo {
+    max-width: 36rem;
+    font-size: var(--texto-grande);
+    font-weight: 300;
+  }
+  .topo__botoes {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--esp-3) var(--esp-4);
+    margin-top: var(--esp-2);
+  }
+  .topo__link {
+    font-size: var(--texto-pequeno);
+    text-underline-offset: 0.3em;
+  }
+  .topo :global(:focus-visible) {
+    outline-color: var(--cor-branco);
+  }
+
+  /* Nossas entregas (3 itens) */
+  .lista-tres {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: var(--esp-5);
+  }
+  .item {
+    display: flex;
+    flex-direction: column;
+    gap: var(--esp-2);
+    padding-top: var(--esp-4);
+    border-top: 1px solid var(--cor-detalhe);
+  }
+  .item h3 {
+    font-size: var(--texto-grande);
+    letter-spacing: 0.14em;
+  }
+  @media (min-width: 56rem) {
+    .lista-tres {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  /* Pacotes: os cards vêm do SeletorServicos (mesmo visual de Formas de trabalhar) */
+  .nota {
+    max-width: 40rem;
+    font-size: var(--texto-pequeno);
+  }
+
+  /* Orçamento: WhatsApp + formulário */
+  .orcamento {
+    display: grid;
+    gap: var(--esp-6);
+  }
+  .orcamento__whatsapp,
+  .orcamento__form {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--esp-3);
+  }
+  @media (min-width: 56rem) {
+    .orcamento {
+      grid-template-columns: 1fr 1.4fr;
+      gap: var(--esp-7);
+    }
+  }
+</style>

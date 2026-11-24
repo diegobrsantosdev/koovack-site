@@ -1,0 +1,19 @@
+---
+// Landing page de renderização para anúncios e redes sociais (público: arquitetos e escritórios).
+// Mesmo conteúdo da página /renderizacao, mas no layout das landing pages:
+// só o logo no topo (sem menu, para a pessoa não se distrair) e fora do Google (noindex).
+// Os contatos daqui chegam marcados como "lp-renderizacao" (para saber que vieram do anúncio).
+// Não criar src/content/campanhas/renderizacao.yaml: esta página ocupa o endereço /lp/renderizacao.
+import CampanhaLayout from '../../layouts/CampanhaLayout.astro';
+import ConteudoRenderizacao from '../../components/renderizacao/ConteudoRenderizacao.astro';
+import { renderizacao as r } from '../../config/renderizacao';
+---
+
+<CampanhaLayout
+  titulo="Renderização"
+  descricao={r.subtitulo}
+  campanha="lp-renderizacao"
+  mensagemWhatsApp={r.mensagemWhatsApp}
+>
+  <ConteudoRenderizacao campanha="lp-renderizacao" />
+</CampanhaLayout>

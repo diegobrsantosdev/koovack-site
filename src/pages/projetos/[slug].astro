@@ -12,6 +12,7 @@ import Materiais from '../../components/case/Materiais.astro';
 import CarrosselProjetos from '../../components/projetos/CarrosselProjetos.astro';
 import Depoimento from '../../components/ui/Depoimento.astro';
 import BotaoWhatsApp from '../../components/ui/BotaoWhatsApp.astro';
+import ChamadaFinal from '../../components/home/ChamadaFinal.astro';
 import Etiqueta from '../../components/ui/Etiqueta.astro';
 import { projetosOrdenados, ROTULO_TIPO, formatarArea, type Projeto } from '../../lib/projetos';
 import { mensagemCase } from '../../lib/whatsapp';
@@ -133,9 +134,9 @@ const rotuloReferencia = ehModelo ? 'Modelo 3D' : 'Planta';
       }
 
       <section class="case__secao case__chamada">
-        <h2>Quer um projeto assim?</h2>
-        <p>Conte o que você precisa e receba um orçamento. Atendimento em Recife e em todo o Brasil.</p>
-        <BotaoWhatsApp mensagem={mensagem} rastreio={{ projeto: p.titulo }} />
+        <ChamadaFinal titulo="Quer um projeto assim?">
+          <BotaoWhatsApp slot="whatsapp" mensagem={mensagem} rastreio={{ projeto: p.titulo }} />
+        </ChamadaFinal>
       </section>
 
       {
@@ -209,7 +210,6 @@ const rotuloReferencia = ehModelo ? 'Modelo 3D' : 'Planta';
   }
 
   .case__chamada {
-    align-items: flex-start;
     padding: var(--esp-6) var(--margem-lateral);
     margin-inline: calc(var(--margem-lateral) * -1);
     background: var(--cor-fundo-alt);
