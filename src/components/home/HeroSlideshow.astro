@@ -3,7 +3,8 @@
 // - Desliza na horizontal a cada 5 s, em loop; dá para arrastar com o dedo ou usar as setas.
 // - Cada imagem faz um zoom lento enquanto está na tela.
 // - Frase, linha de serviços e botões ficam fixos por cima, sobre um degradê escuro.
-// - Pausa no toque/mouse e quando a aba fica oculta. Com "reduzir movimento": sem autoplay e sem zoom.
+// - Não pausa com o mouse em cima (o topo ocupa quase a tela toda no desktop e parecia travado).
+// - Pausa só enquanto a pessoa arrasta e quando a aba fica oculta. Com "reduzir movimento": sem autoplay e sem zoom.
 import { Picture } from 'astro:assets';
 import BotaoWhatsApp from '../ui/BotaoWhatsApp.astro';
 import { site } from '../../config/site';
@@ -64,7 +65,7 @@ import { slidesHero } from '../../config/home';
     const menosMovimento = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const plugins = menosMovimento
       ? []
-      : [Autoplay({ delay: 5000, stopOnInteraction: false, stopOnMouseEnter: true })];
+      : [Autoplay({ delay: 5000, stopOnInteraction: false })];
 
     const embla = EmblaCarousel(viewport, { loop: true, duration: 35 }, plugins);
     const slides = embla.slideNodes();
