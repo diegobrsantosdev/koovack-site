@@ -46,6 +46,8 @@ const rotuloReferencia = ehModelo ? 'Modelo 3D' : 'Planta';
   descricao={p.resumo}
   mensagemWhatsApp={mensagem}
   rastreioWhatsApp={{ projeto: p.titulo }}
+  imagem={p.capa.imagem}
+  imagemAlt={p.capa.alt}
 >
   <article class="case">
     <!-- Render principal: carrega primeiro (é o maior elemento da tela) -->

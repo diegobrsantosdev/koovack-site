@@ -14,6 +14,8 @@ import { renderizacao as r } from '../config/renderizacao';
   descricao={r.subtitulo}
   mensagemWhatsApp={r.mensagemWhatsApp}
   rastreioWhatsApp={{ campanha: 'renderizacao' }}
+  imagem={r.comparacoes[0].render.imagem}
+  imagemAlt={r.comparacoes[0].render.alt}
 >
   <ConteudoRenderizacao campanha="renderizacao" />
 </BaseLayout>

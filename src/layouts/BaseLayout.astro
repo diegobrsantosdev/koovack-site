@@ -1,7 +1,15 @@
 ---
 // Layout base: o "template" que toda página usa (como um layout do Thymeleaf).
 // Cuida do <head>, das fontes, do header, do footer e do botão fixo de WhatsApp.
-// Fases seguintes adicionam aqui: SEO completo/Open Graph (fase 8), GTM e cookies (fase 7).
+// Fases seguintes adicionam aqui: GTM e cookies (fase 7).
+//
+// Prévia de link (Open Graph, fase 8): é o "cartãozinho" com foto, título e descrição que aparece
+// quando alguém manda o link no WhatsApp, Instagram, Facebook, LinkedIn...
+// - A foto é a `imagem` que a página passar (ex.: a capa do projeto); sem isso, a primeira foto
+//   do slideshow da home. O build recorta em 1200 × 630 (o formato que essas redes usam).
+// - Os endereços precisam ser completos (com domínio). Ver `urlTeste` e `emConstrucao` em site.ts.
+import { getImage } from 'astro:assets';
+import { slidesHero } from '../config/home';
 
 // Fontes self-hosted (Fontsource): o build copia os arquivos para o site, sem Google Fonts.
 import '@fontsource/alice/400.css';
@@ -26,6 +34,8 @@ interface Props {
   naoIndexar?: boolean; // pede ao Google para não listar a página (ex.: /obrigado)
   rastreioWhatsApp?: RastreioWhatsApp; // contexto do clique no botão fixo (projeto, serviço...)
   detalheWhatsApp?: string; // segunda linha do botão fixo (ex.: serviço escolhido)
+  imagem?: ImageMetadata; // foto da prévia de link (padrão: a primeira do slideshow da home)
+  imagemAlt?: string;
 }
 
 const {
@@ -38,9 +48,17 @@ const {
   naoIndexar = false,
   rastreioWhatsApp,
   detalheWhatsApp,
+  imagem = slidesHero[0].imagem,
+  imagemAlt = slidesHero[0].alt,
 } = Astro.props;
 
 const tituloCompleto = titulo ? `${titulo} | ${site.nome}` : site.nome;
+
+// Prévia de link: endereço completo da página e da foto (recortada em 1200 × 630)
+const enderecoBase = site.emConstrucao ? site.urlTeste : site.url;
+const enderecoPagina = new URL(Astro.url.pathname, enderecoBase).href;
+const fotoPrevia = await getImage({ src: imagem, width: 1200, height: 630, fit: 'cover', format: 'jpg', quality: 80 });
+const enderecoFoto = new URL(fotoPrevia.src, enderecoBase).href;
 ---
 
 <!doctype html>
@@ -53,6 +71,20 @@ const tituloCompleto = titulo ? `${titulo} | ${site.nome}` : site.nome;
     {(naoIndexar || site.emConstrucao) && <meta name="robots" content="noindex" />}
     <meta name="theme-color" content="#ffffff" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="canonical" href={enderecoPagina} />
+
+    <!-- Prévia de link (WhatsApp, Instagram, Facebook, LinkedIn, X) -->
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="pt_BR" />
+    <meta property="og:site_name" content={site.nome} />
+    <meta property="og:title" content={tituloCompleto} />
+    <meta property="og:description" content={descricao} />
+    <meta property="og:url" content={enderecoPagina} />
+    <meta property="og:image" content={enderecoFoto} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={imagemAlt} />
+    <meta name="twitter:card" content="summary_large_image" />
     <meta name="generator" content={Astro.generator} />
   </head>
   <body>

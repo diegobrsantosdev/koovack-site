@@ -13,8 +13,10 @@ interface Props {
   descricao: string;
   campanha: string; // ex.: "apartamento"
   mensagemWhatsApp: string;
+  imagem?: ImageMetadata; // foto da prévia de link (a mesma do topo da página)
+  imagemAlt?: string;
 }
-const { titulo, descricao, campanha, mensagemWhatsApp } = Astro.props;
+const { titulo, descricao, campanha, mensagemWhatsApp, imagem, imagemAlt } = Astro.props;
 ---
 
 <BaseLayout
@@ -24,6 +26,8 @@ const { titulo, descricao, campanha, mensagemWhatsApp } = Astro.props;
   mostrarHeader={false}
   mensagemWhatsApp={mensagemWhatsApp}
   rastreioWhatsApp={{ campanha }}
+  imagem={imagem}
+  imagemAlt={imagemAlt}
 >
   <header class="topo-campanha">
     <div class="container topo-campanha__barra">

@@ -5,6 +5,9 @@ export const site = {
   nome: 'Koovack Arquitetura',
   arquiteto: 'Diogo Koovack',
   url: 'https://koovackarquitetura.com.br',
+  // Endereço de testes (Cloudflare Pages). Enquanto `emConstrucao` for true, é este endereço que vai
+  // nas prévias de link (WhatsApp/Instagram), porque o domínio acima ainda não está no ar.
+  urlTeste: 'https://koovack-site.pages.dev',
   descricao: 'Arquitetura e interiores. Recife e todo o Brasil.',
   atendimento: 'Recife e todo o Brasil',
   email: 'koovackarquitetura@gmail.com', // e-mail público da marca
@@ -39,7 +42,8 @@ export const site = {
 
   // PRÉ-LANÇAMENTO: enquanto for true, TODAS as páginas pedem ao Google para não indexar (noindex).
   // Assim o site pode ficar online para testes (ex.: koovack.pages.dev) sem aparecer nas buscas
-  // com conteúdo provisório. No lançamento (fase 9), trocar para false.
+  // com conteúdo provisório. No lançamento (fase 9), trocar para false: aí as prévias de link
+  // também passam a usar o domínio (`url`) no lugar do endereço de testes (`urlTeste`).
   emConstrucao: true,
 
   // hCaptcha ("não sou um robô") no formulário. DESLIGADO de propósito: pode pedir para a pessoa
