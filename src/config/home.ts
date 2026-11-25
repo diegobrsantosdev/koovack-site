@@ -5,6 +5,7 @@ import lisboaEstar from '../assets/hero/lisboa-estar.jpg';
 import saireCozinha from '../assets/hero/saire-cozinha.jpg';
 import sairePiscina from '../assets/hero/saire-piscina.jpg';
 import fotoDiogo from '../assets/sobre/diogo-poltrona.jpg';
+import fotoDiogoPrevia from '../assets/sobre/diogo-previa.jpg';
 
 // Slideshow do topo da home: os projetos se ALTERNANDO, com o MESMO número de fotos por projeto
 // (regra do Diego, 23/11/2026: "se tem 2 de um, tem que ter 2 do outro").
@@ -61,6 +62,9 @@ export const passosComoFunciona = [
 export const sobreResumo = {
   foto: fotoDiogo,
   alt: 'Diogo Koovack sorrindo, de camiseta preta, sentado em uma poltrona clara diante de um painel de madeira',
+  // Prévia de link de Sobre e Contato: a mesma foto já recortada na horizontal (1200 × 630),
+  // na faixa do rosto e dos ombros (o recorte automático cortava a cabeça ou o queixo).
+  fotoPrevia: fotoDiogoPrevia,
   titulo: 'Diogo Koovack',
   subtitulo: 'Arquiteto e urbanista',
   texto:

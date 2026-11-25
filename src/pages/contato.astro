@@ -7,12 +7,15 @@ import BotaoWhatsApp from '../components/ui/BotaoWhatsApp.astro';
 import FormContato from '../components/forms/FormContato.astro';
 import IconeRede from '../components/ui/IconeRede.astro';
 import { site } from '../config/site';
+import { sobreResumo } from '../config/home';
 ---
 
 <BaseLayout
   titulo="Contato"
   descricao="Fale com a Koovack Arquitetura pelo WhatsApp ou envie uma mensagem. Recife e todo o Brasil."
   mostrarWhatsAppFixo={false}
+  imagem={sobreResumo.fotoPrevia}
+  imagemAlt={sobreResumo.alt}
 >
   <CabecalhoPagina titulo="Contato" intro="O jeito mais rápido de falar comigo é pelo WhatsApp.">
     <div class="whatsapp">
