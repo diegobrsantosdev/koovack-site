@@ -1,26 +1,38 @@
 ---
-// Faixa discreta que leva arquitetos/escritórios à página /renderizacao (serviço B2B).
+// Banner que leva arquitetos/escritórios à página /renderizacao (serviço B2B).
 // Vai SEMPRE no fim da página, depois de todo o conteúdo do cliente final, para não misturar.
-// Usada no fim da home e de Formas de trabalhar.
+// Usado no fim da home e de Formas de trabalhar. Versão em destaque (bloco azul com um render ao
+// fundo) aprovada pelo Diego em 26/11/2026, no lugar da faixa discreta de texto.
 // fundo "alt" (cinza-claro) ou "claro" (branco): escolha o contrário da seção logo acima.
+import { getImage } from 'astro:assets';
+import render from '../../assets/renderizacao/sala-render.jpg';
+
 interface Props {
   fundo?: 'claro' | 'alt';
 }
 const { fundo = 'alt' } = Astro.props;
+
+// O render é só decoração (fica atrás do azul), por isso vai como fundo de CSS, sem alt.
+const imagem = await getImage({ src: render, width: 1600, format: 'webp' });
 ---
 
 <section class:list={['escritorios', `escritorios--${fundo}`]}>
-  <div class="container escritorios__dentro">
-    <p class="escritorios__rotulo">Para escritórios de arquitetura</p>
-    <p>Também faço renders realistas a partir do seu modelo 3D.</p>
-    <a href="/renderizacao">Conheça a renderização →</a>
+  <div class="container">
+    <div class="escritorios__banner" style={`--fundo-banner: url(${imagem.src})`}>
+      <div>
+        <p class="escritorios__rotulo">Para arquitetos e escritórios</p>
+        <p class="escritorios__titulo">Renders realistas a partir do seu modelo 3D</p>
+      </div>
+      <a class="escritorios__botao" href="/renderizacao">
+        Conheça a renderização <span aria-hidden="true">→</span>
+      </a>
+    </div>
   </div>
 </section>
 
 <style>
   .escritorios {
     padding-block: var(--esp-6);
-    border-top: 1px solid var(--cor-filete);
   }
   .escritorios--alt {
     background: var(--cor-fundo-alt);
@@ -28,23 +40,66 @@ const { fundo = 'alt' } = Astro.props;
   .escritorios--claro {
     background: var(--cor-fundo);
   }
-  .escritorios__dentro {
+
+  /* Celular: texto e botão um embaixo do outro. Desktop: lado a lado. */
+  .escritorios__banner {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    gap: var(--esp-2);
-    text-align: center;
+    align-items: flex-start;
+    gap: var(--esp-4);
+    padding: var(--esp-5) var(--esp-4);
+    text-wrap: balance;
+    border-radius: var(--raio);
+    color: var(--cor-branco);
+    /* azul quase opaco à esquerda (texto legível) e mais transparente à direita (aparece o render) */
+    background:
+      linear-gradient(100deg, rgb(62 78 104 / 0.95) 40%, rgb(62 78 104 / 0.55)),
+      var(--fundo-banner) center / cover;
   }
   .escritorios__rotulo {
     font-size: 0.75rem;
     text-transform: uppercase;
     letter-spacing: 0.18em;
-    opacity: 0.75;
+    opacity: 0.85;
   }
-  .escritorios a {
+  .escritorios__titulo {
+    margin-top: var(--esp-2);
+    max-width: 34rem;
+    font-size: var(--titulo-3);
+    font-weight: var(--peso-titulo);
+    text-transform: uppercase;
+    letter-spacing: var(--espacamento-titulo);
+    line-height: 1.25;
+  }
+  .escritorios__botao {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--esp-2);
+    min-height: 2.75rem;
+    padding: 0 var(--esp-3);
+    border-radius: var(--raio-botao);
+    background: var(--cor-branco);
+    color: var(--cor-principal);
+    text-decoration: none;
     font-size: var(--texto-pequeno);
     text-transform: uppercase;
-    letter-spacing: 0.12em;
-    text-underline-offset: 0.3em;
+    letter-spacing: 0.08em;
+    white-space: nowrap;
+    transition: background var(--transicao);
+  }
+  .escritorios__botao:hover {
+    background: var(--cor-fundo-alt);
+  }
+  .escritorios__botao:focus-visible {
+    outline-color: var(--cor-branco);
+  }
+
+  @media (min-width: 48rem) {
+    .escritorios__banner {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      padding: var(--esp-6);
+    }
   }
 </style>
