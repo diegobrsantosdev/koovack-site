@@ -1,111 +1,232 @@
 ---
+// Rodapé (versão "A", escolhida pelo Diego em 27/11/2026), com dois desenhos:
+// - Desktop: 4 colunas (marca + redes | Páginas | Para escritórios | Contato) e linha final.
+// - Celular: tudo centralizado e enxuto, com os links em linha, para o rodapé não ficar comprido.
+// Só um dos dois aparece por vez (o outro fica com display: none, invisível também para leitores de tela).
 import Logo from './Logo.astro';
+import IconeRede from '../ui/IconeRede.astro';
+import IconeWhatsApp from '../ui/IconeWhatsApp.astro';
 import { site } from '../../config/site';
+import { linkWhatsApp } from '../../lib/whatsapp';
 
 const ano = new Date().getFullYear();
+const whatsapp = linkWhatsApp();
+const paginas = [
+  { texto: 'Projetos', href: '/projetos' },
+  { texto: 'Formas de trabalhar', href: '/formas-de-trabalhar' },
+  { texto: 'Sobre', href: '/sobre' },
+  { texto: 'Contato', href: '/contato' },
+];
 ---
 
 <footer class="footer">
-  <div class="container footer__conteudo">
+  <!-- DESKTOP -->
+  <div class="container footer__desktop">
+    <div class="footer__grade">
+      <div class="footer__marca">
+        <Logo variante="clara" grande />
+        <p class="footer__frase">{site.fraseRodape}</p>
+        <ul class="footer__redes" aria-label="Redes sociais">
+          <li><a href={site.redes.instagram.url} target="_blank" rel="noopener" aria-label="Instagram"><IconeRede rede="instagram" /></a></li>
+          <li><a href={site.redes.tiktok.url} target="_blank" rel="noopener" aria-label="TikTok"><IconeRede rede="tiktok" /></a></li>
+          <li><a href={whatsapp} target="_blank" rel="noopener" aria-label="WhatsApp"><IconeWhatsApp /></a></li>
+        </ul>
+      </div>
+
+      <nav class="footer__coluna" aria-label="Páginas">
+        <p class="footer__titulo">Páginas</p>
+        <ul>{paginas.map((p) => <li><a href={p.href}>{p.texto}</a></li>)}</ul>
+      </nav>
+
+      <div class="footer__coluna">
+        <p class="footer__titulo">Para escritórios</p>
+        <ul><li><a href="/renderizacao">Renderização</a></li></ul>
+      </div>
+
+      <div class="footer__coluna">
+        <p class="footer__titulo">Contato</p>
+        <ul>
+          <li><a href={whatsapp} target="_blank" rel="noopener">WhatsApp {site.whatsappExibicao}</a></li>
+          <li><a href={`mailto:${site.email}`}>{site.email}</a></li>
+          <li class="footer__suave">Atendimento remoto em todo o Brasil</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer__base">
+      <p>© {ano} {site.nome}</p>
+      <a href="/privacidade">Privacidade</a>
+    </div>
+  </div>
+
+  <!-- CELULAR -->
+  <div class="container footer__celular">
     <Logo variante="clara" grande />
-
-    <p class="footer__linha">
-      <a href={site.redes.instagram.url} target="_blank" rel="noopener">{site.redes.instagram.usuario}</a>
-      <span aria-hidden="true">·</span>
-      <span>{site.atendimento}</span>
-    </p>
-
+    <p class="footer__frase">{site.fraseRodape}</p>
+    <ul class="footer__redes" aria-label="Redes sociais">
+      <li><a href={site.redes.instagram.url} target="_blank" rel="noopener" aria-label="Instagram"><IconeRede rede="instagram" /></a></li>
+      <li><a href={site.redes.tiktok.url} target="_blank" rel="noopener" aria-label="TikTok"><IconeRede rede="tiktok" /></a></li>
+      <li><a href={whatsapp} target="_blank" rel="noopener" aria-label="WhatsApp"><IconeWhatsApp /></a></li>
+    </ul>
     <nav aria-label="Links do rodapé">
       <ul class="footer__links">
-        <li><a href={site.redes.instagram.url} target="_blank" rel="noopener">Instagram</a></li>
-        <li><a href={site.redes.tiktok.url} target="_blank" rel="noopener">TikTok</a></li>
-        <li><a href="/contato">Contato</a></li>
-        <li><a href="/privacidade">Privacidade</a></li>
+        {paginas.map((p) => <li><a href={p.href}>{p.texto}</a></li>)}
+        <li><a href="/renderizacao">Renderização</a></li>
       </ul>
     </nav>
-
-    <!-- Caminho discreto para o serviço B2B, separado dos links do cliente final -->
-    <p class="footer__escritorios">
-      É arquiteto ou escritório? <a href="/renderizacao">Renderização para o seu projeto →</a>
+    <p class="footer__contato">
+      <a href={whatsapp} target="_blank" rel="noopener">{site.whatsappExibicao}</a>
+      <a href={`mailto:${site.email}`}>{site.email}</a>
     </p>
-
-    <p class="footer__copy">© {ano} {site.nome}</p>
+    <p class="footer__copy">© {ano} {site.nome} · <a href="/privacidade">Privacidade</a></p>
   </div>
 </footer>
 
 <style>
   .footer {
-    padding-block: var(--esp-6);
+    padding-top: var(--esp-6);
     /* espaço extra para o botão fixo do WhatsApp não cobrir o rodapé */
-    padding-bottom: calc(var(--esp-6) + var(--altura-whatsapp-fixo) + var(--esp-3));
+    padding-bottom: calc(var(--esp-4) + var(--altura-whatsapp-fixo) + var(--esp-3));
     background: var(--cor-principal);
     color: var(--cor-branco);
   }
+  .footer ul {
+    list-style: none;
+    padding: 0;
+  }
+  .footer a {
+    text-decoration: none;
+  }
+  .footer a:hover {
+    text-decoration: underline;
+    text-underline-offset: 0.3em;
+  }
+  .footer :focus-visible {
+    outline-color: var(--cor-branco);
+  }
 
-  .footer__conteudo {
+  .footer__frase {
+    max-width: 22rem;
+    font-size: var(--texto-pequeno);
+    line-height: 1.6;
+    opacity: 0.9;
+  }
+
+  /* Ícones redondos. Ao passar o mouse, "acendem": fundo claro, borda mais forte e sobem 2 px. */
+  .footer__redes {
+    display: flex;
+    gap: var(--esp-2);
+  }
+  .footer__redes a {
+    display: grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border: 1px solid rgb(255 255 255 / 0.4);
+    border-radius: 50%;
+    transition:
+      background var(--transicao),
+      border-color var(--transicao),
+      box-shadow var(--transicao),
+      transform var(--transicao);
+  }
+  .footer__redes a:hover {
+    background: rgb(255 255 255 / 0.14);
+    border-color: var(--cor-branco);
+    box-shadow: 0 0 1rem rgb(255 255 255 / 0.25);
+    transform: translateY(-2px);
+  }
+  .footer__redes :global(svg) {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+
+  /* ---------- Celular ---------- */
+  .footer__desktop {
+    display: none;
+  }
+  .footer__celular {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: var(--esp-4);
     text-align: center;
   }
-
-  /* Celular: uma informação embaixo da outra, sem o "·". Telas maiores: lado a lado. */
-  .footer__linha {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: var(--esp-1);
-  }
-  .footer__linha [aria-hidden] {
-    display: none;
-  }
-  @media (min-width: 30rem) {
-    .footer__linha {
-      flex-direction: row;
-      gap: var(--esp-2);
-    }
-    .footer__linha [aria-hidden] {
-      display: inline;
-    }
-  }
-
   .footer__links {
-    list-style: none;
-    padding: 0;
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
     gap: var(--esp-2) var(--esp-4);
-    font-size: var(--texto-pequeno);
+    font-size: 0.75rem;
     text-transform: uppercase;
     letter-spacing: 0.12em;
   }
-
-  .footer a {
-    text-decoration: none;
+  .footer__contato {
+    display: flex;
+    flex-direction: column;
+    gap: var(--esp-1);
+    font-size: var(--texto-pequeno);
   }
-  .footer a:hover {
-    text-decoration: underline;
-  }
-
-  .footer__escritorios {
+  .footer__copy {
+    width: 100%;
     padding-top: var(--esp-4);
     border-top: 1px solid rgb(255 255 255 / 0.25);
     font-size: var(--texto-pequeno);
-    opacity: 0.9;
-  }
-  .footer__escritorios a {
-    text-decoration: underline;
-    text-underline-offset: 0.3em;
+    opacity: 0.8;
   }
 
-  .footer__copy {
-    font-size: var(--texto-pequeno);
-    opacity: 0.75;
+  /* ---------- Desktop ---------- */
+  @media (min-width: 56rem) {
+    .footer {
+      padding-top: var(--esp-7);
+    }
+    .footer__celular {
+      display: none;
+    }
+    .footer__desktop {
+      display: block;
+    }
+    .footer__grade {
+      display: grid;
+      grid-template-columns: 1.6fr 1fr 1fr 1.3fr;
+      gap: var(--esp-4);
+    }
+    .footer__marca {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--esp-3);
+    }
+    .footer__coluna ul {
+      display: flex;
+      flex-direction: column;
+      gap: var(--esp-2);
+      font-size: var(--texto-pequeno);
+    }
+    .footer__titulo {
+      margin-bottom: var(--esp-3);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      opacity: 0.75;
+    }
+    .footer__suave {
+      opacity: 0.75;
+    }
+    .footer__base {
+      display: flex;
+      justify-content: space-between;
+      margin-top: var(--esp-4); /* era 48 px; o Diego pediu a linha mais perto das colunas (27/11/2026) */
+      padding-top: var(--esp-4);
+      border-top: 1px solid rgb(255 255 255 / 0.25);
+      font-size: var(--texto-pequeno);
+      opacity: 0.8;
+    }
   }
 
-  .footer :focus-visible {
-    outline-color: var(--cor-branco);
+  @media (prefers-reduced-motion: reduce) {
+    .footer__redes a:hover {
+      transform: none;
+    }
   }
 </style>

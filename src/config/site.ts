@@ -14,6 +14,8 @@ export const site = {
 
   // Só números, com DDI e DDD (formato exigido pelo wa.me)
   whatsapp: '5581979127146',
+  whatsappExibicao: '(81) 97912-7146', // o mesmo número, escrito para as pessoas lerem (rodapé e Contato)
+  fraseRodape: 'Arquitetura e interiores. Recife e todo o Brasil.', // escolhida pelo Diego em 27/11/2026
   textoBotaoWhatsApp: 'Pedir orçamento', // o mesmo em todos os botões de WhatsApp do site
   // Lido só por leitores de tela, depois do texto do botão, para avisar para onde ele leva
   complementoAcessivelWhatsApp: 'no WhatsApp (abre em outra aba)',
