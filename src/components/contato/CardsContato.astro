@@ -1,0 +1,135 @@
+---
+// Cards com os dados de contato à mostra (página Contato), aprovados pelo Diego em 27/11/2026.
+// Visual mais suave que o resto do site: cantos bem arredondados, ícones maiores e um destaque
+// quando o mouse passa por cima (o card sobe um pouco, ganha sombra e a borda escurece).
+import IconeWhatsApp from '../ui/IconeWhatsApp.astro';
+import { site } from '../../config/site';
+import { linkWhatsApp } from '../../lib/whatsapp';
+---
+
+<ul class="cards-contato">
+  <li class="card">
+    <span class="card__icone"><IconeWhatsApp /></span>
+    <p class="card__titulo">WhatsApp</p>
+    <a class="card__link" href={linkWhatsApp()} target="_blank" rel="noopener">
+      {site.whatsappExibicao} <span aria-hidden="true">→</span>
+    </a>
+  </li>
+
+  <li class="card">
+    <span class="card__icone">
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <rect x="3.5" y="5.5" width="17" height="13" rx="1.5"></rect>
+        <path d="m4 7 8 6 8-6"></path>
+      </svg>
+    </span>
+    <p class="card__titulo">E-mail</p>
+    <a class="card__link" href={`mailto:${site.email}`}>
+      {site.email} <span aria-hidden="true">→</span>
+    </a>
+  </li>
+
+  <li class="card">
+    <span class="card__icone">
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <circle cx="12" cy="12" r="8.5"></circle>
+        <path d="M3.5 12h17M12 3.5c2.5 2.6 3.5 5.4 3.5 8.5s-1 5.9-3.5 8.5c-2.5-2.6-3.5-5.4-3.5-8.5s1-5.9 3.5-8.5Z"></path>
+      </svg>
+    </span>
+    <p class="card__titulo">Atendimento</p>
+    <p>Remoto, em todo o Brasil</p>
+    <!-- O prazo de resposta já aparece embaixo do botão do WhatsApp, por isso não repete aqui -->
+    <p class="card__suave">Base em Recife (PE)</p>
+  </li>
+</ul>
+
+<style>
+  .cards-contato {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: var(--esp-3);
+  }
+  .card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--esp-2);
+    padding: var(--esp-5) var(--esp-4);
+    background: var(--cor-fundo);
+    border: 1px solid var(--cor-filete);
+    border-radius: var(--raio-foto);
+    transition:
+      transform 250ms ease,
+      box-shadow 250ms ease,
+      border-color 250ms ease;
+  }
+  .card:hover {
+    transform: translateY(-4px);
+    border-color: var(--cor-principal);
+    box-shadow: 0 0.75rem 2rem rgb(62 78 104 / 0.14);
+  }
+
+  .card__icone {
+    display: grid;
+    place-items: center;
+    width: 3.5rem;
+    height: 3.5rem;
+    margin-bottom: var(--esp-3);
+    border-radius: 0.875rem;
+    background: var(--cor-principal);
+    color: var(--cor-branco);
+  }
+  .card__icone :global(svg) {
+    width: 1.625rem;
+    height: 1.625rem;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .card__titulo {
+    font-size: var(--texto-pequeno);
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+  }
+  .card__link {
+    font-size: var(--texto-grande);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.3em;
+    overflow-wrap: anywhere; /* o e-mail é longo: quebra em vez de vazar do card no celular */
+  }
+  /* O link cobre o card inteiro: dá para clicar em qualquer parte dele */
+  .card__link::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+  }
+  .card__suave {
+    font-size: var(--texto-pequeno);
+    opacity: 0.8;
+  }
+
+  @media (min-width: 48rem) {
+    .cards-contato {
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--esp-4);
+    }
+    .card__link {
+      font-size: var(--texto-base);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .card,
+    .card:hover {
+      transition: none;
+      transform: none;
+    }
+  }
+</style>

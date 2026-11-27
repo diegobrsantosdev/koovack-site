@@ -6,6 +6,7 @@ import CabecalhoPagina from '../components/ui/CabecalhoPagina.astro';
 import BotaoWhatsApp from '../components/ui/BotaoWhatsApp.astro';
 import FormContato from '../components/forms/FormContato.astro';
 import IconeRede from '../components/ui/IconeRede.astro';
+import CardsContato from '../components/contato/CardsContato.astro';
 import { site } from '../config/site';
 import { sobreResumo } from '../config/home';
 ---
@@ -23,6 +24,11 @@ import { sobreResumo } from '../config/home';
       <p class="whatsapp__prazo">{site.prazoResposta}</p>
     </div>
   </CabecalhoPagina>
+
+  <!-- Dados de contato à mostra (27/11/2026) -->
+  <section class="container dados" aria-label="Dados de contato">
+    <CardsContato />
+  </section>
 
   <section class="container bloco">
     <h2>Prefere escrever?</h2>
@@ -60,6 +66,10 @@ import { sobreResumo } from '../config/home';
   .whatsapp__prazo {
     font-size: var(--texto-pequeno);
     opacity: 0.8;
+  }
+
+  .dados {
+    padding-block: var(--esp-4) var(--esp-6);
   }
 
   .bloco {
