@@ -45,6 +45,7 @@
   --altura-whatsapp-fixo: 2.75rem; /* 44 px: mínimo confortável para o dedo (era 3.5rem até 23/11/2026) */
   --raio: 2px; /* cards e imagens: cantos quase retos */
   --raio-botao: 999px; /* botões: cantos totalmente arredondados (pílula) */
+  --raio-foto: 1.25rem; /* foto do Diogo (Sobre e resumo da home): cantos suaves, pedido em 26/11/2026 */
 
   /* Movimento */
   --transicao: 200ms ease;
